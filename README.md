@@ -19,5 +19,6 @@ O front end, desenvolvido em React pode ser encontrado aqui.
 - No arquivo ```.env```, entre com as credenciais do banco de dados recém criado.
 - Na raíz do projeto, execute ```php artisan migrate```. Este comando cria todas as
 tabelas e relações necessárias para a execução da aplicação.
+- Para popular as tabelas com dados de teste pré-definidos, execute o comando `` php artisan db:seed``.
 - Para executá-lo localmente, execute ```php artisan serve```.
 
