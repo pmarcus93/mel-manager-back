@@ -4,7 +4,7 @@
 namespace App\Response;
 
 
-class MelResponse
+trait MelResponse
 {
     public static function success($text, $data)
     {
