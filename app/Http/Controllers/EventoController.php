@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class EventoController extends Controller
 {
-    public function cadastrarEvento() {
+    public function cadastrarEvento()
+    {
         try {
             $user_id = \request('user_id');
             $nome = \request('nome');
@@ -43,7 +44,8 @@ class EventoController extends Controller
         }
     }
 
-    public function retornarAdministradores() {
+    public function retornarAdministradores()
+    {
         try {
             $evento_id = \request('id');
             $eventoAdministradores = EventoAdministrador::where('evento_id', $evento_id)->get();
@@ -61,7 +63,8 @@ class EventoController extends Controller
         }
     }
 
-    public function cadastrarEdicaoEvento() {
+    public function cadastrarEdicaoEvento()
+    {
         try {
             $evento_id = request('evento_id');
             $nome = request('nome');
@@ -85,6 +88,22 @@ class EventoController extends Controller
             return MelResponse::success("Edição de evento cadastrada com sucesso!", $eventoEdicao);
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível cadastrar a edição do evento.", $e->getMessage());
+        }
+    }
+
+    public function retornarEdicoesEvento()
+    {
+        try {
+            $evento_id = request("id");
+
+            if (!$evento_id) {
+                throw new \Exception("É necessário informar o id do evento.");
+            }
+
+            $edicoes = EventoEdicao::where('evento_id', $evento_id)->get();
+            return MelResponse::success("", $edicoes);
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível retornar as edições do evento.", $e->getMessage());
         }
     }
 
