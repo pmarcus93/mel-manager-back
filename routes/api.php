@@ -33,5 +33,6 @@ Route::prefix('telefone')->group(function () {
 
 Route::prefix('evento')->group(function () {
     Route::post('/cadastrar-evento', 'EventoController@cadastrarEvento');
+    Route::post('/cadastrar-edicao-evento', 'EventoController@cadastrarEdicaoEvento');
     Route::get('/retornar-administradores/{id}', 'EventoController@retornarAdministradores');
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Evento;
 use App\EventoAdministrador;
+use App\EventoEdicao;
 use App\Response\MelResponse;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -59,4 +60,32 @@ class EventoController extends Controller
             return MelResponse::error("Não foi possível retornar os administradores deste evento.", $e->getMessage());
         }
     }
+
+    public function cadastrarEdicaoEvento() {
+        try {
+            $evento_id = request('evento_id');
+            $nome = request('nome');
+
+            if (!$evento_id || !$nome) {
+                throw new \Exception("É necessário informar o id do evento e o nome da edição!");
+            }
+
+            $eventoExistente = Evento::find($evento_id);
+
+            if (!$eventoExistente) {
+                throw new \Exception("Não existe evento cadastrado com o ID " . $evento_id . "!");
+            }
+
+            $eventoEdicao = new EventoEdicao();
+            $eventoEdicao->nome = $nome;
+            $eventoEdicao->evento_id = $evento_id;
+
+            $eventoEdicao->save();
+
+            return MelResponse::success("Edição de evento cadastrada com sucesso!", $eventoEdicao);
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível cadastrar a edição do evento.", $e->getMessage());
+        }
+    }
+
 }
