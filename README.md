@@ -16,6 +16,8 @@ O front end, desenvolvido em React pode ser encontrado aqui.
 - Crie um banco de dados vazio para armazenar os dados da aplicação.
 - Na raíz do projeto, gere uma chave de encriptação da aplicação usando o comando ```php artisan key:generate```.
 - Faça uma cópia do arquivo ```.env.example``` e renomeie para ```.env```.
+- Execute o comando `` php artisan vendor:publish --provider="Spatie\Cors\CorsServiceProvider" --tag="config"`` para habilitar a funcionalidade de biblioteca
+externa de CORS.
 - No arquivo ```.env```, entre com as credenciais do banco de dados recém criado.
 - Na raíz do projeto, execute ```php artisan migrate```. Este comando cria todas as
 tabelas e relações necessárias para a execução da aplicação.
