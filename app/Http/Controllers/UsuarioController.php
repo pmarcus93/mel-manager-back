@@ -42,14 +42,10 @@ class UsuarioController extends Controller
             $usuario = new User();
             $usuario->name = $username;
             $usuario->email = $email;
-            $usuario->password = $password;
+            $usuario->password = Hash::make($password);
 
             DB::beginTransaction();
-            User::create([
-                 'name' => $usuario['name'],
-                 'email' => $usuario['email'],
-                 'password' => Hash::make($usuario['password']),
-              ]);
+            $usuario->save();
             DB::commit();
             return MelResponse::success("Usuário cadastrado com sucesso!", $usuario);
 
