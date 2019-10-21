@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UsuarioController;
 use Illuminate\Http\Request;
 
 /*
@@ -12,6 +13,12 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::prefix('usuario')->group(function(){
+    Route::get('/{nome}','UsuarioController@retornarUsuarioNome');
+    Route::get('/{e-mail}','UsuarioController@retornarUsuarioEmail');
+    Route::post('/cadastrar-usuario','UsuarioController@cadastrarUsuario');
+});
 
 Route::prefix('empresa')->group(function () {
     Route::get('/', 'EmpresaController@index');
