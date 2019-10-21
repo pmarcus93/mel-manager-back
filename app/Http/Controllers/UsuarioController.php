@@ -6,19 +6,9 @@ use App\User;
 use App\Response\MelResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class UsuarioController extends Controller
 {
-    public function validandoDados($request)
-    {
-        $validador = Validator::make($request, [
-            "name" => "required|string|max:255",
-            "email" => "required|string|email|max:255|unique:users",
-            "password" => "required|string|min:8|confirmed",
-        ]);
-        return $validador;
-    }
 
     public function cadastrarUsuario(){
 
@@ -26,12 +16,6 @@ class UsuarioController extends Controller
             $username = request('name');
             $email = request('email');
             $password = request('password');
-
-            $validarDados = $this->validandoDados([$username,$email,$password]);
-
-            if ($validarDados->fails()){
-                return MelResponse::error("Erro ao validar os dados informados!", "");
-            }
 
             $usuario = User::find($email);
 
