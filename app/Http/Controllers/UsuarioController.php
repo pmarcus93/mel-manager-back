@@ -17,7 +17,7 @@ class UsuarioController extends Controller
             $email = request('email');
             $password = request('password');
 
-            $usuario = User::find($email);
+            $usuario = User::where('email', $email)->get();
 
             if ($usuario) {
                 throw new \Exception("Este e-mail já foi cadastrado em nosso sistema. [" . $email . "].");
@@ -37,6 +37,22 @@ class UsuarioController extends Controller
         }catch (Exception $e){
             DB::rollBack();
             return MelResponse::error("Erro ao cadastrar usuário.", $e->getMessage());
+        }
+    }
+
+    public function retornarUsuarioPorNome(){
+        try {
+            $username = \request('name');
+            $usuario = DB::table('users')
+                ->where('name', 'like', $username.'%')
+                ->get();
+
+            if ($usuario->isEmpty()){
+                return MelResponse::error("Nenhum registro encontrado para o nome informado.", $username);
+            }
+            return MelResponse::success(null, $usuario);
+        } catch (Exception $e) {
+            return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
         }
     }
 
