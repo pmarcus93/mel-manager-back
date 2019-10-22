@@ -49,16 +49,14 @@ class EventoController extends Controller
         try {
             $evento_id = \request('id');
             $eventoAdministradores = EventoAdministrador::where('evento_id', $evento_id)->get();
-
             $usuarios = [];
 
             foreach ($eventoAdministradores as $eventoAdministrador) {
                 $usuario = User::find($eventoAdministrador->user_id);
                 $usuarios[] = ['id' => $usuario->id, 'name' => $usuario->name];
             }
-
             return MelResponse::success(null, $usuarios);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar os administradores deste evento.", $e->getMessage());
         }
     }
@@ -104,6 +102,50 @@ class EventoController extends Controller
             return MelResponse::success("", $edicoes);
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar as edições do evento.", $e->getMessage());
+        }
+    }
+
+    public function vincularAdministradorEvento()
+    {
+        try {
+            $evento_id = request('evento_id');
+            $user_id = request('user_id');
+
+            $eventoAdministrador = EventoAdministrador::where('evento_id', $evento_id)
+                ->where('user_id', $user_id)
+                ->get();
+
+            if ($eventoAdministrador) {
+                throw new \Exception("Este usuário já é administrador deste evento!");
+            }
+
+            $novoEventoAdministrador = new EventoAdministrador();
+            $novoEventoAdministrador->user_id = $user_id;
+            $novoEventoAdministrador->evento_id = $evento_id;
+            $novoEventoAdministrador->save();
+
+            return MelResponse::success("", $novoEventoAdministrador);
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível vincular esse usuário como administrador deste evento.", $e->getMessage());
+        }
+    }
+
+    public function desvincularAdministradorEvento()
+    {
+        try {
+            $user_id = request('user_id');
+            $evento_id = request('evento_id');
+
+            /** @var EventoAdministrador $eventoAdministrador */
+            $eventoAdministrador = EventoAdministrador::where('evento_id', $evento_id)
+                ->where('user_id', $user_id)
+                ->get();
+
+            $eventoAdministrador->ativo = 0;
+            $eventoAdministrador->save();
+            return MelResponse::success("", $eventoAdministrador);
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível desvincular o administrador do evento.", $e->getMessage());
         }
     }
 
