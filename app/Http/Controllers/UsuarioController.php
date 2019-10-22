@@ -40,15 +40,18 @@ class UsuarioController extends Controller
         }
     }
 
-    public function retornarUsuarioPorNome(){
+    public function retornarUsuarioPorNomeEmail(){
         try {
             $username = \request('name');
+            $email = \request('email');
+
             $usuario = DB::table('users')
                 ->where('name', 'like', $username.'%')
+                ->orWhere('email','like',$email)
                 ->get();
 
             if ($usuario->isEmpty()){
-                return MelResponse::error("Nenhum registro encontrado para o nome informado.", $username);
+                return MelResponse::error("Nenhum registro encontrado para o valor informado.", $username);
             }
             return MelResponse::success(null, $usuario);
         } catch (Exception $e) {
