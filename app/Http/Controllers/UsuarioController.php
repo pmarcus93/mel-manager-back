@@ -48,19 +48,19 @@ class UsuarioController extends Controller
             $email = \request('email');
             $password = \request('password');
 
-            $usuario = User::where('id', $user_id)->get();
+            $usuario = User::find($user_id);
 
             if (!$usuario) {
                 throw new \Exception("Usuário não encontrado em nosso sistema. [" . $user_id . "].");
             }
 
-            $usuario = new User();
+            $usuario->id = $user_id;
             $usuario->name = $username;
             $usuario->email = $email;
             $usuario->password = Hash::make($password);
 
             DB::beginTransaction();
-            $usuario->update();
+            $usuario->save();
             DB::commit();
             return MelResponse::success("Usuário alterado com sucesso!", $usuario);
 
