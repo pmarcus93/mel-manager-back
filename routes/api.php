@@ -38,4 +38,5 @@ Route::prefix('evento')->group(function () {
     Route::post('/cadastrar-edicao-evento', 'EventoController@cadastrarEdicaoEvento');
     Route::post('/vincular-administrador-evento/', 'EventoController@vincularAdministradorEvento');
     Route::post('/desvincular-administrador-evento/', 'EventoController@desvincularAdministradorEvento');
+    Route::get('/retornar-edicoes-evento-usuario/{user_id}', 'EventoController@retornarEdicoesEventoUsuario');
 });

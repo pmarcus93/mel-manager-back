@@ -105,6 +105,30 @@ class EventoController extends Controller
         }
     }
 
+    public function retornarEdicoesEventoUsuario() {
+        try {
+            $user_id = request('user_id');
+
+            $eventosUsuario = DB::table('evento_administrador')
+                ->join('users', 'evento_administrador.user_id', '=', 'users.id')
+                ->join('evento', 'evento_administrador.evento_id', '=', 'evento.id')
+                ->where('users.id', '=', $user_id)
+                ->select('users.id AS user_id', 'users.name', 'evento.id AS evento_id', 'evento.nome')
+                ->get();
+
+            foreach ($eventosUsuario as &$evento) {
+                $eventoEdicoes = EventoEdicao::select('id AS edicao_id', 'nome')
+                    ->where('evento_id', $evento->evento_id)
+                    ->get();
+                $evento->edicoes = $eventoEdicoes;
+            }
+
+            return MelResponse::success("", $eventosUsuario);
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível retornar os eventos do usuário.", $e->getMessage());
+        }
+    }
+
     public function vincularAdministradorEvento()
     {
         try {
