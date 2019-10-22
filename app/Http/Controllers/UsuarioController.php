@@ -12,15 +12,46 @@ class UsuarioController extends Controller
 
     public function cadastrarUsuario(){
 
+    try{
+        $username = \request('name');
+        $email = \request('email');
+        $password = \request('password');
+
+        $usuario = User::where('email', $email)->get();
+
+        if ($usuario) {
+            throw new \Exception("Este e-mail já foi cadastrado em nosso sistema. [" . $email . "].");
+        }
+
+        $usuario = new User();
+        $usuario->name = $username;
+        $usuario->email = $email;
+        $usuario->password = Hash::make($password);
+
+        DB::beginTransaction();
+        $usuario->save();
+        DB::commit();
+        return MelResponse::success("Usuário cadastrado com sucesso!", $usuario);
+
+
+    }catch (Exception $e){
+        DB::rollBack();
+        return MelResponse::error("Erro ao cadastrar usuário.", $e->getMessage());
+    }
+    }
+
+    public function editarUsuario(){
+
         try{
-            $username = request('name');
-            $email = request('email');
-            $password = request('password');
+            $user_id = \request('user_id');
+            $username = \request('name');
+            $email = \request('email');
+            $password = \request('password');
 
-            $usuario = User::where('email', $email)->get();
+            $usuario = User::where('id', $user_id)->get();
 
-            if ($usuario) {
-                throw new \Exception("Este e-mail já foi cadastrado em nosso sistema. [" . $email . "].");
+            if (!$usuario) {
+                throw new \Exception("Usuário não encontrado em nosso sistema. [" . $user_id . "].");
             }
 
             $usuario = new User();
@@ -29,16 +60,17 @@ class UsuarioController extends Controller
             $usuario->password = Hash::make($password);
 
             DB::beginTransaction();
-            $usuario->save();
+            $usuario->update();
             DB::commit();
-            return MelResponse::success("Usuário cadastrado com sucesso!", $usuario);
+            return MelResponse::success("Usuário alterado com sucesso!", $usuario);
 
 
         }catch (Exception $e){
             DB::rollBack();
-            return MelResponse::error("Erro ao cadastrar usuário.", $e->getMessage());
+            return MelResponse::error("Erro ao editar as informações do usuário.", $e->getMessage());
         }
     }
+
 
     public function retornarUsuarioPorNomeEmail(){
         try {
