@@ -13,7 +13,7 @@
 
 Route::prefix('usuario')->group(function () {
     Route::post('/cadastrar-usuario', 'UsuarioController@cadastrarUsuario');
-    Route::get('/retornar-usuario-nome/{name}', 'UsuarioController@retornarUsuarioPorNome');
+    Route::get('/retornar-usuario-nome/{name}', 'UsuarioController@retornarUsuarioPorNomeEmail');
 });
 
 Route::prefix('empresa')->group(function () {
