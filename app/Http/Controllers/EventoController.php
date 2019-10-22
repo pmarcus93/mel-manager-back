@@ -49,13 +49,13 @@ class EventoController extends Controller
         try {
             $evento_id = \request('id');
             $eventoAdministradores = EventoAdministrador::where('evento_id', $evento_id)->get();
-            $usuarios = [];
+            $users = [];
 
             foreach ($eventoAdministradores as $eventoAdministrador) {
                 $usuario = User::find($eventoAdministrador->user_id);
-                $usuarios[] = ['id' => $usuario->id, 'name' => $usuario->name];
+                $users[] = ['id' => $usuario->id, 'name' => $usuario->name];
             }
-            return MelResponse::success(null, $usuarios);
+            return MelResponse::success(null, $users);
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar os administradores deste evento.", $e->getMessage());
         }
