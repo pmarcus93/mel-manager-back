@@ -113,18 +113,21 @@ class EventoController extends Controller
 
             $eventoAdministrador = EventoAdministrador::where('evento_id', $evento_id)
                 ->where('user_id', $user_id)
-                ->get();
+                ->first();
 
-            if ($eventoAdministrador) {
+            if ($eventoAdministrador && $eventoAdministrador->ativo) {
                 throw new \Exception("Este usuário já é administrador deste evento!");
             }
 
-            $novoEventoAdministrador = new EventoAdministrador();
-            $novoEventoAdministrador->user_id = $user_id;
-            $novoEventoAdministrador->evento_id = $evento_id;
-            $novoEventoAdministrador->save();
+            if (!$eventoAdministrador) {
+                $eventoAdministrador = new EventoAdministrador();
+                $eventoAdministrador->user_id = $user_id;
+                $eventoAdministrador->evento_id = $evento_id;
+            }
 
-            return MelResponse::success("", $novoEventoAdministrador);
+            $eventoAdministrador->ativo = 1;
+            $eventoAdministrador->save();
+            return MelResponse::success("Administrador vinculado com sucesso.", $eventoAdministrador);
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível vincular esse usuário como administrador deste evento.", $e->getMessage());
         }
@@ -139,11 +142,15 @@ class EventoController extends Controller
             /** @var EventoAdministrador $eventoAdministrador */
             $eventoAdministrador = EventoAdministrador::where('evento_id', $evento_id)
                 ->where('user_id', $user_id)
-                ->get();
+                ->first();
+
+            if (!$eventoAdministrador || $eventoAdministrador->ativo === 0) {
+                throw new \Exception("O usuário não está vinculado como administrador para o evento.");
+            };
 
             $eventoAdministrador->ativo = 0;
             $eventoAdministrador->save();
-            return MelResponse::success("", $eventoAdministrador);
+            return MelResponse::success("Administrador desvinculado com sucesso.", $eventoAdministrador);
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível desvincular o administrador do evento.", $e->getMessage());
         }
