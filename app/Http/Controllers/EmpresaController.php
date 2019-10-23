@@ -24,9 +24,9 @@ class EmpresaController extends Controller
                 $telefone = new Telefone();
                 $telefone->numero = $telefone_numero;
                 $telefone->save();
-                $telefoneAdd[] = $telefone->id;
+                $telefonesAdd[] = $telefone->id;
             }
-            $empresa->telefones()->sync($telefoneAdd);
+            $empresa->telefones()->sync($telefonesAdd);
             DB::commit();
             return MelResponse::success("Empresa cadastrada com sucesso!", $empresa);
         } catch (\Exception $e) {
@@ -39,24 +39,24 @@ class EmpresaController extends Controller
     {
         try {
             DB::beginTransaction();
-            $empresa_id = Request::input('id');
-            $empresa_nome =Request::input('nome');
+            $empresa_id = Request::input('empresa_id');
+            $empresa_nome =Request::input('empresa_nome');
             $empresa = Empresa::find($empresa_id);
             $empresa->nome = $empresa_nome;
             $empresa->save();
-            $telefones_ids = Request::input('telefones.*.id');
-            foreach ($telefones_ids as $telefone_id) {
-                $telefone = Telefone::find($telefone_id->id);
-                $telefone->numero = $telefone_id->numero;
-                $telefone->save();
-                $telefoneAdd[] = $telefone->id;
+            $telefones = Request::input('telefones');
+            foreach ($telefones as $telefone) {
+                $telefoneEdit = Telefone::find($telefone['id']);
+                $telefoneEdit->numero = $telefone['numero'];
+                $telefoneEdit->save();
+                $telefonesEdit[] = $telefoneEdit->id;
             }
-            $empresa->telefones()->sync($telefoneAdd);
+            $empresa->telefones()->sync($telefonesEdit);
             DB::commit();
-            return MelResponse::success("Empresa cadastrada com sucesso!", $empresa);
+            return MelResponse::success("Empresa alterada com sucesso!", $empresa);
         } catch (\Exception $e) {
             DB::rollBack();
-            return MelResponse::error("Erro ao cadastrar empresa.", $e->getMessage());
+            return MelResponse::error("Erro ao alter empresa.", $e->getMessage());
         }
     }
 
