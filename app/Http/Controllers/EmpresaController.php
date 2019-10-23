@@ -15,7 +15,7 @@ class EmpresaController extends Controller
         try {
             DB::beginTransaction();
             $dados = $request->all();
-            $empresa = Empresa::created($dados);
+            $empresa = Empresa::create($dados);
             $empresa = Empresa::find($empresa->id);
             $empresa->telefones()->sync($empresa['telefone_id']);
             DB::commit();
