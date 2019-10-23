@@ -18,10 +18,7 @@ Route::prefix('usuario')->group(function () {
 });
 
 Route::prefix('empresa')->group(function () {
-    Route::get('/', 'EmpresaController@index');
-    Route::get('{id}', 'EmpresaController@show');
-    Route::post('', 'EmpresaController@store');
-    Route::delete('{id}', 'EmpresaController@destroy');
+    Route::post('/cadastrar-empresa','EmpresaController@cadastrarEmpresa');
 });
 
 Route::prefix('telefone')->group(function () {
