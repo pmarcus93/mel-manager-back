@@ -40,11 +40,19 @@ class EmpresaController extends Controller
         try {
             DB::beginTransaction();
             $empresa_id = Request::input('empresa_id');
-            $empresa_nome =Request::input('empresa_nome');
+            $empresa_nome = Request::input('empresa_nome');
             $empresa = Empresa::find($empresa_id);
             $empresa->nome = $empresa_nome;
             $empresa->save();
+
             $telefones = Request::input('telefones');
+            $telefonesNew = array_column($telefones, 'id');
+            //dd($telefonesNew);
+            $telefonesOld = Telefone::find($empresa->id)->pluck('id')->toArray();
+            // dd($telefonesOld);
+            $deletados = array_diff_key($telefonesOld, $telefonesNew);
+            dd($deletados);
+
             foreach ($telefones as $telefone) {
                 $telefoneEdit = Telefone::find($telefone['id']);
                 $telefoneEdit->numero = $telefone['numero'];
@@ -52,6 +60,11 @@ class EmpresaController extends Controller
                 $telefonesEdit[] = $telefoneEdit->id;
             }
             $empresa->telefones()->sync($telefonesEdit);
+
+            if ($deletados = array_keys(array_diff_key($telefonesOld, $telefonesNew))) {
+                Telefone::wherein('id', $deletados)->delete();
+            }
+
             DB::commit();
             return MelResponse::success("Empresa alterada com sucesso!", $empresa);
         } catch (\Exception $e) {
