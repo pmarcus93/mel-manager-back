@@ -68,7 +68,10 @@ class EmpresaController extends Controller
             }
 
             DB::commit();
-            return MelResponse::success("Empresa alterada com sucesso!", $empresa);
+            $telefones[] = $empresa->telefones;
+            $empresaDados[] = $empresa;
+            array_merge($empresaDados, $telefones);
+            return MelResponse::success("Empresa alterada com sucesso!", $empresaDados);
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error("Erro ao alter empresa.", $e->getMessage());
