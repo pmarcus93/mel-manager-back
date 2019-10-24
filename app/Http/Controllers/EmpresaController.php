@@ -18,18 +18,22 @@ class EmpresaController extends Controller
             $empresa->nome = $empresa_nome;
             $empresa->save();
             $telefones_numeros = request('telefones');
+
             foreach ($telefones_numeros as $telefone_numero) {
                 $telefone = new Telefone();
                 $telefone->numero = $telefone_numero;
                 $telefone->save();
                 $telefonesAdd[] = $telefone->id;
             }
+
             $empresa->telefones()->sync($telefonesAdd);
             DB::commit();
+
             $telefones[] = $empresa->telefones;
             $empresaDados[] = $empresa;
             array_merge($empresaDados, $telefones);
             return MelResponse::success("Empresa cadastrada com sucesso!", $empresaDados);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error("Erro ao cadastrar empresa.", $e->getMessage());
@@ -72,12 +76,13 @@ class EmpresaController extends Controller
             if ($deletados = array_diff_key($telefonesOld, $telefonesNew)) {
                 Telefone::wherein('id', $deletados)->delete();
             }
-
             DB::commit();
+
             $telefones[] = $empresa->telefones;
             $empresaDados[] = $empresa;
             array_merge($empresaDados, $telefones);
             return MelResponse::success("Empresa alterada com sucesso!", $empresaDados);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error("Erro ao alter empresa.", $e->getMessage());
@@ -89,12 +94,15 @@ class EmpresaController extends Controller
         try {
             $empresa_id = request('id');
             $empresa[] = Empresa::find($empresa_id);
+
             if (!$empresa) {
                 return MelResponse::warning("O ID informado não foi encontrado!", $empresa_id);
             }
+
             $telefones[] = $empresa[0]->telefones;
             array_merge($empresa, $telefones);
             return MelResponse::success(null, $empresa);
+
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar os dados da empresa.", $e->getMessage());
         }
