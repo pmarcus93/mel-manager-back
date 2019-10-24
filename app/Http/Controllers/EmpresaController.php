@@ -40,10 +40,18 @@ class EmpresaController extends Controller
             $empresa_id = request('empresa_id');
             $empresa_nome = request('empresa_nome');
             $empresa = Empresa::find($empresa_id);
+            $telefones = request('telefones');
+
+            if (!$empresa) {
+                $data['id'] = $empresa_id;
+                $data['nome'] = $empresa_nome;
+                $dados = array_merge($data, $telefones);
+                return MelResponse::warning("Empresa não encontrada para edição!", $dados);
+            }
+
             $empresa->nome = $empresa_nome;
             $empresa->save();
 
-            $telefones = request('telefones');
             $telefonesNew = array_column($telefones, 'id');
             $telefonesOld = Telefone::find($empresa->id)->pluck('id')->toArray();
 
@@ -71,11 +79,13 @@ class EmpresaController extends Controller
     {
         try {
             $empresa_id = request('id');
-            $empresa = Empresa::where('id', $empresa_id)->get();
-            $telefones[] = Telefone::find($empresa[0]->id);
-
-            $dadosEmpresa = array_merge($empresa, $telefones);
-            return MelResponse::success(null, $dadosEmpresa);
+            $empresa[] = Empresa::find($empresa_id);
+            if (!$empresa) {
+                return MelResponse::warning("O ID informado não foi encontrado!", $empresa_id);
+            }
+            $telefones[] = $empresa[0]->telefones;
+            array_merge($empresa, $telefones);
+            return MelResponse::success(null, $empresa);
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar os dados da empresa.", $e->getMessage());
         }
