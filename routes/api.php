@@ -20,6 +20,7 @@ Route::prefix('usuario')->group(function () {
 Route::prefix('empresa')->group(function () {
     Route::post('/cadastrar-empresa', 'EmpresaController@cadastrarEmpresa');
     Route::post('/editar-empresa', 'EmpresaController@editarEmpresa');
+    Route::get('/retornar-empresa/{empresa_id}','EmpresaController@retornarEmpresa');
 });
 
 Route::prefix('evento')->group(function () {
