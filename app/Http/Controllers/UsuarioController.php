@@ -43,7 +43,6 @@ class UsuarioController extends Controller
             $user->telefones()->sync($telefonesAdd);
             DB::commit();
 
-            $user = User::find($user->id);
             $user = $user->load('telefones');
             return MelResponse::success("Usuário cadastrado com sucesso!", $user);
 
@@ -77,26 +76,35 @@ class UsuarioController extends Controller
             $user->password = Hash::make($password);
             $user->save();
 
-            $telefonesNew = array_column($telefones, 'id');
+            $telefonesNew = array();
+            if ($telefones) {
+                $telefonesNew = array_column($telefones, 'id');
+            }
+
             $telefonesOld = $user->telefones->pluck('id')->toArray();
 
-            foreach ($telefones as $telefone) {
-                $telefoneEdit = Telefone::find($telefone['id']);
-                if (!$telefoneEdit) {
-                    $telefoneEdit = new Telefone();
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneEdit = Telefone::find($telefone['id']);
+                    if (!$telefoneEdit) {
+                        $telefoneEdit = new Telefone();
+                    }
+                    $telefoneEdit->numero = $telefone['numero'];
+                    $telefoneEdit->save();
+                    $telefonesEdit[] = $telefoneEdit->id;
                 }
-                $telefoneEdit->numero = $telefone['numero'];
-                $telefoneEdit->save();
-                $telefonesEdit[] = $telefoneEdit->id;
+                $user->telefones()->sync($telefonesEdit);
             }
-            $user->telefones()->sync($telefonesEdit);
+
+            if (!$telefones) {
+                $user->telefones()->sync([]);
+            }
 
             if ($deletados = array_diff_key($telefonesOld, $telefonesNew)) {
                 Telefone::wherein('id', $deletados)->delete();
             }
             DB::commit();
 
-            $user = User::find($user_id);
             $user = $user->load('telefones');
             return MelResponse::success("Usuário alterado com sucesso!", $user);
 
