@@ -46,10 +46,10 @@ class EmpresaController extends Controller
             $telefones = request('telefones');
 
             if (!$empresa) {
-                $data['id'] = $empresa_id;
-                $data['nome'] = $empresa_nome;
-                $dados = array_merge($data, $telefones);
-                return MelResponse::warning("Empresa não encontrada para edição!", $dados);
+                $data['empresa']['id'] = $empresa_id;
+                $data['empresa']['nome'] = $empresa_nome;
+                $data['empresa']['telefones'] = $telefones;
+                return MelResponse::warning("Empresa não encontrada para edição!", $data);
             }
 
             $empresa->nome = $empresa_nome;
