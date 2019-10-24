@@ -26,7 +26,10 @@ class EmpresaController extends Controller
             }
             $empresa->telefones()->sync($telefonesAdd);
             DB::commit();
-            return MelResponse::success("Empresa cadastrada com sucesso!", $empresa);
+            $telefones[] = $empresa->telefones;
+            $empresaDados[] = $empresa;
+            array_merge($empresaDados, $telefones);
+            return MelResponse::success("Empresa cadastrada com sucesso!", $empresaDados);
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error("Erro ao cadastrar empresa.", $e->getMessage());
