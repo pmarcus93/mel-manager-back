@@ -29,7 +29,6 @@ class EmpresaController extends Controller
             $empresa->telefones()->sync($telefonesAdd);
             DB::commit();
 
-            $empresa = Empresa::find($empresa->id);
             $empresa = $empresa->load('telefones');
             return MelResponse::success("Empresa cadastrada com sucesso!", $empresa);
 
@@ -58,26 +57,36 @@ class EmpresaController extends Controller
             $empresa->nome = $empresa_nome;
             $empresa->save();
 
-            $telefonesNew = array_column($telefones, 'id');
+            $telefonesNew = array();
+            if ($telefones) {
+                $telefonesNew = array_column($telefones, 'id');
+            }
+
             $telefonesOld = $empresa->telefones->pluck('id')->toArray();
 
-            foreach ($telefones as $telefone) {
-                $telefoneEdit = Telefone::find($telefone['id']);
-                if (!$telefoneEdit) {
-                    $telefoneEdit = new Telefone();
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneEdit = Telefone::find($telefone['id']);
+                    if (!$telefoneEdit) {
+                        $telefoneEdit = new Telefone();
+                    }
+                    $telefoneEdit->numero = $telefone['numero'];
+                    $telefoneEdit->save();
+                    $telefonesEdit[] = $telefoneEdit->id;
                 }
-                $telefoneEdit->numero = $telefone['numero'];
-                $telefoneEdit->save();
-                $telefonesEdit[] = $telefoneEdit->id;
+                $empresa->telefones()->sync($telefonesEdit);
             }
-            $empresa->telefones()->sync($telefonesEdit);
+
+            if (!$telefones) {
+                $empresa->telefones()->sync([]);
+            }
 
             if ($deletados = array_diff_key($telefonesOld, $telefonesNew)) {
                 Telefone::wherein('id', $deletados)->delete();
             }
+
             DB::commit();
 
-            $empresa = Empresa::find($empresa_id);
             $empresa = $empresa->load('telefones');
             return MelResponse::success("Empresa alterada com sucesso!", $empresa);
 
