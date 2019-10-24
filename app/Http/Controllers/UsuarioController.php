@@ -55,21 +55,56 @@ class UsuarioController extends Controller
     public function editarUsuario()
     {
         try {
+            DB::beginTransaction();
             $user_id = request('user_id');
             $username = request('name');
             $email = request('email');
             $password = request('password');
             $user = User::find($user_id);
+            $telefones = request('telefones');
+
             if (!$user) {
-                throw new \Exception("Usuário não encontrado em nosso sistema. [" . $user_id . "].");
+                $data['usuario']['user_id'] = $user_id;
+                $data['usuario']['name'] = $username;
+                $data['usuario']['email'] = $email;
+                $data['usuario']['telefones'] = $telefones;
+                return MelResponse::warning("Usuário não encontrada para edição!", $data);
             }
+
             $user->id = $user_id;
             $user->name = $username;
             $user->email = $email;
             $user->password = Hash::make($password);
             $user->save();
-            return MelResponse::success("Usuário alterado com sucesso!", $user);
+
+            $telefonesNew = array_column($telefones, 'id');
+            $telefonesOld = $user->telefones->pluck('id')->toArray();
+
+            foreach ($telefones as $telefone) {
+                $telefoneEdit = Telefone::find($telefone['id']);
+                if (!$telefoneEdit) {
+                    $telefoneEdit = new Telefone();
+                }
+                $telefoneEdit->numero = $telefone['numero'];
+                $telefoneEdit->save();
+                $telefonesEdit[] = $telefoneEdit->id;
+            }
+            $user->telefones()->sync($telefonesEdit);
+
+            if ($deletados = array_diff_key($telefonesOld, $telefonesNew)) {
+                Telefone::wherein('id', $deletados)->delete();
+            }
+            DB::commit();
+
+            $user = User::find($user_id);
+
+            $telefones[] = $user->telefones;
+            $userDados[] = $user;
+            array_merge($userDados, $telefones);
+            return MelResponse::success("Usuário alterado com sucesso!", $userDados);
+
         } catch (Exception $e) {
+            DB::rollBack();
             return MelResponse::error("Erro ao editar as informações do usuário.", $e->getMessage());
         }
     }
