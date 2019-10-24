@@ -36,4 +36,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function telefones()
+    {
+        return $this->belongsToMany('App\Telefone','telefone_users','user_id','telefone_id');
+    }
 }
