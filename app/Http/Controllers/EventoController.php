@@ -89,6 +89,25 @@ class EventoController extends Controller
         }
     }
 
+    public function retornarEvento()
+    {
+        try {
+            $msg = "Informações do evento obtidas com sucesso.";
+            $evento_id = request('evento_id');
+
+            /** @var Evento $evento */
+            $evento = Evento::find($evento_id);
+
+            if (!$evento) {
+                $msg = "Nenhum evento com o id " . $evento_id . " encontrado.";
+            }
+
+            return MelResponse::success($msg, $evento);
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível retornar os dados do evento.", $e->getMessage());
+        }
+    }
+
     public function retornarEdicoesEvento()
     {
         try {
@@ -105,7 +124,8 @@ class EventoController extends Controller
         }
     }
 
-    public function retornarEdicoesEventoUsuario() {
+    public function retornarEdicoesEventoUsuario()
+    {
         try {
             $user_id = request('user_id');
 
