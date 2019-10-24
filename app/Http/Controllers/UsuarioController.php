@@ -17,7 +17,7 @@ class UsuarioController extends Controller
             $username = request('name');
             $email = request('email');
             $password = request('password');
-            $user = User::where('email', $email)->get();
+            $user = User::where('email', $email)->first();
             $telefones_numeros = request('telefones');
 
             if ($user) {
