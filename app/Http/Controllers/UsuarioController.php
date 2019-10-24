@@ -130,4 +130,25 @@ class UsuarioController extends Controller
             return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
         }
     }
+
+    public function retornarUsuarioPorID()
+    {
+        try {
+            $user_id = request('id');
+            $user = User::find($user_id);
+            if (!$user) {
+                return MelResponse::error("Nenhum registro encontrado para o valor informado.", $user_id);
+            }
+
+            $telefones[] = $user->telefones;
+            $userDados[] = $user;
+            array_merge($userDados, $telefones);
+            return MelResponse::success(null, $userDados);
+
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
+        }
+    }
+
+
 }
