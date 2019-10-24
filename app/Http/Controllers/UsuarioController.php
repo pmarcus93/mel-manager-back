@@ -40,13 +40,14 @@ class UsuarioController extends Controller
                 $telefone->save();
                 $telefonesAdd[] = $telefone->id;
             }
-
             $user->telefones()->sync($telefonesAdd);
             DB::commit();
+
             $telefones[] = $user->telefones;
             $userDados[] = $user;
             array_merge($userDados, $telefones);
             return MelResponse::success("Usuário cadastrado com sucesso!", $userDados);
+
         } catch (\Exception $e) {
             return MelResponse::error("Erro ao cadastrar usuário.", $e->getMessage());
         }
@@ -97,13 +98,12 @@ class UsuarioController extends Controller
             DB::commit();
 
             $user = User::find($user_id);
-
             $telefones[] = $user->telefones;
             $userDados[] = $user;
             array_merge($userDados, $telefones);
             return MelResponse::success("Usuário alterado com sucesso!", $userDados);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error("Erro ao editar as informações do usuário.", $e->getMessage());
         }
@@ -113,15 +113,20 @@ class UsuarioController extends Controller
     {
         try {
             $search = request('search');
-            $user = DB::table('users')
-                ->where('name', 'like', $search . '%')
+            $user = User::where('name', 'like', $search . '%')
                 ->orWhere('email', 'like', '%' . $search . '%')
-                ->get();
-            if ($user->isEmpty()) {
+                ->first();
+
+            if (!$user) {
                 return MelResponse::error("Nenhum registro encontrado para o valor informado.", $search);
             }
-            return MelResponse::success(null, $user);
-        } catch (Exception $e) {
+
+            $telefones[] = $user->telefones;
+            $userDados[] = $user;
+            array_merge($userDados, $telefones);
+            return MelResponse::success(null, $userDados);
+
+        } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
         }
     }
