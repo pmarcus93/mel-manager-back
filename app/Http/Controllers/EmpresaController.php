@@ -69,4 +69,19 @@ class EmpresaController extends Controller
         }
     }
 
+    public function retornarEmpresa()
+    {
+        try {
+            $empresa_id = Request::input('id');
+            $empresa[] = Empresa::where('empresa_id', $empresa_id)->get();
+
+            $telefones[] = Telefone::find($empresa[0]->id);
+
+            $dadosEmpresa = array_merge($empresa, $telefones);
+            return MelResponse::success(null, $dadosEmpresa);
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível retornar os administradores deste evento.", $e->getMessage());
+        }
+    }
+
 }
