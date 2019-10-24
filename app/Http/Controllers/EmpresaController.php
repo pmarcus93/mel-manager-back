@@ -56,7 +56,7 @@ class EmpresaController extends Controller
             $empresa->save();
 
             $telefonesNew = array_column($telefones, 'id');
-            $telefonesOld = Telefone::find($empresa->id)->pluck('id')->toArray();
+            $telefonesOld = $empresa->telefones->pluck('id')->toArray();
 
             foreach ($telefones as $telefone) {
                 $telefoneEdit = Telefone::find($telefone['id']);
