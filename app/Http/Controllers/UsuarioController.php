@@ -150,5 +150,23 @@ class UsuarioController extends Controller
         }
     }
 
+    public function retornarTodosUsuarios()
+    {
+        try {
+            $user = User::all();
+            if (!$user) {
+                return MelResponse::error("Nenhum usário encontrado, cadastre algum usuário.", "");
+            }
+
+            $telefones[] = $user->telefones;
+            $userDados[] = $user;
+            array_merge($userDados, $telefones);
+            return MelResponse::success(null, $userDados);
+
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
+        }
+    }
+
 
 }
