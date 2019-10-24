@@ -6,20 +6,18 @@ use App\Response\MelResponse;
 use App\Empresa;
 use App\Telefone;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
 
 class EmpresaController extends Controller
 {
-
     public function cadastrarEmpresa()
     {
         try {
             DB::beginTransaction();
-            $empresa_nome = Request::input('nome');
+            $empresa_nome = request('nome');
             $empresa = new Empresa();
             $empresa->nome = $empresa_nome;
             $empresa->save();
-            $telefones_numeros = Request::input('telefones');
+            $telefones_numeros = request('telefones');
             foreach ($telefones_numeros as $telefone_numero) {
                 $telefone = new Telefone();
                 $telefone->numero = $telefone_numero;
@@ -39,13 +37,13 @@ class EmpresaController extends Controller
     {
         try {
             DB::beginTransaction();
-            $empresa_id = Request::input('empresa_id');
-            $empresa_nome = Request::input('empresa_nome');
+            $empresa_id = request('empresa_id');
+            $empresa_nome = request('empresa_nome');
             $empresa = Empresa::find($empresa_id);
             $empresa->nome = $empresa_nome;
             $empresa->save();
 
-            $telefones = Request::input('telefones');
+            $telefones = request('telefones');
             $telefonesNew = array_column($telefones, 'id');
             $telefonesOld = Telefone::find($empresa->id)->pluck('id')->toArray();
 
@@ -72,15 +70,14 @@ class EmpresaController extends Controller
     public function retornarEmpresa()
     {
         try {
-            $empresa_id = Request::input('id');
-            $empresa[] = Empresa::where('empresa_id', $empresa_id)->get();
-
+            $empresa_id = request('id');
+            $empresa = Empresa::where('id', $empresa_id)->get();
             $telefones[] = Telefone::find($empresa[0]->id);
 
             $dadosEmpresa = array_merge($empresa, $telefones);
             return MelResponse::success(null, $dadosEmpresa);
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível retornar os administradores deste evento.", $e->getMessage());
+            return MelResponse::error("Não foi possível retornar os dados da empresa.", $e->getMessage());
         }
     }
 
