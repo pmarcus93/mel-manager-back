@@ -47,11 +47,7 @@ class EmpresaController extends Controller
 
             $telefones = Request::input('telefones');
             $telefonesNew = array_column($telefones, 'id');
-            //dd($telefonesNew);
             $telefonesOld = Telefone::find($empresa->id)->pluck('id')->toArray();
-            // dd($telefonesOld);
-            $deletados = array_diff_key($telefonesOld, $telefonesNew);
-            dd($deletados);
 
             foreach ($telefones as $telefone) {
                 $telefoneEdit = Telefone::find($telefone['id']);
@@ -61,7 +57,7 @@ class EmpresaController extends Controller
             }
             $empresa->telefones()->sync($telefonesEdit);
 
-            if ($deletados = array_keys(array_diff_key($telefonesOld, $telefonesNew))) {
+            if ($deletados = array_diff_key($telefonesOld, $telefonesNew)) {
                 Telefone::wherein('id', $deletados)->delete();
             }
 
