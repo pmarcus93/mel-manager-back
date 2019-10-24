@@ -29,10 +29,9 @@ class EmpresaController extends Controller
             $empresa->telefones()->sync($telefonesAdd);
             DB::commit();
 
-            $telefones[] = $empresa->telefones;
-            $empresaDados[] = $empresa;
-            array_merge($empresaDados, $telefones);
-            return MelResponse::success("Empresa cadastrada com sucesso!", $empresaDados);
+            $empresa = Empresa::find($empresa->id);
+            $empresa = $empresa->load('telefones');
+            return MelResponse::success("Empresa cadastrada com sucesso!", $empresa);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -78,10 +77,9 @@ class EmpresaController extends Controller
             }
             DB::commit();
 
-            $telefones[] = $empresa->telefones;
-            $empresaDados[] = $empresa;
-            array_merge($empresaDados, $telefones);
-            return MelResponse::success("Empresa alterada com sucesso!", $empresaDados);
+            $empresa = Empresa::find($empresa_id);
+            $empresa = $empresa->load('telefones');
+            return MelResponse::success("Empresa alterada com sucesso!", $empresa);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -93,14 +91,13 @@ class EmpresaController extends Controller
     {
         try {
             $empresa_id = request('id');
-            $empresa[] = Empresa::find($empresa_id);
+            $empresa = Empresa::find($empresa_id);
 
             if (!$empresa) {
                 return MelResponse::warning("O ID informado não foi encontrado!", $empresa_id);
             }
 
-            $telefones[] = $empresa[0]->telefones;
-            array_merge($empresa, $telefones);
+            $empresa = $empresa->load('telefones');
             return MelResponse::success(null, $empresa);
 
         } catch (\Exception $e) {
