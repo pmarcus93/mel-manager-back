@@ -154,14 +154,13 @@ class UsuarioController extends Controller
     {
         try {
             $user = User::all();
+            $user = $user->load('telefones');
+
             if (!$user) {
                 return MelResponse::error("Nenhum usário encontrado, cadastre algum usuário.", "");
             }
 
-            $telefones[] = $user->telefones;
-            $userDados[] = $user;
-            array_merge($userDados, $telefones);
-            return MelResponse::success(null, $userDados);
+            return MelResponse::success(null, $user);
 
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
