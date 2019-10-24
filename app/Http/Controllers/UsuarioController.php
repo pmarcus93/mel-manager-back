@@ -43,10 +43,9 @@ class UsuarioController extends Controller
             $user->telefones()->sync($telefonesAdd);
             DB::commit();
 
-            $telefones[] = $user->telefones;
-            $userDados[] = $user;
-            array_merge($userDados, $telefones);
-            return MelResponse::success("Usuário cadastrado com sucesso!", $userDados);
+            $user = User::find($user->id);
+            $user = $user->load('telefones');
+            return MelResponse::success("Usuário cadastrado com sucesso!", $user);
 
         } catch (\Exception $e) {
             return MelResponse::error("Erro ao cadastrar usuário.", $e->getMessage());
@@ -98,10 +97,8 @@ class UsuarioController extends Controller
             DB::commit();
 
             $user = User::find($user_id);
-            $telefones[] = $user->telefones;
-            $userDados[] = $user;
-            array_merge($userDados, $telefones);
-            return MelResponse::success("Usuário alterado com sucesso!", $userDados);
+            $user = $user->load('telefones');
+            return MelResponse::success("Usuário alterado com sucesso!", $user);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -115,16 +112,14 @@ class UsuarioController extends Controller
             $search = request('search');
             $user = User::where('name', 'like', $search . '%')
                 ->orWhere('email', 'like', '%' . $search . '%')
-                ->first();
+                ->get();
 
             if (!$user) {
                 return MelResponse::error("Nenhum registro encontrado para o valor informado.", $search);
             }
 
-            $telefones[] = $user->telefones;
-            $userDados[] = $user;
-            array_merge($userDados, $telefones);
-            return MelResponse::success(null, $userDados);
+            $user = $user->load('telefones');
+            return MelResponse::success(null, $user);
 
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
@@ -136,14 +131,13 @@ class UsuarioController extends Controller
         try {
             $user_id = request('id');
             $user = User::find($user_id);
+
             if (!$user) {
                 return MelResponse::error("Nenhum registro encontrado para o valor informado.", $user_id);
             }
 
-            $telefones[] = $user->telefones;
-            $userDados[] = $user;
-            array_merge($userDados, $telefones);
-            return MelResponse::success(null, $userDados);
+            $user = $user->load('telefones');
+            return MelResponse::success(null, $user);
 
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
@@ -154,12 +148,12 @@ class UsuarioController extends Controller
     {
         try {
             $user = User::all();
-            $user = $user->load('telefones');
 
             if (!$user) {
                 return MelResponse::error("Nenhum usário encontrado, cadastre algum usuário.", "");
             }
 
+            $user = $user->load('telefones');
             return MelResponse::success(null, $user);
 
         } catch (\Exception $e) {
