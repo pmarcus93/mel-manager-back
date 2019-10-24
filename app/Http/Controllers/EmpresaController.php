@@ -60,6 +60,9 @@ class EmpresaController extends Controller
 
             foreach ($telefones as $telefone) {
                 $telefoneEdit = Telefone::find($telefone['id']);
+                if (!$telefoneEdit) {
+                    $telefoneEdit = new Telefone();
+                }
                 $telefoneEdit->numero = $telefone['numero'];
                 $telefoneEdit->save();
                 $telefonesEdit[] = $telefoneEdit->id;
