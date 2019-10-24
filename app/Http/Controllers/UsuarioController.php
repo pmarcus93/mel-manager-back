@@ -47,7 +47,7 @@ class UsuarioController extends Controller
             $userDados[] = $user;
             array_merge($userDados, $telefones);
             return MelResponse::success("Usuário cadastrado com sucesso!", $userDados);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return MelResponse::error("Erro ao cadastrar usuário.", $e->getMessage());
         }
     }
