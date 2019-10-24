@@ -12,9 +12,9 @@ class UsuarioController extends Controller
     public function cadastrarUsuario()
     {
         try {
-            $username = \request('name');
-            $email = \request('email');
-            $password = \request('password');
+            $username = request('name');
+            $email = request('email');
+            $password = request('password');
             $user = User::where('email', $email)->get();
             if ($user) {
                 throw new \Exception("Este e-mail já foi cadastrado em nosso sistema. [" . $email . "].");
@@ -33,10 +33,10 @@ class UsuarioController extends Controller
     public function editarUsuario()
     {
         try {
-            $user_id = \request('user_id');
-            $username = \request('name');
-            $email = \request('email');
-            $password = \request('password');
+            $user_id = request('user_id');
+            $username = request('name');
+            $email = request('email');
+            $password = request('password');
             $user = User::find($user_id);
             if (!$user) {
                 throw new \Exception("Usuário não encontrado em nosso sistema. [" . $user_id . "].");
@@ -55,7 +55,7 @@ class UsuarioController extends Controller
     public function retornarUsuarioPorNomeEmail()
     {
         try {
-            $search = \request('search');
+            $search = request('search');
             $user = DB::table('users')
                 ->where('name', 'like', $search . '%')
                 ->orWhere('email', 'like', '%' . $search . '%')
