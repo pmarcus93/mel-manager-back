@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Telefone;
 use App\User;
 use App\Response\MelResponse;
 use Illuminate\Support\Facades\DB;
@@ -12,19 +13,40 @@ class UsuarioController extends Controller
     public function cadastrarUsuario()
     {
         try {
+            DB::beginTransaction();
             $username = request('name');
             $email = request('email');
             $password = request('password');
             $user = User::where('email', $email)->get();
+            $telefones_numeros = request('telefones');
+
             if ($user) {
-                throw new \Exception("Este e-mail já foi cadastrado em nosso sistema. [" . $email . "].");
+                $data['usuario']['username'] = $username;
+                $data['usuario']['email'] = $email;
+                $data['usuario']['password'] = $password;
+                $data['usuario']['telefones'] = $telefones_numeros;
+                return MelResponse::warning("Este e-mail já foi cadastrado em nosso sistema.", $data);
             }
+
             $user = new User();
             $user->name = $username;
             $user->email = $email;
             $user->password = Hash::make($password);
             $user->save();
-            return MelResponse::success("Usuário cadastrado com sucesso!", $user);
+
+            foreach ($telefones_numeros as $telefone_numero) {
+                $telefone = new Telefone();
+                $telefone->numero = $telefone_numero;
+                $telefone->save();
+                $telefonesAdd[] = $telefone->id;
+            }
+
+            $user->telefones()->sync($telefonesAdd);
+            DB::commit();
+            $telefones[] = $user->telefones;
+            $userDados[] = $user;
+            array_merge($userDados, $telefones);
+            return MelResponse::success("Usuário cadastrado com sucesso!", $userDados);
         } catch (Exception $e) {
             return MelResponse::error("Erro ao cadastrar usuário.", $e->getMessage());
         }
