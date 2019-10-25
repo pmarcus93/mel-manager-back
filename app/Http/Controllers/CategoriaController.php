@@ -33,11 +33,31 @@ class CategoriaController extends Controller
             }
 
             $categoria->nome = $categoria_nome;
+            $categoria->ativo=1;
             $categoria->save();
 
             return MelResponse::success("Categoria alterada com sucesso!", $categoria);
         } catch (Exception $e) {
             return MelResponse::error("Erro ao alterar categoria.", $e->getMessage());
+        }
+    }
+
+    public function desativarCategoria()
+    {
+        try {
+            $categoria_id = request('id');
+            $categoria = Categoria::find($categoria_id);
+
+            if (!$categoria) {
+                throw new Exception("Categoria não econtrada para remoção!");
+            }
+
+            $categoria->ativo=0;
+            $categoria->save();
+
+            return MelResponse::success("Categoria desabilitada com sucesso!", $categoria);
+        } catch (Exception $e) {
+            return MelResponse::error("Erro ao desabilitar categoria.", $e->getMessage());
         }
     }
 
