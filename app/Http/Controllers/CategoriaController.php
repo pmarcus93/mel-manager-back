@@ -62,7 +62,7 @@ class CategoriaController extends Controller
         try {
             $categoria = Categoria::all();
 
-            if (!$categoria) {
+            if ($categoria->isEmpty()) {
                 throw new Exception("Nenhuma categoria cadastrada!");
             }
 
