@@ -11,24 +11,20 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::prefix('usuario')->group(function () {
     Route::post('/cadastrar-usuario', 'UsuarioController@cadastrarUsuario');
     Route::post('/editar-usuario', 'UsuarioController@editarUsuario');
     Route::get('/retornar-usuario-nome-email/{search}', 'UsuarioController@retornarUsuarioPorNomeEmail');
+    Route::get('/retornar-usuario-id/{id}', 'UsuarioController@retornarUsuarioPorID');
+    Route::get('/retornar-usuarios', 'UsuarioController@retornarTodosUsuarios');
 });
 
 Route::prefix('empresa')->group(function () {
-    Route::get('/', 'EmpresaController@index');
-    Route::get('{id}', 'EmpresaController@show');
-    Route::post('', 'EmpresaController@store');
-    Route::delete('{id}', 'EmpresaController@destroy');
-});
-
-Route::prefix('telefone')->group(function () {
-    Route::get('/', 'TelefoneController@index');
-    Route::get('{id}', 'TelefoneController@show');
-    Route::post('', 'TelefoneController@store');
-    Route::delete('{id}', 'TelefoneController@destroy');
+    Route::post('/cadastrar-empresa', 'EmpresaController@cadastrarEmpresa');
+    Route::post('/editar-empresa', 'EmpresaController@editarEmpresa');
+    Route::get('/retornar-empresa/{id}','EmpresaController@retornarEmpresa');
 });
 
 Route::prefix('evento')->group(function () {

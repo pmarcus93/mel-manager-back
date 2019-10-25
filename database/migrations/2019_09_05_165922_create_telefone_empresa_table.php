@@ -18,6 +18,8 @@ class CreateTelefoneEmpresaTable extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('empresa_id');
             $table->foreign('empresa_id')->references('id')->on('empresa');
+            $table->unsignedBigInteger('telefone_id');
+            $table->foreign('telefone_id')->references('id')->on('telefone');
         });
     }
 
