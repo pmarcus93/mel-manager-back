@@ -18,13 +18,20 @@ Route::prefix('usuario')->group(function () {
     Route::post('/editar-usuario', 'UsuarioController@editarUsuario');
     Route::get('/retornar-usuario-nome-email/{search}', 'UsuarioController@retornarUsuarioPorNomeEmail');
     Route::get('/retornar-usuario-id/{id}', 'UsuarioController@retornarUsuarioPorID');
-    Route::get('/retornar-usuarios', 'UsuarioController@retornarTodosUsuarios');
 });
 
 Route::prefix('empresa')->group(function () {
     Route::post('/cadastrar-empresa', 'EmpresaController@cadastrarEmpresa');
     Route::post('/editar-empresa', 'EmpresaController@editarEmpresa');
     Route::get('/retornar-empresa/{id}','EmpresaController@retornarEmpresa');
+});
+
+Route::prefix('categoria')->group(function () {
+    Route::post('/cadastrar-categoria', 'CategoriaController@cadastrarCategoria');
+    Route::post('/editar-categoria', 'CategoriaController@editarCategoria');
+    Route::delete('/deletar-categoria/{id}','CategoriaController@desativarCategoria');
+    Route::get('/retornar-categoria/{id}','CategoriaController@retornarCategoriaPorID');
+    Route::get('/retornar-categorias','CategoriaController@retornarTodasCategorias');
 });
 
 Route::prefix('evento')->group(function () {
