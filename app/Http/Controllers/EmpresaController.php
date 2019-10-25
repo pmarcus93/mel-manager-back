@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Evento;
 use App\Response\MelResponse;
 use App\Empresa;
 use App\Telefone;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 
 class EmpresaController extends Controller
 {
@@ -85,6 +87,7 @@ class EmpresaController extends Controller
             DB::commit();
 
             $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load('eventos');
             return MelResponse::success("Empresa alterada com sucesso!", $empresa);
 
         } catch (\Exception $e) {
@@ -104,10 +107,38 @@ class EmpresaController extends Controller
             }
 
             $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load('eventos');
             return MelResponse::success(null, $empresa);
 
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar os dados da empresa.", $e->getMessage());
+        }
+    }
+
+    public function vincularEventoEmpresa()
+    {
+        try {
+            $empresa_id = request('empresa_id');
+            $evento_id = request('evento_id');
+
+            $empresa = Empresa::find($empresa_id);
+            $evento = Evento::find($evento_id);
+
+            if (!$empresa) {
+                throw new \Exception("ID da empresa informado não econtrado!");
+            }
+
+            if (!$evento) {
+                throw new \Exception("ID do Evento informado não econtrado!");
+            }
+
+            $empresa->eventos()->sync($evento_id);
+            $empresa = $empresa->load('eventos');
+
+            return MelResponse::success("Evento vinculado a empresa com sucesso!", $empresa);
+
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível vincular evento à empresa.", $e->getMessage());
         }
     }
 

@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static find(array|\Illuminate\Http\Request|string $evento_id)
+ */
 class Evento extends Model
 {
     protected $table = 'evento';

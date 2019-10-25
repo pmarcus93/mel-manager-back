@@ -24,6 +24,7 @@ Route::prefix('usuario')->group(function () {
 Route::prefix('empresa')->group(function () {
     Route::post('/cadastrar-empresa', 'EmpresaController@cadastrarEmpresa');
     Route::post('/editar-empresa', 'EmpresaController@editarEmpresa');
+    Route::post('/vincular-evento-empresa', 'EmpresaController@vincularEventoEmpresa');
     Route::get('/retornar-empresa/{id}','EmpresaController@retornarEmpresa');
 });
 
