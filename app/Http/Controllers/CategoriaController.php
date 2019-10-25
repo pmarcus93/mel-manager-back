@@ -40,4 +40,20 @@ class CategoriaController extends Controller
             return MelResponse::error("Erro ao alterar categoria.", $e->getMessage());
         }
     }
+
+    public function retornarCategoriaPorID()
+    {
+        try {
+            $categoria_id = request('id');
+            $categoria = Categoria::find($categoria_id);
+
+            if (!$categoria) {
+                throw new Exception("ID informado não econtrado!");
+            }
+
+            return MelResponse::success(null, $categoria);
+        } catch (Exception $e) {
+            return MelResponse::error("Não foi possível retornar os dados da categoria.", $e->getMessage());
+        }
+    }
 }
