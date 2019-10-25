@@ -115,7 +115,7 @@ class UsuarioController extends Controller
                 ->get();
 
             if (!$user) {
-                return MelResponse::error("Nenhum registro encontrado para o valor informado.", $search);
+                throw new \Exception("Nenhum registro encontrado para o valor informado!");
             }
 
             $user = $user->load('telefones');
@@ -133,7 +133,7 @@ class UsuarioController extends Controller
             $user = User::find($user_id);
 
             if (!$user) {
-                return MelResponse::error("Nenhum registro encontrado para o valor informado.", $user_id);
+                throw new \Exception("Nenhum registro encontrado para o valor informado!");
             }
 
             $user = $user->load('telefones');
