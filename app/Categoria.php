@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 /**
  * @property array|Request|string nome
+ * @method static find(array|Request|string $categoria_id)
  */
 class Categoria extends Model
 {
