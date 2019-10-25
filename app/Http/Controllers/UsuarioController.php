@@ -21,11 +21,7 @@ class UsuarioController extends Controller
             $telefones_numeros = request('telefones');
 
             if ($user) {
-                $data['usuario']['username'] = $username;
-                $data['usuario']['email'] = $email;
-                $data['usuario']['password'] = $password;
-                $data['usuario']['telefones'] = $telefones_numeros;
-                return MelResponse::warning("Este e-mail já foi cadastrado em nosso sistema.", $data);
+                throw new \Exception("E-mail já cadastrado em nosso sistema!");
             }
 
             $user = new User();
@@ -63,11 +59,7 @@ class UsuarioController extends Controller
             $telefones = request('telefones');
 
             if (!$user) {
-                $data['usuario']['user_id'] = $user_id;
-                $data['usuario']['name'] = $username;
-                $data['usuario']['email'] = $email;
-                $data['usuario']['telefones'] = $telefones;
-                return MelResponse::warning("Usuário não encontrada para edição!", $data);
+                throw new \Exception("Usuário não econtrado para edição!");
             }
 
             $user->id = $user_id;
