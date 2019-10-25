@@ -27,6 +27,12 @@ Route::prefix('empresa')->group(function () {
     Route::get('/retornar-empresa/{id}','EmpresaController@retornarEmpresa');
 });
 
+Route::prefix('categoria')->group(function () {
+    Route::post('/cadastrar-categoria', 'CategoriaController@cadastrarCategoria');
+    Route::post('/editar-categoria', 'CategoriaController@editarCategoria');
+    Route::get('/retornar-categoria/{id}','CategoriaController@retornarCategoriaPorID');
+});
+
 Route::prefix('evento')->group(function () {
     Route::get('/retornar-administradores/{id}', 'EventoController@retornarAdministradores');
     Route::get('/retornar-edicoes-evento/{id}', 'EventoController@retornarEdicoesEvento');
