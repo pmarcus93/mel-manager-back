@@ -29,7 +29,7 @@ class CategoriaController extends Controller
             $categoria = Categoria::find($categoria_id);
 
             if (!$categoria) {
-                throw new \Exception("Categoria não econtrada para edição!");
+                throw new Exception("Categoria não econtrada para edição!");
             }
 
             $categoria->nome = $categoria_nome;
