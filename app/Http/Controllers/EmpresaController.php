@@ -48,10 +48,7 @@ class EmpresaController extends Controller
             $telefones = request('telefones');
 
             if (!$empresa) {
-                $data['empresa']['id'] = $empresa_id;
-                $data['empresa']['nome'] = $empresa_nome;
-                $data['empresa']['telefones'] = $telefones;
-                return MelResponse::warning("Empresa não encontrada para edição!", $data);
+                throw new \Exception("Empresa não econtrada para edição!");
             }
 
             $empresa->nome = $empresa_nome;
@@ -103,7 +100,7 @@ class EmpresaController extends Controller
             $empresa = Empresa::find($empresa_id);
 
             if (!$empresa) {
-                return MelResponse::warning("O ID informado não foi encontrado!", $empresa_id);
+                throw new \Exception("ID informado não econtrado!");
             }
 
             $empresa = $empresa->load('telefones');
