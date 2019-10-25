@@ -56,4 +56,19 @@ class CategoriaController extends Controller
             return MelResponse::error("Não foi possível retornar os dados da categoria.", $e->getMessage());
         }
     }
+
+    public function retornarTodasCategorias()
+    {
+        try {
+            $categoria = Categoria::all();
+
+            if (!$categoria) {
+                throw new Exception("Nenhuma categoria cadastrada!");
+            }
+
+            return MelResponse::success(null, $categoria);
+        } catch (Exception $e) {
+            return MelResponse::error("Não foi possível retornar as categorias.", $e->getMessage());
+        }
+    }
 }
