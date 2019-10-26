@@ -60,10 +60,9 @@ class UsuarioController extends Controller
     {
         try {
             $user_id = request('user_id');
-            $username = request('name');
+            $name = request('name');
             $email = request('email');
             $password = request('password');
-            $telefones = request('telefones');
 
             $user = User::find($user_id);
 
@@ -73,43 +72,22 @@ class UsuarioController extends Controller
 
             DB::beginTransaction();
 
-            $user->name = $username;
-            $user->email = $email;
-            $user->password = Hash::make($password);
+            if ($name) {
+                $user->name = $name;
+            }
+
+            if ($email) {
+                $user->email = $email;
+            }
+
+            if ($password) {
+                $user->password = Hash::make($password);
+            }
+
             $user->save();
-
-            $telefonesNew = array();
-            if ($telefones) {
-                $telefonesNew = array_column($telefones, 'id');
-            }
-
-            $telefonesOld = $user->telefones->pluck('id')->toArray();
-
-            if ($telefones) {
-                foreach ($telefones as $telefone) {
-                    $telefoneEdit = Telefone::find($telefone['id']);
-                    if (!$telefoneEdit) {
-                        $telefoneEdit = new Telefone();
-                    }
-                    $telefoneEdit->numero = $telefone['numero'];
-                    $telefoneEdit->save();
-                    $telefonesEdit[] = $telefoneEdit->id;
-                }
-                $user->telefones()->sync($telefonesEdit);
-            }
-
-            if (!$telefones) {
-                $user->telefones()->sync([]);
-            }
-
-            if ($deletados = array_diff_key($telefonesOld, $telefonesNew)) {
-                Telefone::wherein('id', $deletados)->delete();
-            }
+            // Aqui vem o código de edição de telefones que foi removido no branch do hotfix.
             DB::commit();
-
-            $user = $user->load('telefones');
             return MelResponse::success("Usuário alterado com sucesso!", $user);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error("Erro ao editar as informações do usuário.", $e->getMessage());
