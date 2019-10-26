@@ -59,19 +59,20 @@ class UsuarioController extends Controller
     public function editarUsuario()
     {
         try {
-            DB::beginTransaction();
             $user_id = request('user_id');
             $username = request('name');
             $email = request('email');
             $password = request('password');
-            $user = User::find($user_id);
             $telefones = request('telefones');
+
+            $user = User::find($user_id);
 
             if (!$user) {
                 throw new \Exception("Usuário não econtrado para edição!");
             }
 
-            $user->id = $user_id;
+            DB::beginTransaction();
+
             $user->name = $username;
             $user->email = $email;
             $user->password = Hash::make($password);
