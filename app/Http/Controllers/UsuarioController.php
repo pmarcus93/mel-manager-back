@@ -13,16 +13,19 @@ class UsuarioController extends Controller
     public function cadastrarUsuario()
     {
         try {
-            DB::beginTransaction();
             $username = request('name');
             $email = request('email');
             $password = request('password');
+            $telefones = request('telefones');
+
             $user = User::where('email', $email)->first();
-            $telefones_numeros = request('telefones');
+            $telefonesAdd = [];
 
             if ($user) {
                 throw new \Exception("E-mail já cadastrado em nosso sistema!");
             }
+
+            DB::beginTransaction();
 
             $user = new User();
             $user->name = $username;
@@ -30,18 +33,20 @@ class UsuarioController extends Controller
             $user->password = Hash::make($password);
             $user->save();
 
-            foreach ($telefones_numeros as $telefone_numero) {
-                $telefone = new Telefone();
-                $telefone->numero = $telefone_numero;
-                $telefone->save();
-                $telefonesAdd[] = $telefone->id;
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefone = new Telefone();
+                    $telefone->numero = $telefone;
+                    $telefone->save();
+                    $telefonesAdd[] = $telefone->id;
+                }
+                $user->telefones()->sync($telefonesAdd);
             }
-            $user->telefones()->sync($telefonesAdd);
+
             DB::commit();
 
             $user = $user->load('telefones');
             return MelResponse::success("Usuário cadastrado com sucesso!", $user);
-
         } catch (\Exception $e) {
             return MelResponse::error("Erro ao cadastrar usuário.", $e->getMessage());
         }
