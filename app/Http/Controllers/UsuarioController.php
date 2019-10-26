@@ -21,6 +21,10 @@ class UsuarioController extends Controller
             $user = User::where('email', $email)->first();
             $telefonesAdd = [];
 
+            if (!$username || !$email || $password) {
+                throw new \Exception("É necessário informar nome, email e senha.");
+            }
+
             if ($user) {
                 throw new \Exception("E-mail já cadastrado em nosso sistema!");
             }
