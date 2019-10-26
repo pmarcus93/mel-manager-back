@@ -26,7 +26,7 @@ class UsuarioController extends Controller
             }
 
             if ($user) {
-                throw new \Exception("E-mail já cadastrado em nosso sistema!");
+                throw new \Exception("E-mail já cadastrado.");
             }
 
             DB::beginTransaction();
@@ -52,7 +52,7 @@ class UsuarioController extends Controller
             $user = $user->load('telefones');
             return MelResponse::success("Usuário cadastrado com sucesso!", $user);
         } catch (\Exception $e) {
-            return MelResponse::error("Erro ao cadastrar usuário.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
