@@ -98,9 +98,15 @@ class UsuarioController extends Controller
     {
         try {
             $search = request('search');
+            $limiteRetorno = request('qtd');
+
+            if ($limiteRetorno < 1) {
+                throw new \Exception("Informe o valor superior a 0!");
+            }
+
             $user = User::where('name', 'like', $search . '%')
                 ->orWhere('email', 'like', '%' . $search . '%')
-                ->get();
+                ->paginate($limiteRetorno);
 
             if (!$user) {
                 throw new \Exception("Nenhum registro encontrado para o valor informado!");
