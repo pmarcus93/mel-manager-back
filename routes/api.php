@@ -26,6 +26,7 @@ Route::prefix('empresa')->group(function () {
     Route::post('/vincular-evento-empresa', 'EmpresaController@vincularEventoEmpresa');
     Route::post('/desvincular-evento-empresa', 'EmpresaController@desvincularEventoEmpresa');
     Route::get('/retornar-empresa/{id}','EmpresaController@retornarEmpresa');
+    Route::get('/retornar-eventos-empresa/{empresa_id}','EmpresaController@retornarEventosDeEmpresa');
 });
 
 Route::prefix('categoria')->group(function () {
