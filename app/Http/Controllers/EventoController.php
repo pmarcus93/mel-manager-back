@@ -183,7 +183,11 @@ class EventoController extends Controller
                 $msg = "Nenhum evento com o id " . $evento_id . " encontrado.";
             }
 
-            $evento = $evento->load('edicoes');
+            $evento = $evento->load([
+                'edicoes' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
 
             return MelResponse::success($msg, $evento);
         } catch (\Exception $e) {
