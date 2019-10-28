@@ -34,7 +34,12 @@ class EventoController extends Controller
 
             DB::commit();
 
-            $evento = $evento->load('administrador');
+            $evento = $evento->load([
+                'administrador' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success("Evento cadastrado com sucesso!", $evento);
 
         } catch (Exception $e) {
@@ -78,9 +83,9 @@ class EventoController extends Controller
                 throw new \Exception("É necessário informar o id do evento e o nome da edição!");
             }
 
-            $eventoExistente = Evento::find($evento_id);
+            $evento = Evento::find($evento_id);
 
-            if (!$eventoExistente) {
+            if (!$evento) {
                 throw new \Exception("Não existe evento cadastrado com o ID " . $evento_id . "!");
             }
 
@@ -88,13 +93,17 @@ class EventoController extends Controller
 
             $eventoEdicao = new EventoEdicao();
             $eventoEdicao->nome = $nome;
-            $eventoExistente->edicoes()->save($eventoEdicao);
+            $evento->edicoes()->save($eventoEdicao);
 
             DB::commit();
 
-            $eventoExistente = $eventoExistente->load('edicoes');
+            $evento = $evento->load([
+                'edicoes' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
 
-            return MelResponse::success("Edição de evento cadastrada com sucesso!", $eventoExistente);
+            return MelResponse::success("Edição de evento cadastrada com sucesso!", $evento);
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error("Não foi possível cadastrar a edição do evento.", $e->getMessage());
@@ -161,7 +170,11 @@ class EventoController extends Controller
                 throw new \Exception("Nenhum evento encontrado.");
             }
 
-            $evento = $evento->load('administrador');
+            $evento = $evento->load([
+                'administrador' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
 
             return MelResponse::success(null, $evento);
         } catch (\Exception $e) {
@@ -184,6 +197,12 @@ class EventoController extends Controller
             }
 
             $evento = $evento->load([
+                'administrador' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
+            $evento = $evento->load([
                 'edicoes' => function ($query) {
                     $query->where('ativo', 1);
                 }
@@ -202,17 +221,17 @@ class EventoController extends Controller
             $edicao_id = request("edicao_id");
 
             if (!$evento_id) {
-                throw new \Exception("É necessário informar o id do evento.");
+                throw new Exception("É necessário informar o id do evento.");
             }
 
             if (!$edicao_id) {
-                throw new \Exception("É necessário informar o id da edição.");
+                throw new Exception("É necessário informar o id da edição.");
             }
 
             $evento = Evento::find($evento_id);
 
             if (!$evento) {
-                throw new \Exception("Nenhum evendo encontrado para o valor informado!");
+                throw new Exception("Nenhum evendo encontrado para o valor informado!");
             }
 
             $evento = $evento->load('edicoes');
