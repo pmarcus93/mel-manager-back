@@ -94,6 +94,72 @@ class UsuarioController extends Controller
         }
     }
 
+    public function cadastrarTelefone()
+    {
+        try {
+            $user_id = request('user_id');
+            $telefone = request('telefone');
+
+            $user = User::find($user_id);
+
+            if (!$user) {
+                throw new \Exception("Usuário não econtrado!");
+            }
+
+            if (!$telefone) {
+                throw new \Exception("Você precisa informar o telefone!");
+            }
+
+            DB::beginTransaction();
+
+            $telefoneAdd = new Telefone();
+            $telefoneAdd->numero = $telefone;
+            $telefoneAdd->save();
+            $telefoneId = $telefoneAdd->id;
+            $user->telefones()->attach($telefoneId);
+
+            DB::commit();
+
+            $user = $user->load('telefones');
+            return MelResponse::success("Telefone cadastrado com sucesso!", $user);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return MelResponse::error("Erro ao cadastrar telefone.", $e->getMessage());
+        }
+    }
+
+    public function removerTelefone()
+    {
+        try {
+            $user_id = request('user_id');
+            $telefone_id = request('telefone_id');
+
+            $user = User::find($user_id);
+            $telefone = Telefone::find($telefone_id);
+
+            if (!$user) {
+                throw new \Exception("Usuário não econtrado!");
+            }
+
+            if (!$telefone) {
+                throw new \Exception("Telefone não encontrado!");
+            }
+
+            DB::beginTransaction();
+
+            $user->telefones()->detach($telefone_id);
+            $telefone->delete();
+
+            DB::commit();
+
+            $user = $user->load('telefones');
+            return MelResponse::success("Telefone excluído com sucesso!", $user);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return MelResponse::error("Erro ao excluir telefone.", $e->getMessage());
+        }
+    }
+
     public function retornarUsuarioPorNomeEmail()
     {
         try {
