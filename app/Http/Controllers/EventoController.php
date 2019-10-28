@@ -81,14 +81,19 @@ class EventoController extends Controller
                 throw new \Exception("Não existe evento cadastrado com o ID " . $evento_id . "!");
             }
 
+            DB::beginTransaction();
+
             $eventoEdicao = new EventoEdicao();
             $eventoEdicao->nome = $nome;
-            $eventoEdicao->evento_id = $evento_id;
+            $eventoExistente->edicoes()->save($eventoEdicao);
 
-            $eventoEdicao->save();
+            DB::commit();
 
-            return MelResponse::success("Edição de evento cadastrada com sucesso!", $eventoEdicao);
+            $eventoExistente = $eventoExistente->load('edicoes');
+
+            return MelResponse::success("Edição de evento cadastrada com sucesso!", $eventoExistente);
         } catch (\Exception $e) {
+            DB::rollBack();
             return MelResponse::error("Não foi possível cadastrar a edição do evento.", $e->getMessage());
         }
     }
