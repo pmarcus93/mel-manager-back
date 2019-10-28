@@ -128,6 +128,43 @@ class UsuarioController extends Controller
         }
     }
 
+    public function editarTelefone()
+    {
+        try {
+            $user_id = request('user_id');
+            $telefone_id = request('telefone_id');
+            $telefone_numero = request('telefone_numero');
+
+            $user = User::find($user_id);
+            $telefone = Telefone::find($telefone_id);
+
+            if (!$user) {
+                throw new \Exception("Usuário não econtrado!");
+            }
+
+            if (!$telefone) {
+                throw new \Exception("Telefone não encontrado!");
+            }
+
+            if (!$telefone_numero) {
+                throw new \Exception("Você deve informar o número do telefone!");
+            }
+
+            DB::beginTransaction();
+
+            $telefone->numero = $telefone_numero;
+            $telefone->save();
+
+            DB::commit();
+
+            $user = $user->load('telefones');
+            return MelResponse::success("Telefone alterado com sucesso!", $user);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return MelResponse::error("Erro ao alter telefone.", $e->getMessage());
+        }
+    }
+
     public function removerTelefone()
     {
         try {
