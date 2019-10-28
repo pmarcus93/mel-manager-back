@@ -52,6 +52,7 @@ class UsuarioController extends Controller
             $user = $user->load('telefones');
             return MelResponse::success("Usuário cadastrado com sucesso!", $user);
         } catch (\Exception $e) {
+            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
