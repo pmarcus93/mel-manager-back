@@ -235,9 +235,13 @@ class EventoController extends Controller
             }
 
             $evento = $evento->load('edicoes');
-            $evento = $evento->edicoes()->find($edicao_id);
+            $edicao = $evento->edicoes()->find($edicao_id);
 
-            return MelResponse::success(null, $evento);
+            if ($edicao->ativo === 0) {
+                throw new Exception("Evento informado foi removido do sistema.");
+            }
+
+            return MelResponse::success(null, $edicao);
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar as edições do evento.", $e->getMessage());
         }
