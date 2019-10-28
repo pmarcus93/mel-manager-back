@@ -38,7 +38,7 @@ Route::prefix('categoria')->group(function () {
 
 Route::prefix('evento')->group(function () {
     Route::get('/retornar-administradores/{id}', 'EventoController@retornarAdministradores');
-    Route::get('/retornar-edicoes-evento/{id}', 'EventoController@retornarEdicoesEvento');
+    Route::get('/retornar-edicao-evento/{evento_id}&{edicao_id}', 'EventoController@retornarEdicaoEventoPorId');
     Route::post('/cadastrar-evento', 'EventoController@cadastrarEvento');
     Route::post('/cadastrar-edicao-evento', 'EventoController@cadastrarEdicaoEvento');
     Route::post('/vincular-administrador-evento/', 'EventoController@vincularAdministradorEvento');
