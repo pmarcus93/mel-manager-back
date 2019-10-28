@@ -47,13 +47,13 @@ class EventoController extends Controller
         try {
             $evento_id = \request('id');
 
-            if (!$evento_id){
+            if (!$evento_id) {
                 throw new \Exception("É necessário informar o id.");
             }
 
             $evento = Evento::find($evento_id);
 
-            if (!$evento){
+            if (!$evento) {
                 throw new \Exception("Nenhum evento encontrado.");
             }
 
@@ -119,17 +119,33 @@ class EventoController extends Controller
         }
     }
 
-    public function retornarEdicoesEvento()
+    public function retornarEdicaoEventoPorId()
     {
         try {
-            $evento_id = request("id");
+            $evento_id = request("evento_id");
+            $edicao_id = request("edicao_id");
 
             if (!$evento_id) {
                 throw new \Exception("É necessário informar o id do evento.");
             }
 
-            $edicoes = EventoEdicao::where('evento_id', $evento_id)->get();
-            return MelResponse::success("", $edicoes);
+            if (!$edicao_id) {
+                throw new \Exception("É necessário informar o id da edição.");
+            }
+
+            $evento = Evento::find($evento_id);
+
+            if (!$evento) {
+                throw new \Exception("Nenhum evendo encontrado para o valor informado!");
+            }
+
+            $edicao = $evento->load('edicoes')->find($edicao_id);
+
+            if (!$edicao) {
+                throw new \Exception("Nenhuma edição do encontrado para o valor informado!");
+            }
+
+            return MelResponse::success(null, $edicao);
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar as edições do evento.", $e->getMessage());
         }
