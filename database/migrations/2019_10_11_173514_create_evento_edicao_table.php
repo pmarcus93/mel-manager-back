@@ -17,6 +17,7 @@ class CreateEventoEdicaoTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('evento_id');
             $table->string('nome');
+            $table->boolean('ativo')->default(1);
             $table->foreign('evento_id')->references('id')->on('evento');
             $table->timestamps();
         });
