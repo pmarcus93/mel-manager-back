@@ -29,10 +29,7 @@ class EventoController extends Controller
             $evento->nome = $nome;
             $evento->save();
 
-            $eventoAdministrador = new EventoAdministrador();
-            $eventoAdministrador->evento_id = $evento->id;
-            $eventoAdministrador->user_id = $user_id;
-            $eventoAdministrador->save();
+            $evento->attach($usuario->id);
 
             DB::commit();
 
