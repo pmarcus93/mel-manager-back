@@ -126,6 +126,26 @@ class EventoController extends Controller
         }
     }
 
+    public function removerEdicaoEvento()
+    {
+        try {
+            $edicao_id = request('edicao_id');
+
+            $edicao = EventoEdicao::find($edicao_id);
+
+            if (!$edicao) {
+                throw new Exception("Nenhuma edição de evento com o id " . $edicao_id . " encontrado.");
+            }
+
+            $edicao->ativo = 0;
+            $edicao->save();
+
+            return MelResponse::success('Edição de evento removida com sucesso.', $edicao);
+        } catch (Exception $e) {
+            return MelResponse::error("Não foi possível remover os dados da edição do evento.", $e->getMessage());
+        }
+    }
+
     public function retornarAdministradores()
     {
         try {
