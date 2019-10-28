@@ -29,10 +29,11 @@ class EventoController extends Controller
             $evento->nome = $nome;
             $evento->save();
 
-            $evento->attach($usuario->id);
+            $evento->administrador()->attach($usuario->id);
 
             DB::commit();
 
+            $evento = $evento->load('administrador');
             return MelResponse::success("Evento cadastrado com sucesso!", $evento);
 
         } catch (\Exception $e) {
@@ -45,14 +46,20 @@ class EventoController extends Controller
     {
         try {
             $evento_id = \request('id');
-            $eventoAdministradores = EventoAdministrador::where('evento_id', $evento_id)->get();
-            $users = [];
 
-            foreach ($eventoAdministradores as $eventoAdministrador) {
-                $usuario = User::find($eventoAdministrador->user_id);
-                $users[] = ['id' => $usuario->id, 'name' => $usuario->name];
+            if (!$evento_id){
+                throw new \Exception("É necessário informar o id.");
             }
-            return MelResponse::success(null, $users);
+
+            $evento = Evento::find($evento_id);
+
+            if (!$evento){
+                throw new \Exception("Nenhum evento encontrado.");
+            }
+
+            $evento = $evento->load('administrador');
+
+            return MelResponse::success(null, $evento);
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar os administradores deste evento.", $e->getMessage());
         }
