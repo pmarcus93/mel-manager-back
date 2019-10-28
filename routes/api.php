@@ -18,7 +18,7 @@ Route::prefix('usuario')->group(function () {
     Route::post('/editar-usuario', 'UsuarioController@editarUsuario');
     Route::post('/cadastrar-telefone-usuario', 'UsuarioController@cadastrarTelefone');
     Route::delete('/excluir-telefone-usuario/{user_id}&{telefone_id}', 'UsuarioController@removerTelefone');
-    Route::get('/retornar-usuario-nome-email/{search}&{qtd?}', 'UsuarioController@retornarUsuarioPorNomeEmail');
+    Route::get('/retornar-usuario-nome-email/{search}&{qtd}', 'UsuarioController@retornarUsuarioPorNomeEmail');
     Route::get('/retornar-usuario-id/{id}', 'UsuarioController@retornarUsuarioPorID');
 });
 
