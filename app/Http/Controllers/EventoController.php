@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Evento;
 use App\EventoAdministrador;
 use App\EventoEdicao;
@@ -14,13 +15,13 @@ class EventoController extends Controller
     public function cadastrarEvento()
     {
         try {
-            $user_id = \request('user_id');
-            $nome = \request('nome');
+            $user_id = request('user_id');
+            $nome = request('nome');
 
             $usuario = User::find($user_id);
 
             if (!$usuario) {
-                throw new \Exception("Não existe usuário no banco de dados com o id informado [" . $user_id . "].");
+                throw new Exception("Não existe usuário no banco de dados com o id informado [" . $user_id . "].");
             }
 
             DB::beginTransaction();
@@ -29,39 +30,41 @@ class EventoController extends Controller
             $evento->nome = $nome;
             $evento->save();
 
-            $evento->administrador()->attach($usuario->id);
+            $evento->administrador()->attach($usuario->id, ['ativo' => 1]);
 
             DB::commit();
 
             $evento = $evento->load('administrador');
             return MelResponse::success("Evento cadastrado com sucesso!", $evento);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return MelResponse::error("Erro ao cadastrar evento.", $e->getMessage());
         }
     }
 
-    public function retornarAdministradores()
+    public function editarEvento()
     {
         try {
-            $evento_id = \request('id');
-
-            if (!$evento_id) {
-                throw new \Exception("É necessário informar o id.");
-            }
+            $evento_id = request('evento_id');
+            $nome = request('nome');
 
             $evento = Evento::find($evento_id);
 
             if (!$evento) {
-                throw new \Exception("Nenhum evento encontrado.");
+                throw new \Exception("Nenhum evento com o id " . $evento_id . " encontrado.");
             }
 
-            $evento = $evento->load('administrador');
+            if (!$nome) {
+                throw new \Exception("A descrição do evento deve ser informada.");
+            }
 
-            return MelResponse::success(null, $evento);
-        } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível retornar os administradores deste evento.", $e->getMessage());
+            $evento->nome = $nome;
+            $evento->save();
+
+            return MelResponse::success('Evento alterado com sucesso.', $evento);
+        } catch (Exception $e) {
+            return MelResponse::error("Não foi possível editar os dados do evento.", $e->getMessage());
         }
     }
 
@@ -97,6 +100,30 @@ class EventoController extends Controller
             return MelResponse::error("Não foi possível cadastrar a edição do evento.", $e->getMessage());
         }
     }
+
+    public function retornarAdministradores()
+    {
+        try {
+            $evento_id = \request('id');
+
+            if (!$evento_id) {
+                throw new \Exception("É necessário informar o id.");
+            }
+
+            $evento = Evento::find($evento_id);
+
+            if (!$evento) {
+                throw new \Exception("Nenhum evento encontrado.");
+            }
+
+            $evento = $evento->load('administrador');
+
+            return MelResponse::success(null, $evento);
+        } catch (\Exception $e) {
+            return MelResponse::error("Não foi possível retornar os administradores deste evento.", $e->getMessage());
+        }
+    }
+
 
     public function retornarEvento()
     {
