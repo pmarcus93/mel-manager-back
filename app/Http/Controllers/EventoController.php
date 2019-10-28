@@ -111,6 +111,8 @@ class EventoController extends Controller
                 $msg = "Nenhum evento com o id " . $evento_id . " encontrado.";
             }
 
+            $evento = $evento->load('edicoes');
+
             return MelResponse::success($msg, $evento);
         } catch (\Exception $e) {
             return MelResponse::error("Não foi possível retornar os dados do evento.", $e->getMessage());
