@@ -44,11 +44,9 @@ class EmpresaController extends Controller
     public function editarEmpresa()
     {
         try {
-            DB::beginTransaction();
             $empresa_id = request('empresa_id');
             $empresa_nome = request('empresa_nome');
             $empresa = Empresa::find($empresa_id);
-            $telefones = request('telefones');
 
             if (!$empresa) {
                 throw new Exception("Empresa não econtrada para edição!");
@@ -57,42 +55,11 @@ class EmpresaController extends Controller
             $empresa->nome = $empresa_nome;
             $empresa->save();
 
-            $telefonesNew = array();
-            if ($telefones) {
-                $telefonesNew = array_column($telefones, 'id');
-            }
-
-            $telefonesOld = $empresa->telefones->pluck('id')->toArray();
-
-            if ($telefones) {
-                foreach ($telefones as $telefone) {
-                    $telefoneEdit = Telefone::find($telefone['id']);
-                    if (!$telefoneEdit) {
-                        $telefoneEdit = new Telefone();
-                    }
-                    $telefoneEdit->numero = $telefone['numero'];
-                    $telefoneEdit->save();
-                    $telefonesEdit[] = $telefoneEdit->id;
-                }
-                $empresa->telefones()->sync($telefonesEdit);
-            }
-
-            if (!$telefones) {
-                $empresa->telefones()->sync([]);
-            }
-
-            if ($deletados = array_diff_key($telefonesOld, $telefonesNew)) {
-                Telefone::wherein('id', $deletados)->delete();
-            }
-
-            DB::commit();
-
             $empresa = $empresa->load('telefones');
             $empresa = $empresa->load('eventos');
             return MelResponse::success("Empresa alterada com sucesso!", $empresa);
 
         } catch (Exception $e) {
-            DB::rollBack();
             return MelResponse::error("Erro ao alter empresa.", $e->getMessage());
         }
     }
