@@ -198,7 +198,7 @@ class UsuarioController extends Controller
             $limiteRetorno = request('qtd');
 
             if ($limiteRetorno < 1) {
-                throw new \Exception("Informe o valor superior a 0!");
+                $limiteRetorno = 1;
             }
 
             $user = User::where('name', 'like', $search . '%')
