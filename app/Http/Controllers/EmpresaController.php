@@ -230,7 +230,6 @@ class EmpresaController extends Controller
 
             return MelResponse::success("Telefone alterado com sucesso!", $empresa);
         } catch (Exception $e) {
-            DB::rollBack();
             return MelResponse::error("Erro ao alterar telefone.", $e->getMessage());
         }
     }
@@ -251,6 +250,8 @@ class EmpresaController extends Controller
                 throw new Exception("Você precisa informar o telefone!");
             }
 
+            DB::beginTransaction();
+
             if ($telefones) {
                 foreach ($telefones as $telefone) {
                     $telefoneDel = Telefone::find($telefone['id']);
@@ -263,6 +264,8 @@ class EmpresaController extends Controller
                 }
                 $empresa->telefones()->detach($telefonesAdd);
             }
+
+            DB::commit();
 
             $empresa = $empresa->load('telefones');
 
