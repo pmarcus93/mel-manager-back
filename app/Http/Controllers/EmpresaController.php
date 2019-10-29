@@ -163,10 +163,10 @@ class EmpresaController extends Controller
     public function cadastrarTelefone()
     {
         try {
-            $user_id = request('user_id');
+            $empresa_id = request('empresa_id');
             $telefones = request('telefones');
 
-            $empresa = Empresa::find($user_id);
+            $empresa = Empresa::find($empresa_id);
 
             if (!$empresa) {
                 throw new Exception("Empresa não econtrada!");
@@ -196,6 +196,80 @@ class EmpresaController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return MelResponse::error("Erro ao cadastrar telefone.", $e->getMessage());
+        }
+    }
+
+    public function editarTelefone()
+    {
+        try {
+            $empresa_id = request('empresa_id');
+            $telefones = request('telefones');
+
+            $empresa = Empresa::find($empresa_id);
+
+            if (!$empresa) {
+                throw new Exception("Empresa não econtrada!");
+            }
+
+            if (!$telefones) {
+                throw new Exception("Você precisa informar o telefone!");
+            }
+
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneEdit = Telefone::find($telefone['id']);
+                    if (!$telefoneEdit) {
+                        continue;
+                    }
+                    $telefoneEdit->numero = $telefone['numero'];
+                    $telefoneEdit->save();
+                }
+            }
+
+            $empresa = $empresa->load('telefones');
+
+            return MelResponse::success("Telefone alterado com sucesso!", $empresa);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return MelResponse::error("Erro ao alterar telefone.", $e->getMessage());
+        }
+    }
+
+    public function removerTelefone()
+    {
+        try {
+            $empresa_id = request('empresa_id');
+            $telefones = request('telefones');
+
+            $empresa = Empresa::find($empresa_id);
+
+            if (!$empresa) {
+                throw new Exception("Empresa não econtrada!");
+            }
+
+            if (!$telefones) {
+                throw new Exception("Você precisa informar o telefone!");
+            }
+
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneDel = Telefone::find($telefone['id']);
+                    if (!$telefoneDel) {
+                        continue;
+                    }
+                    $telefoneDel->ativo = 0;
+                    $telefoneDel->save();
+                    $telefonesAdd[] = $telefoneDel->id;
+                }
+                $empresa->telefones()->detach($telefonesAdd);
+            }
+
+            $empresa = $empresa->load('telefones');
+
+            return MelResponse::success("Telefone removido com sucesso!", $empresa);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return MelResponse::error("Erro ao remover telefone.", $e->getMessage());
         }
     }
 
