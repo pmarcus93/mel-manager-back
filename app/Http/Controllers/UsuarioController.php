@@ -194,7 +194,7 @@ class UsuarioController extends Controller
                     $telefoneDel->save();
                     $telefonesAdd[] = $telefoneDel->id;
                 }
-                $user->telefones()->sync($telefonesAdd);
+                $user->telefones()->detach($telefonesAdd);
             }
 
             $user = $user->load('telefones');
