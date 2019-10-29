@@ -50,11 +50,7 @@ class UsuarioController extends Controller
 
             DB::commit();
 
-            $user = $user->load([
-                'telefones' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $user = $user->load('telefones');
 
             return MelResponse::success("Usuário cadastrado com sucesso!", $user);
         } catch (Exception $e) {
@@ -127,11 +123,7 @@ class UsuarioController extends Controller
 
             DB::commit();
 
-            $user = $user->load([
-                'telefones' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $user = $user->load('telefones');
 
             return MelResponse::success("Telefone cadastrado com sucesso!", $user);
         } catch (Exception $e) {
@@ -167,11 +159,7 @@ class UsuarioController extends Controller
                 }
             }
 
-            $user = $user->load([
-                'telefones' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $user = $user->load('telefones');
 
             return MelResponse::success("Telefone alterado com sucesso!", $user);
         } catch (Exception $e) {
@@ -207,11 +195,7 @@ class UsuarioController extends Controller
                 }
             }
 
-            $user = $user->load([
-                'telefones' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $user = $user->load('telefones');
 
             return MelResponse::success("Telefone removido com sucesso!", $user);
         } catch (Exception $e) {
@@ -238,11 +222,8 @@ class UsuarioController extends Controller
                 throw new Exception("Nenhum registro encontrado para o valor informado!");
             }
 
-            $user = $user->load([
-                'telefones' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $user = $user->load('telefones');
+
             return MelResponse::success(null, $user);
 
         } catch (Exception $e) {
@@ -260,11 +241,8 @@ class UsuarioController extends Controller
                 throw new Exception("Nenhum registro encontrado para o valor informado!");
             }
 
-            $user = $user->load([
-                'telefones' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $user = $user->load('telefones');
+
             return MelResponse::success(null, $user);
 
         } catch (Exception $e) {
