@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Telefone;
 use App\User;
+use Exception;
 use App\Response\MelResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,11 +23,11 @@ class UsuarioController extends Controller
             $telefonesAdd = [];
 
             if (!$username || !$email || !$password) {
-                throw new \Exception("É necessário informar nome, email e senha.");
+                throw new Exception("É necessário informar nome, email e senha.");
             }
 
             if ($user) {
-                throw new \Exception("E-mail já cadastrado.");
+                throw new Exception("E-mail já cadastrado.");
             }
 
             DB::beginTransaction();
@@ -39,19 +40,24 @@ class UsuarioController extends Controller
 
             if ($telefones) {
                 foreach ($telefones as $telefone) {
-                    $telefone = new Telefone();
-                    $telefone->numero = $telefone;
-                    $telefone->save();
-                    $telefonesAdd[] = $telefone->id;
+                    $telefoneAdd = new Telefone();
+                    $telefoneAdd->numero = $telefone;
+                    $telefoneAdd->save();
+                    $telefonesAdd[] = $telefoneAdd->id;
                 }
                 $user->telefones()->sync($telefonesAdd);
             }
 
             DB::commit();
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success("Usuário cadastrado com sucesso!", $user);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
@@ -68,10 +74,8 @@ class UsuarioController extends Controller
             $user = User::find($user_id);
 
             if (!$user) {
-                throw new \Exception("Usuário não econtrado para edição!");
+                throw new Exception("Usuário não econtrado para edição!");
             }
-
-            DB::beginTransaction();
 
             if ($name) {
                 $user->name = $name;
@@ -86,11 +90,9 @@ class UsuarioController extends Controller
             }
 
             $user->save();
-            // Aqui vem o código de edição de telefones que foi removido no branch do hotfix.
-            DB::commit();
+
             return MelResponse::success("Usuário alterado com sucesso!", $user);
-        } catch (\Exception $e) {
-            DB::rollBack();
+        } catch (Exception $e) {
             return MelResponse::error("Erro ao editar as informações do usuário.", $e->getMessage());
         }
     }
@@ -99,30 +101,40 @@ class UsuarioController extends Controller
     {
         try {
             $user_id = request('user_id');
-            $telefone = request('telefone');
+            $telefones = request('telefones');
 
             $user = User::find($user_id);
 
             if (!$user) {
-                throw new \Exception("Usuário não econtrado!");
+                throw new Exception("Usuário não econtrado!");
             }
 
-            if (!$telefone) {
-                throw new \Exception("Você precisa informar o telefone!");
+            if (!$telefones) {
+                throw new Exception("Você precisa informar o telefone!");
             }
 
             DB::beginTransaction();
 
-            $telefoneAdd = new Telefone();
-            $telefoneAdd->numero = $telefone;
-            $telefoneAdd->save();
-            $user->telefones()->attach($telefoneAdd->id);
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneAdd = new Telefone();
+                    $telefoneAdd->numero = $telefone;
+                    $telefoneAdd->save();
+                    $telefonesAdd[] = $telefoneAdd->id;
+                }
+                $user->telefones()->sync($telefonesAdd);
+            }
 
             DB::commit();
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success("Telefone cadastrado com sucesso!", $user);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return MelResponse::error("Erro ao cadastrar telefone.", $e->getMessage());
         }
@@ -132,30 +144,38 @@ class UsuarioController extends Controller
     {
         try {
             $user_id = request('user_id');
-            $telefone_id = request('telefone_id');
-            $telefone_numero = request('telefone_numero');
+            $telefones = request('telefones');
 
             $user = User::find($user_id);
-            $telefone = Telefone::find($telefone_id);
 
             if (!$user) {
-                throw new \Exception("Usuário não econtrado!");
+                throw new Exception("Usuário não econtrado!");
             }
 
-            if (!$telefone) {
-                throw new \Exception("Telefone não encontrado!");
+            if (!$telefones) {
+                throw new Exception("Você precisa informar o telefone!");
             }
 
-            if (!$telefone_numero) {
-                throw new \Exception("Você deve informar o número do telefone!");
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneEdit = Telefone::find($telefone['id']);
+                    if (!$telefoneEdit) {
+                        continue;
+                    }
+                    $telefoneEdit->numero = $telefone['numero'];
+                    $telefoneEdit->save();
+                }
             }
 
-            $telefone->numero = $telefone_numero;
-            $telefone->save();
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
 
-            $user = $user->load('telefones');
             return MelResponse::success("Telefone alterado com sucesso!", $user);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            DB::rollBack();
             return MelResponse::error("Erro ao alter telefone.", $e->getMessage());
         }
     }
@@ -164,31 +184,39 @@ class UsuarioController extends Controller
     {
         try {
             $user_id = request('user_id');
-            $telefone_id = request('telefone_id');
+            $telefones = request('telefones');
 
             $user = User::find($user_id);
-            $telefone = Telefone::find($telefone_id);
 
             if (!$user) {
-                throw new \Exception("Usuário não econtrado!");
+                throw new Exception("Usuário não econtrado!");
             }
 
-            if (!$telefone) {
-                throw new \Exception("Telefone não encontrado!");
+            if (!$telefones) {
+                throw new Exception("Você precisa informar o telefone!");
             }
 
-            DB::beginTransaction();
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneEdit = Telefone::find($telefone['id']);
+                    if (!$telefoneEdit) {
+                        continue;
+                    }
+                    $telefoneEdit->ativo = 0;
+                    $telefoneEdit->save();
+                }
+            }
 
-            $user->telefones()->detach($telefone_id);
-            $telefone->delete();
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
 
-            DB::commit();
-
-            $user = $user->load('telefones');
-            return MelResponse::success("Telefone excluído com sucesso!", $user);
-        } catch (\Exception $e) {
+            return MelResponse::success("Telefone alterado com sucesso!", $user);
+        } catch (Exception $e) {
             DB::rollBack();
-            return MelResponse::error("Erro ao excluir telefone.", $e->getMessage());
+            return MelResponse::error("Erro ao alter telefone.", $e->getMessage());
         }
     }
 
@@ -207,13 +235,17 @@ class UsuarioController extends Controller
                 ->paginate($limiteRetorno);
 
             if (!$user) {
-                throw new \Exception("Nenhum registro encontrado para o valor informado!");
+                throw new Exception("Nenhum registro encontrado para o valor informado!");
             }
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
             return MelResponse::success(null, $user);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
         }
     }
@@ -225,13 +257,17 @@ class UsuarioController extends Controller
             $user = User::find($user_id);
 
             if (!$user) {
-                throw new \Exception("Nenhum registro encontrado para o valor informado!");
+                throw new Exception("Nenhum registro encontrado para o valor informado!");
             }
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
             return MelResponse::success(null, $user);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
         }
     }
