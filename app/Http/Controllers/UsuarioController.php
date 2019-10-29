@@ -115,8 +115,7 @@ class UsuarioController extends Controller
             $telefoneAdd = new Telefone();
             $telefoneAdd->numero = $telefone;
             $telefoneAdd->save();
-            $telefoneId = $telefoneAdd->id;
-            $user->telefones()->attach($telefoneId);
+            $user->telefones()->attach($telefoneAdd->id);
 
             DB::commit();
 
@@ -150,17 +149,12 @@ class UsuarioController extends Controller
                 throw new \Exception("Você deve informar o número do telefone!");
             }
 
-            DB::beginTransaction();
-
             $telefone->numero = $telefone_numero;
             $telefone->save();
-
-            DB::commit();
 
             $user = $user->load('telefones');
             return MelResponse::success("Telefone alterado com sucesso!", $user);
         } catch (\Exception $e) {
-            DB::rollBack();
             return MelResponse::error("Erro ao alter telefone.", $e->getMessage());
         }
     }
