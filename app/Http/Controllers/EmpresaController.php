@@ -160,4 +160,43 @@ class EmpresaController extends Controller
         }
     }
 
+    public function cadastrarTelefone()
+    {
+        try {
+            $user_id = request('user_id');
+            $telefones = request('telefones');
+
+            $empresa = Empresa::find($user_id);
+
+            if (!$empresa) {
+                throw new Exception("Empresa não econtrada!");
+            }
+
+            if (!$telefones) {
+                throw new Exception("Você precisa informar o telefone!");
+            }
+
+            DB::beginTransaction();
+
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneAdd = new Telefone();
+                    $telefoneAdd->numero = $telefone;
+                    $telefoneAdd->save();
+                    $telefonesAdd[] = $telefoneAdd->id;
+                }
+                $empresa->telefones()->sync($telefonesAdd);
+            }
+
+            DB::commit();
+
+            $empresa = $empresa->load('telefones');
+
+            return MelResponse::success("Telefone cadastrado com sucesso!", $empresa);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return MelResponse::error("Erro ao cadastrar telefone.", $e->getMessage());
+        }
+    }
+
 }
