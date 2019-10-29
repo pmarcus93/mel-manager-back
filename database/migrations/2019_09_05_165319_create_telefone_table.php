@@ -17,6 +17,7 @@ class CreateTelefoneTable extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
             $table->string('numero')->nullable('false');
+            $table->boolean('ativo')->default(1);
         });
     }
 
