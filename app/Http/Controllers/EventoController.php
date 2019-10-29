@@ -30,15 +30,11 @@ class EventoController extends Controller
             $evento->nome = $nome;
             $evento->save();
 
-            $evento->administrador()->attach($usuario->id, ['ativo' => 1]);
+            $evento->administrador()->attach($usuario->id);
 
             DB::commit();
 
-            $evento = $evento->load([
-                'administrador' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $evento = $evento->load('administrador');
 
             return MelResponse::success("Evento cadastrado com sucesso!", $evento);
 
@@ -97,11 +93,7 @@ class EventoController extends Controller
 
             DB::commit();
 
-            $evento = $evento->load([
-                'edicoes' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $evento = $evento->load('administrador');
 
             return MelResponse::success("Edição de evento cadastrada com sucesso!", $evento);
         } catch (Exception $e) {
@@ -170,11 +162,7 @@ class EventoController extends Controller
                 throw new Exception("Nenhum evento encontrado.");
             }
 
-            $evento = $evento->load([
-                'administrador' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $evento = $evento->load('administrador');
 
             return MelResponse::success(null, $evento);
         } catch (Exception $e) {
@@ -195,11 +183,7 @@ class EventoController extends Controller
                 $msg = "Nenhum evento com o id " . $evento_id . " encontrado.";
             }
 
-            $evento = $evento->load([
-                'administrador' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $evento = $evento->load('administrador');
 
             $evento = $evento->load([
                 'edicoes' => function ($query) {
@@ -270,13 +254,9 @@ class EventoController extends Controller
                 throw new Exception("Administrador já vinculado ao evento!");
             }
 
-            $evento->administrador()->attach($usuario->id, ['ativo' => 1]);
+            $evento->administrador()->attach($usuario->id);
 
-            $evento = $evento->load([
-                'administrador' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $evento = $evento->load('administrador');
 
             return MelResponse::success("Administrador vinculado com sucesso.", $evento);
         } catch (Exception $e) {
@@ -308,13 +288,9 @@ class EventoController extends Controller
                 throw new Exception("Administrador não vinculado ao evento!");
             }
 
-            $evento->administrador()->detach($usuario->id, ['ativo' => 0]);
+            $evento->administrador()->detach($usuario->id);
 
-            $evento = $evento->load([
-                'administrador' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
+            $evento = $evento->load('administrador');
 
             return MelResponse::success("Administrador desvinculado com sucesso.", $evento);
         } catch (Exception $e) {
@@ -329,12 +305,7 @@ class EventoController extends Controller
 
             $evento = Evento::all();
 
-            $evento = $evento->load([
-                'administrador' => function ($query) use ($user_id) {
-                    $query->where('user_id', $user_id)
-                        ->where('ativo', 1);
-                }
-            ]);
+            $evento = $evento->load('administrador');
 
             $evento = $evento->load('edicoes');
 
