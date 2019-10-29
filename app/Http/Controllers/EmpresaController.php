@@ -183,7 +183,7 @@ class EmpresaController extends Controller
             $empresa = $empresa->load('eventos');
 
             if ($empresa->eventos->isEmpty()) {
-                throw new Exception("Sem eventos vinculas a esta empresa!");
+                throw new Exception("Sem eventos vinculados a esta empresa!");
             }
 
             return MelResponse::success(null, $empresa);
