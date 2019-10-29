@@ -176,7 +176,7 @@ class UsuarioController extends Controller
             return MelResponse::success("Telefone alterado com sucesso!", $user);
         } catch (Exception $e) {
             DB::rollBack();
-            return MelResponse::error("Erro ao alter telefone.", $e->getMessage());
+            return MelResponse::error("Erro ao alterar telefone.", $e->getMessage());
         }
     }
 
@@ -213,10 +213,10 @@ class UsuarioController extends Controller
                 }
             ]);
 
-            return MelResponse::success("Telefone alterado com sucesso!", $user);
+            return MelResponse::success("Telefone removido com sucesso!", $user);
         } catch (Exception $e) {
             DB::rollBack();
-            return MelResponse::error("Erro ao alter telefone.", $e->getMessage());
+            return MelResponse::error("Erro ao remover telefone.", $e->getMessage());
         }
     }
 
