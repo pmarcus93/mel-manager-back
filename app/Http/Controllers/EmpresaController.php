@@ -170,4 +170,27 @@ class EmpresaController extends Controller
         }
     }
 
+    public function retornarEventosDeEmpresa()
+    {
+        try {
+            $empresa_id = request('empresa_id');
+            $empresa = Empresa::find($empresa_id);
+
+            if (!$empresa) {
+                throw new Exception("ID da empresa informado não econtrado!");
+            }
+
+            $empresa = $empresa->load('eventos');
+
+            if ($empresa->eventos->isEmpty()) {
+                throw new Exception("Sem eventos vinculados a esta empresa!");
+            }
+
+            return MelResponse::success(null, $empresa);
+
+        } catch (Exception $e) {
+            return MelResponse::error("Não foi possível retornar os eventos vinculados a empresa.", $e->getMessage());
+        }
+    }
+
 }

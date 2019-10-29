@@ -95,13 +95,116 @@ class UsuarioController extends Controller
         }
     }
 
+    public function cadastrarTelefone()
+    {
+        try {
+            $user_id = request('user_id');
+            $telefone = request('telefone');
+
+            $user = User::find($user_id);
+
+            if (!$user) {
+                throw new \Exception("Usuário não econtrado!");
+            }
+
+            if (!$telefone) {
+                throw new \Exception("Você precisa informar o telefone!");
+            }
+
+            DB::beginTransaction();
+
+            $telefoneAdd = new Telefone();
+            $telefoneAdd->numero = $telefone;
+            $telefoneAdd->save();
+            $user->telefones()->attach($telefoneAdd->id);
+
+            DB::commit();
+
+            $user = $user->load('telefones');
+            return MelResponse::success("Telefone cadastrado com sucesso!", $user);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return MelResponse::error("Erro ao cadastrar telefone.", $e->getMessage());
+        }
+    }
+
+    public function editarTelefone()
+    {
+        try {
+            $user_id = request('user_id');
+            $telefone_id = request('telefone_id');
+            $telefone_numero = request('telefone_numero');
+
+            $user = User::find($user_id);
+            $telefone = Telefone::find($telefone_id);
+
+            if (!$user) {
+                throw new \Exception("Usuário não econtrado!");
+            }
+
+            if (!$telefone) {
+                throw new \Exception("Telefone não encontrado!");
+            }
+
+            if (!$telefone_numero) {
+                throw new \Exception("Você deve informar o número do telefone!");
+            }
+
+            $telefone->numero = $telefone_numero;
+            $telefone->save();
+
+            $user = $user->load('telefones');
+            return MelResponse::success("Telefone alterado com sucesso!", $user);
+        } catch (\Exception $e) {
+            return MelResponse::error("Erro ao alter telefone.", $e->getMessage());
+        }
+    }
+
+    public function removerTelefone()
+    {
+        try {
+            $user_id = request('user_id');
+            $telefone_id = request('telefone_id');
+
+            $user = User::find($user_id);
+            $telefone = Telefone::find($telefone_id);
+
+            if (!$user) {
+                throw new \Exception("Usuário não econtrado!");
+            }
+
+            if (!$telefone) {
+                throw new \Exception("Telefone não encontrado!");
+            }
+
+            DB::beginTransaction();
+
+            $user->telefones()->detach($telefone_id);
+            $telefone->delete();
+
+            DB::commit();
+
+            $user = $user->load('telefones');
+            return MelResponse::success("Telefone excluído com sucesso!", $user);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return MelResponse::error("Erro ao excluir telefone.", $e->getMessage());
+        }
+    }
+
     public function retornarUsuarioPorNomeEmail()
     {
         try {
             $search = request('search');
+            $limiteRetorno = request('qtd');
+
+            if ($limiteRetorno < 1) {
+                $limiteRetorno = 1;
+            }
+
             $user = User::where('name', 'like', $search . '%')
                 ->orWhere('email', 'like', '%' . $search . '%')
-                ->get();
+                ->paginate($limiteRetorno);
 
             if (!$user) {
                 throw new \Exception("Nenhum registro encontrado para o valor informado!");
