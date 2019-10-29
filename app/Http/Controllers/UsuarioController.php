@@ -186,13 +186,15 @@ class UsuarioController extends Controller
 
             if ($telefones) {
                 foreach ($telefones as $telefone) {
-                    $telefoneEdit = Telefone::find($telefone['id']);
-                    if (!$telefoneEdit) {
+                    $telefoneDel = Telefone::find($telefone['id']);
+                    if (!$telefoneDel) {
                         continue;
                     }
-                    $telefoneEdit->ativo = 0;
-                    $telefoneEdit->save();
+                    $telefoneDel->ativo = 0;
+                    $telefoneDel->save();
+                    $telefonesAdd[] = $telefoneDel->id;
                 }
+                $user->telefones()->sync($telefonesAdd);
             }
 
             $user = $user->load('telefones');
