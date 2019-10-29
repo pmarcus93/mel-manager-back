@@ -17,7 +17,6 @@ class CreateEventoAdministradorTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('evento_id');
             $table->unsignedBigInteger('user_id');
-            $table->boolean('ativo')->default(1);
             $table->foreign('evento_id')->references('id')->on('evento');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
