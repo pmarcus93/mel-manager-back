@@ -28,8 +28,10 @@ class EmpresaController extends Controller
                 $telefone->save();
                 $telefonesAdd[] = $telefone->id;
             }
+            if (!empty($telefonesAdd)) {
+                $empresa->telefones()->sync($telefonesAdd);
+            }
 
-            $empresa->telefones()->sync($telefonesAdd);
             DB::commit();
 
             $empresa = $empresa->load('telefones');
@@ -185,7 +187,9 @@ class EmpresaController extends Controller
                     $telefoneAdd->save();
                     $telefonesAdd[] = $telefoneAdd->id;
                 }
-                $empresa->telefones()->sync($telefonesAdd);
+                if (!empty($telefonesAdd)) {
+                    $empresa->telefones()->sync($telefonesAdd);
+                }
             }
 
             DB::commit();
@@ -262,7 +266,9 @@ class EmpresaController extends Controller
                     $telefoneDel->save();
                     $telefonesAdd[] = $telefoneDel->id;
                 }
-                $empresa->telefones()->detach($telefonesAdd);
+                if (!empty($telefonesAdd)) {
+                    $empresa->telefones()->detach($telefonesAdd);
+                }
             }
 
             DB::commit();

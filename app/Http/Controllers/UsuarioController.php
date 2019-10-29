@@ -45,7 +45,9 @@ class UsuarioController extends Controller
                     $telefoneAdd->save();
                     $telefonesAdd[] = $telefoneAdd->id;
                 }
-                $user->telefones()->sync($telefonesAdd);
+                if (!empty($telefonesAdd)) {
+                    $user->telefones()->sync($telefonesAdd);
+                }
             }
 
             DB::commit();
@@ -118,7 +120,9 @@ class UsuarioController extends Controller
                     $telefoneAdd->save();
                     $telefonesAdd[] = $telefoneAdd->id;
                 }
-                $user->telefones()->sync($telefonesAdd);
+                if (!empty($telefonesAdd)) {
+                    $user->telefones()->sync($telefonesAdd);
+                }
             }
 
             DB::commit();
@@ -195,7 +199,9 @@ class UsuarioController extends Controller
                     $telefoneDel->save();
                     $telefonesAdd[] = $telefoneDel->id;
                 }
-                $user->telefones()->detach($telefonesAdd);
+                if (!empty($telefonesAdd)) {
+                    $user->telefones()->detach($telefonesAdd);
+                }
             }
 
             DB::commit();
