@@ -6,23 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static find(array|\Illuminate\Http\Request|string $evento_id)
+ * @method static join(string $string, string $string1, string $string2, string $string3)
  */
 class Evento extends Model
 {
     protected $table = 'evento';
 
+    public function eventosPorUsuario($userId)
+    {
+        return $this->query()
+            ->join('evento_administrador', 'evento.id', '=', 'evento_administrador.evento_id')
+            ->where('evento_administrador.user_id', '=', $userId)
+            ->get();
+    }
+
     public function empresas()
     {
-        return $this->belongsToMany('App\Evento','evento_empresa','evento_id','empresa_id');
+        return $this->belongsToMany('App\Evento', 'evento_empresa', 'evento_id', 'empresa_id');
     }
 
     public function administrador()
     {
-        return $this->belongsToMany('App\User','evento_administrador','evento_id','user_id');
+        return $this->belongsToMany('App\User', 'evento_administrador', 'evento_id', 'user_id');
     }
 
     public function edicoes()
     {
-        return $this->hasMany('App\EventoEdicao','evento_id');
+        return $this->hasMany('App\EventoEdicao', 'evento_id');
     }
 }
