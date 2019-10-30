@@ -303,21 +303,17 @@ class EventoController extends Controller
         try {
             $user_id = request('user_id');
 
-            $collection = Evento::all();
+            $evento = Evento::join('evento_administrador', 'evento_id', '=', 'evento.id')
+                ->where('evento_administrador.user_id', '=', $user_id)
+                ->get();
 
-            dd($collection);
-
-            $evento = $collection->filter(function ($value,$key) use ($user_id) {
-                if ($value['user_id'] == $user_id) {
-                    return true;
+            $evento->load([
+                'administrador' => function ($query) use ($user_id) {
+                    $query->where('user_id', $user_id);
                 }
-            });
+            ]);
 
-            $evento->all();
-
-            $evento = $evento->load('administrador');
-
-            $evento = $evento->load('edicoes');
+            $evento->load('edicoes');
 
             return MelResponse::success("", $evento);
         } catch (Exception $e) {
