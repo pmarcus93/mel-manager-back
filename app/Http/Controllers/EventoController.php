@@ -303,7 +303,17 @@ class EventoController extends Controller
         try {
             $user_id = request('user_id');
 
-            $evento = Evento::all();
+            $collection = Evento::all();
+
+            dd($collection);
+
+            $evento = $collection->filter(function ($value,$key) use ($user_id) {
+                if ($value['user_id'] == $user_id) {
+                    return true;
+                }
+            });
+
+            $evento->all();
 
             $evento = $evento->load('administrador');
 
