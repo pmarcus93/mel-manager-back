@@ -12,14 +12,6 @@ class Evento extends Model
 {
     protected $table = 'evento';
 
-    public function eventosPorUsuario($userId)
-    {
-        return $this->query()
-            ->join('evento_administrador', 'evento.id', '=', 'evento_administrador.evento_id')
-            ->where('evento_administrador.user_id', '=', $userId)
-            ->get();
-    }
-
     public function empresas()
     {
         return $this->belongsToMany('App\Evento', 'evento_empresa', 'evento_id', 'empresa_id');
