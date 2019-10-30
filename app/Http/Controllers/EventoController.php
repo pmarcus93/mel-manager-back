@@ -9,6 +9,7 @@ use App\EventoEdicao;
 use App\Response\MelResponse;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class EventoController extends Controller
 {
@@ -303,11 +304,17 @@ class EventoController extends Controller
         try {
             $user_id = request('user_id');
 
-            $evento = new Evento();
+            $evento = Evento::query()
+                ->join('evento_administrador', 'evento_id', 'evento.id')
+                ->where('evento_administrador.user_id', '=', $user_id)
+                ->select('evento.*')
+                ->get();
 
-            $evento = $evento->eventosPorUsuario($user_id);
-
-            $evento->load('administrador');
+            $evento->load([
+                'administrador' => function ($query) use ($user_id) {
+                    $query->where('user_id', $user_id);
+                }
+            ]);
 
             $evento->load([
                 'edicoes' => function ($query) {

@@ -5,8 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @method static find(array|\Illuminate\Http\Request|string $evento_id)
- * @method static join(string $string, string $string1, string $string2, string $string3)
+ * @method static join()
  */
 class Evento extends Model
 {
