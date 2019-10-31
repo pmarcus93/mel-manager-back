@@ -32,7 +32,12 @@ class EmpresaController extends Controller
             $empresa->telefones()->sync($telefonesAdd);
             DB::commit();
 
-            $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success("Empresa cadastrada com sucesso!", $empresa);
 
         } catch (Exception $e) {
@@ -87,7 +92,12 @@ class EmpresaController extends Controller
 
             DB::commit();
 
-            $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             $empresa = $empresa->load('eventos');
             return MelResponse::success("Empresa alterada com sucesso!", $empresa);
 
@@ -107,7 +117,12 @@ class EmpresaController extends Controller
                 throw new Exception("ID informado não econtrado!");
             }
 
-            $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             $empresa = $empresa->load('eventos');
             return MelResponse::success(null, $empresa);
 
