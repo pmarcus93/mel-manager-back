@@ -21,6 +21,7 @@ class UsuarioController extends Controller
                 'password' => 'required'
             ]);
 
+            /** @var User $user */
             $user = User::where('email', $attributes['email'])->first();
             $telefonesAdd = [];
 
@@ -131,6 +132,8 @@ class UsuarioController extends Controller
 
             $user = $user->load('telefones');
             return MelResponse::success("Telefone(s) cadastrado(s) com sucesso.", $user);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error($e->getMessage());
