@@ -41,10 +41,10 @@ class UsuarioController extends Controller
 
             if ($telefones) {
                 foreach ($telefones as $telefone) {
-                    $telefone = new Telefone();
-                    $telefone->numero = $telefone;
-                    $telefone->save();
-                    $telefonesAdd[] = $telefone->id;
+                    $novoTelefone = Telefone();
+                    $novoTelefone->numero = $telefone;
+                    $novoTelefone->save();
+                    $telefonesAdd[] = $novoTelefone->id;
                 }
                 $user->telefones()->sync($telefonesAdd);
             }
