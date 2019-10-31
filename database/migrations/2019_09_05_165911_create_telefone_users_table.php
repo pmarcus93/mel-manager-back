@@ -15,10 +15,11 @@ class CreateTelefoneUsersTable extends Migration
     {
         Schema::create('telefone_users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('telefone_id');
+            $table->boolean('ativo')->default(1);
+            $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('telefone_id')->references('id')->on('telefone');
         });
     }

@@ -15,11 +15,11 @@ class CreateEventoEmpresaTable extends Migration
     {
         Schema::create('evento_empresa', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
             $table->unsignedBigInteger('empresa_id');
-            $table->foreign('empresa_id')->references('id')->on('empresa');
             $table->unsignedBigInteger('evento_id');
+            $table->foreign('empresa_id')->references('id')->on('empresa');
             $table->foreign('evento_id')->references('id')->on('evento');
+            $table->timestamps();
         });
     }
 
