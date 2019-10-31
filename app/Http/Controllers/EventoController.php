@@ -40,7 +40,7 @@ class EventoController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return MelResponse::error("Erro ao cadastrar evento.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -60,7 +60,7 @@ class EventoController extends Controller
             }
             return MelResponse::success(null, $users);
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível retornar os administradores deste evento.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -88,7 +88,7 @@ class EventoController extends Controller
 
             return MelResponse::success("Edição de evento cadastrada com sucesso!", $eventoEdicao);
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível cadastrar a edição do evento.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -107,7 +107,7 @@ class EventoController extends Controller
 
             return MelResponse::success($msg, $evento);
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível retornar os dados do evento.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -123,7 +123,7 @@ class EventoController extends Controller
             $edicoes = EventoEdicao::where('evento_id', $evento_id)->get();
             return MelResponse::success("", $edicoes);
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível retornar as edições do evento.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ class EventoController extends Controller
 
             return MelResponse::success(null, $edicao);
         } catch (Exception $e) {
-            return MelResponse::error("Não foi possível retornar as edições do evento.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -169,7 +169,7 @@ class EventoController extends Controller
 
             return MelResponse::success("", $eventosUsuario);
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível retornar os eventos do usuário.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -197,8 +197,7 @@ class EventoController extends Controller
             $eventoAdministrador->save();
             return MelResponse::success("Administrador vinculado com sucesso.", $eventoAdministrador);
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível vincular esse usuário como administrador deste evento.",
-                $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -221,7 +220,7 @@ class EventoController extends Controller
             $eventoAdministrador->save();
             return MelResponse::success("Administrador desvinculado com sucesso.", $eventoAdministrador);
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível desvincular o administrador do evento.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
