@@ -5,25 +5,25 @@ namespace App\Http\Controllers;
 use App\Telefone;
 use App\User;
 use App\Response\MelResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class UsuarioController extends Controller
 {
-    public function cadastrarUsuario()
+    public function cadastrarUsuario(Request $request)
     {
         try {
-            $username = request('name');
-            $email = request('email');
-            $password = request('password');
-            $telefones = request('telefones');
 
-            $user = User::where('email', $email)->first();
+            $attributes = $request->validate([
+                'name' => 'required',
+                'email' => 'required|email',
+                'password' => 'required'
+            ]);
+
+            $user = User::where('email', $attributes['email'])->first();
             $telefonesAdd = [];
-
-            if (!$username || !$email || !$password) {
-                throw new \Exception("É necessário informar nome, email e senha.");
-            }
 
             if ($user) {
                 throw new \Exception("E-mail já cadastrado.");
@@ -32,10 +32,12 @@ class UsuarioController extends Controller
             DB::beginTransaction();
 
             $user = new User();
-            $user->name = $username;
-            $user->email = $email;
-            $user->password = Hash::make($password);
+            $user->name = $attributes['name'];
+            $user->email = $attributes['email'];
+            $user->password = Hash::make($attributes['password']);
             $user->save();
+
+            $telefones = \request('telefones');
 
             if ($telefones) {
                 foreach ($telefones as $telefone) {
@@ -51,6 +53,8 @@ class UsuarioController extends Controller
 
             $user = $user->load('telefones');
             return MelResponse::success("Usuário cadastrado com sucesso!", $user);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }

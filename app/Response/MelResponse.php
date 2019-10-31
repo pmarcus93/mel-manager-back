@@ -39,4 +39,20 @@ trait MelResponse
         ], $statusCode);
     }
 
+    public static function validationError(Array $errors) {
+
+        foreach ($errors as $errorKey => $errorValue) {
+            foreach ($errorValue as $errorText) {
+                $errorMessage = $errorText;
+            }
+        }
+
+        $statusCode = 500;
+
+        return \response([
+            'type' => 'error',
+            'text' => $errorMessage,
+        ], $statusCode);
+    }
+
 }
