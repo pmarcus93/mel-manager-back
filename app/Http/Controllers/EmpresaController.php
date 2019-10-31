@@ -102,7 +102,7 @@ class EmpresaController extends Controller
                 throw new Exception("ID do Evento informado não econtrado!");
             }
 
-            $empresa->eventos()->sync($evento_id);
+            $empresa->eventos()->attach($evento_id);
             $empresa = $empresa->load('eventos');
 
             return MelResponse::success("Evento vinculado a empresa com sucesso!", $empresa);
