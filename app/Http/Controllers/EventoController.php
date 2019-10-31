@@ -48,7 +48,10 @@ class EventoController extends Controller
     {
         try {
             $evento_id = \request('id');
-            $eventoAdministradores = EventoAdministrador::where('evento_id', $evento_id)->get();
+            $eventoAdministradores = EventoAdministrador::where([
+                ['evento_id', '=', $evento_id],
+                ['ativo', '=', 1]
+            ])->get();
             $users = [];
 
             foreach ($eventoAdministradores as $eventoAdministrador) {
@@ -173,7 +176,8 @@ class EventoController extends Controller
             $eventoAdministrador->save();
             return MelResponse::success("Administrador vinculado com sucesso.", $eventoAdministrador);
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível vincular esse usuário como administrador deste evento.", $e->getMessage());
+            return MelResponse::error("Não foi possível vincular esse usuário como administrador deste evento.",
+                $e->getMessage());
         }
     }
 
