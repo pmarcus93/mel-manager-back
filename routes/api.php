@@ -54,5 +54,6 @@ Route::prefix('evento')->group(function () {
     Route::post('/vincular-administrador-evento/', 'EventoController@vincularAdministradorEvento');
     Route::post('/desvincular-administrador-evento/', 'EventoController@desvincularAdministradorEvento');
     Route::get('/retornar-edicoes-evento-usuario/{user_id}', 'EventoController@retornarEdicoesEventoUsuario');
+    Route::get('/retornar-empresas-evento/{evento_id}', 'EventoController@retornarEmpresaDeEvento');
     Route::get('/retornar-evento/{evento_id}', 'EventoController@retornarEvento');
 });

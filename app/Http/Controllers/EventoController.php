@@ -328,4 +328,19 @@ class EventoController extends Controller
         }
     }
 
+    public function retornarEmpresaDeEvento()
+    {
+        try {
+            $evento_id = request('evento_id');
+
+            $evento = Evento::find($evento_id);
+
+            $evento->load('empresas');
+
+            return MelResponse::success("", $evento);
+        } catch (Exception $e) {
+            return MelResponse::error("Não foi possível retornar as empresas vinculadas ao evento.", $e->getMessage());
+        }
+    }
+
 }
