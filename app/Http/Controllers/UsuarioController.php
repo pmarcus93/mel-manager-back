@@ -191,22 +191,21 @@ class UsuarioController extends Controller
 
             if ($telefones) {
                 foreach ($telefones as $telefone) {
-                    $telefoneDel = Telefone::find($telefone['id']);
-                    if (!$telefoneDel) {
+
+                    if (!$user->telefones()->find($telefone['id'])) {
                         continue;
                     }
-                    $telefoneDel->ativo = 0;
-                    $telefoneDel->save();
-                    $telefonesAdd[] = $telefoneDel->id;
-                }
-                if (!empty($telefonesAdd)) {
-                    $user->telefones()->detach($telefonesAdd);
+                    $user->telefones()->updateExistingPivot($telefone['id'], ['ativo' => 0]);
                 }
             }
 
             DB::commit();
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
 
             return MelResponse::success("Telefone removido com sucesso!", $user);
         } catch (Exception $e) {
