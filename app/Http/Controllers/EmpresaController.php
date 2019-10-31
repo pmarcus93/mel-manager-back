@@ -32,7 +32,12 @@ class EmpresaController extends Controller
             $empresa->telefones()->sync($telefonesAdd);
             DB::commit();
 
-            $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success("Empresa cadastrada com sucesso!", $empresa);
 
         } catch (Exception $e) {
@@ -44,11 +49,9 @@ class EmpresaController extends Controller
     public function editarEmpresa()
     {
         try {
-            DB::beginTransaction();
             $empresa_id = request('empresa_id');
             $empresa_nome = request('empresa_nome');
             $empresa = Empresa::find($empresa_id);
-            $telefones = request('telefones');
 
             if (!$empresa) {
                 throw new Exception("Empresa não econtrada para edição!");
@@ -57,42 +60,16 @@ class EmpresaController extends Controller
             $empresa->nome = $empresa_nome;
             $empresa->save();
 
-            $telefonesNew = array();
-            if ($telefones) {
-                $telefonesNew = array_column($telefones, 'id');
-            }
-
-            $telefonesOld = $empresa->telefones->pluck('id')->toArray();
-
-            if ($telefones) {
-                foreach ($telefones as $telefone) {
-                    $telefoneEdit = Telefone::find($telefone['id']);
-                    if (!$telefoneEdit) {
-                        $telefoneEdit = new Telefone();
-                    }
-                    $telefoneEdit->numero = $telefone['numero'];
-                    $telefoneEdit->save();
-                    $telefonesEdit[] = $telefoneEdit->id;
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
                 }
-                $empresa->telefones()->sync($telefonesEdit);
-            }
+            ]);
 
-            if (!$telefones) {
-                $empresa->telefones()->sync([]);
-            }
-
-            if ($deletados = array_diff_key($telefonesOld, $telefonesNew)) {
-                Telefone::wherein('id', $deletados)->delete();
-            }
-
-            DB::commit();
-
-            $empresa = $empresa->load('telefones');
             $empresa = $empresa->load('eventos');
             return MelResponse::success("Empresa alterada com sucesso!", $empresa);
 
         } catch (Exception $e) {
-            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
@@ -107,7 +84,12 @@ class EmpresaController extends Controller
                 throw new Exception("ID informado não econtrado!");
             }
 
-            $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             $empresa = $empresa->load('eventos');
             return MelResponse::success(null, $empresa);
 
@@ -133,7 +115,7 @@ class EmpresaController extends Controller
                 throw new Exception("ID do Evento informado não econtrado!");
             }
 
-            $empresa->eventos()->sync($evento_id);
+            $empresa->eventos()->attach($evento_id);
             $empresa = $empresa->load('eventos');
 
             return MelResponse::success("Evento vinculado a empresa com sucesso!", $empresa);
