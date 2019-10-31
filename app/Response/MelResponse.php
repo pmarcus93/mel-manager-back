@@ -35,7 +35,6 @@ trait MelResponse
         return \response([
             'type' => 'error',
             'text' => $text ? $text : "Erro ao executar requisição!",
-            'exceptionMessage' => $exceptionMessage
         ], $statusCode);
     }
 

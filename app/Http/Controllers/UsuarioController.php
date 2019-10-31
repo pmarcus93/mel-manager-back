@@ -41,10 +41,10 @@ class UsuarioController extends Controller
 
             if ($telefones) {
                 foreach ($telefones as $telefone) {
-                    $telefone = new Telefone();
-                    $telefone->numero = $telefone;
-                    $telefone->save();
-                    $telefonesAdd[] = $telefone->id;
+                    $novoTelefone = new Telefone();
+                    $novoTelefone->numero = $telefone;
+                    $novoTelefone->save();
+                    $telefonesAdd[] = $novoTelefone->id;
                 }
                 $user->telefones()->sync($telefonesAdd);
             }
@@ -102,24 +102,31 @@ class UsuarioController extends Controller
     {
         try {
             $user_id = request('user_id');
-            $telefone = request('telefone');
+            $telefones = request('telefones');
 
+            $telefonesAdd = [];
+
+            /** @var User $user */
             $user = User::find($user_id);
 
             if (!$user) {
                 throw new \Exception("Usuário não econtrado!");
             }
 
-            if (!$telefone) {
+            if (!$telefones) {
                 throw new \Exception("Você precisa informar o telefone!");
             }
 
             DB::beginTransaction();
 
-            $telefoneAdd = new Telefone();
-            $telefoneAdd->numero = $telefone;
-            $telefoneAdd->save();
-            $user->telefones()->attach($telefoneAdd->id);
+            foreach ($telefones as $telefone) {
+                $novoTelefone = new Telefone();
+                $novoTelefone->numero = $telefone;
+                $novoTelefone->save();
+                $telefonesAdd[] = $novoTelefone->id;
+            }
+
+            $user->telefones()->attach($telefonesAdd);
 
             DB::commit();
 
