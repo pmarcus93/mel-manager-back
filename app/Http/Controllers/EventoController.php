@@ -127,6 +127,27 @@ class EventoController extends Controller
         }
     }
 
+    public function retornarEdicaoEvento()
+    {
+        try {
+            $edicao_id = request("edicao_id");
+
+            if (!$edicao_id) {
+                throw new Exception("É necessário informar o id da edição.");
+            }
+
+            $edicao = EventoEdicao::find($edicao_id);
+
+            if ($edicao->ativo === 0) {
+                throw new Exception("Evento informado foi removido do sistema.");
+            }
+
+            return MelResponse::success(null, $edicao);
+        } catch (Exception $e) {
+            return MelResponse::error("Não foi possível retornar as edições do evento.", $e->getMessage());
+        }
+    }
+
     public function retornarEdicoesEventoUsuario()
     {
         try {
