@@ -62,13 +62,16 @@ class UsuarioController extends Controller
     public function editarUsuario(Request $request)
     {
         try {
+
             $attributes = $request->validate([
                 'user_id' => 'required',
                 'name' => 'required',
                 'email' => 'required|email'
             ]);
+
             $password = request('password');
 
+            /** @var User $user */
             $user = User::find($attributes['user_id']);
 
             if (!$user) {
@@ -85,7 +88,6 @@ class UsuarioController extends Controller
             }
 
             $user->save();
-            // Aqui vem o código de edição de telefones que foi removido no branch do hotfix.
             DB::commit();
             return MelResponse::success("Usuário alterado com sucesso!", $user);
         } catch (ValidationException $e) {
