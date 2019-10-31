@@ -57,7 +57,12 @@ class EmpresaController extends Controller
             $empresa->nome = $empresa_nome;
             $empresa->save();
 
-            $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             $empresa = $empresa->load('eventos');
             return MelResponse::success("Empresa alterada com sucesso!", $empresa);
 
@@ -76,7 +81,12 @@ class EmpresaController extends Controller
                 throw new Exception("ID informado não econtrado!");
             }
 
-            $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             $empresa = $empresa->load('eventos');
             return MelResponse::success(null, $empresa);
 
@@ -194,7 +204,11 @@ class EmpresaController extends Controller
 
             DB::commit();
 
-            $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
 
             return MelResponse::success("Telefone cadastrado com sucesso!", $empresa);
         } catch (Exception $e) {
@@ -230,7 +244,11 @@ class EmpresaController extends Controller
                 }
             }
 
-            $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
 
             return MelResponse::success("Telefone alterado com sucesso!", $empresa);
         } catch (Exception $e) {
@@ -258,22 +276,21 @@ class EmpresaController extends Controller
 
             if ($telefones) {
                 foreach ($telefones as $telefone) {
-                    $telefoneDel = Telefone::find($telefone['id']);
-                    if (!$telefoneDel) {
+
+                    if (!$empresa->telefones()->find($telefone['id'])) {
                         continue;
                     }
-                    $telefoneDel->ativo = 0;
-                    $telefoneDel->save();
-                    $telefonesAdd[] = $telefoneDel->id;
-                }
-                if (!empty($telefonesAdd)) {
-                    $empresa->telefones()->detach($telefonesAdd);
+                    $empresa->telefones()->updateExistingPivot($telefone['id'], ['ativo' => 0]);
                 }
             }
 
             DB::commit();
 
-            $empresa = $empresa->load('telefones');
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
 
             return MelResponse::success("Telefone removido com sucesso!", $empresa);
         } catch (Exception $e) {
