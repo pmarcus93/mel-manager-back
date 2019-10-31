@@ -17,7 +17,7 @@ class CategoriaController extends Controller
             $categoria->save();
             return MelResponse::success("Categoria cadastrada com sucesso!", $categoria);
         } catch (Exception $e) {
-            return MelResponse::error("Erro ao cadastrar categoria.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -33,12 +33,12 @@ class CategoriaController extends Controller
             }
 
             $categoria->nome = $categoria_nome;
-            $categoria->ativo=1;
+            $categoria->ativo = 1;
             $categoria->save();
 
             return MelResponse::success("Categoria alterada com sucesso!", $categoria);
         } catch (Exception $e) {
-            return MelResponse::error("Erro ao alterar categoria.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -52,12 +52,12 @@ class CategoriaController extends Controller
                 throw new Exception("Categoria não econtrada para remoção!");
             }
 
-            $categoria->ativo=0;
+            $categoria->ativo = 0;
             $categoria->save();
 
             return MelResponse::success("Categoria desabilitada com sucesso!", $categoria);
         } catch (Exception $e) {
-            return MelResponse::error("Erro ao desabilitar categoria.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ class CategoriaController extends Controller
 
             return MelResponse::success(null, $categoria);
         } catch (Exception $e) {
-            return MelResponse::error("Não foi possível retornar os dados da categoria.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -88,7 +88,7 @@ class CategoriaController extends Controller
 
             return MelResponse::success(null, $categoria);
         } catch (Exception $e) {
-            return MelResponse::error("Não foi possível retornar as categorias.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 }
