@@ -105,7 +105,7 @@ class UsuarioController extends Controller
 
             $attributes = $request->validate([
                 'user_id' => 'required',
-                'telefones' => 'required|digits_between:10,11'
+                'telefones' => 'required'
             ]);
 
             $telefonesAdd = [];
