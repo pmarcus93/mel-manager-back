@@ -28,7 +28,7 @@ trait MelResponse
         ], $statusCode);
     }
 
-    public static function error($text, $exceptionMessage = "")
+    public static function error($text)
     {
         $statusCode = 500;
 
