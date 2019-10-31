@@ -15,10 +15,11 @@ class CreateTelefoneEmpresaTable extends Migration
     {
         Schema::create('telefone_empresa', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
             $table->unsignedBigInteger('empresa_id');
-            $table->foreign('empresa_id')->references('id')->on('empresa');
             $table->unsignedBigInteger('telefone_id');
+            $table->boolean('ativo')->default(1);
+            $table->timestamps();
+            $table->foreign('empresa_id')->references('id')->on('empresa');
             $table->foreign('telefone_id')->references('id')->on('telefone');
         });
     }
