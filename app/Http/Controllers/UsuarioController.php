@@ -51,7 +51,7 @@ class UsuarioController extends Controller
             DB::commit();
 
             $user = $user->load('telefones');
-            return MelResponse::success("Usuário cadastrado com sucesso!", $user);
+            return MelResponse::success("Usuário cadastrado com sucesso.", $user);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
@@ -75,7 +75,7 @@ class UsuarioController extends Controller
             $user = User::find($attributes['user_id']);
 
             if (!$user) {
-                throw new \Exception("Usuário não econtrado para edição!");
+                throw new \Exception("Usuário não econtrado para edição.");
             }
 
             DB::beginTransaction();
@@ -89,7 +89,7 @@ class UsuarioController extends Controller
 
             $user->save();
             DB::commit();
-            return MelResponse::success("Usuário alterado com sucesso!", $user);
+            return MelResponse::success("Usuário alterado com sucesso.", $user);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
@@ -98,28 +98,27 @@ class UsuarioController extends Controller
         }
     }
 
-    public function cadastrarTelefone()
+    public function cadastrarTelefone(Request $request)
     {
         try {
-            $user_id = request('user_id');
-            $telefones = request('telefones');
+
+            $attributes = $request->validate([
+                'user_id' => 'required',
+                'telefones' => 'required'
+            ]);
 
             $telefonesAdd = [];
 
             /** @var User $user */
-            $user = User::find($user_id);
+            $user = User::find($attributes['user_id']);
 
             if (!$user) {
-                throw new \Exception("Usuário não econtrado!");
-            }
-
-            if (!$telefones) {
-                throw new \Exception("Você precisa informar o telefone!");
+                throw new \Exception("Usuário não econtrado.");
             }
 
             DB::beginTransaction();
 
-            foreach ($telefones as $telefone) {
+            foreach ($attributes['telefones'] as $telefone) {
                 $novoTelefone = new Telefone();
                 $novoTelefone->numero = $telefone;
                 $novoTelefone->save();
@@ -131,7 +130,7 @@ class UsuarioController extends Controller
             DB::commit();
 
             $user = $user->load('telefones');
-            return MelResponse::success("Telefone cadastrado com sucesso!", $user);
+            return MelResponse::success("Telefone(s) cadastrado(s) com sucesso.", $user);
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error($e->getMessage());
