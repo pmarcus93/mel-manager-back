@@ -41,7 +41,7 @@ class UsuarioController extends Controller
 
             if ($telefones) {
                 foreach ($telefones as $telefone) {
-                    $novoTelefone = Telefone();
+                    $novoTelefone = new Telefone();
                     $novoTelefone->numero = $telefone;
                     $novoTelefone->save();
                     $telefonesAdd[] = $novoTelefone->id;
