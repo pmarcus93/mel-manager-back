@@ -28,7 +28,7 @@ trait MelResponse
         ], $statusCode);
     }
 
-    public static function error($text, $exceptionMessage = "")
+    public static function error($text)
     {
         $statusCode = 500;
 
@@ -36,6 +36,22 @@ trait MelResponse
             'type' => 'error',
             'text' => $text ? $text : "Erro ao executar requisição!",
             'exceptionMessage' => $exceptionMessage
+        ], $statusCode);
+    }
+
+    public static function validationError(Array $errors) {
+
+        foreach ($errors as $errorKey => $errorValue) {
+            foreach ($errorValue as $errorText) {
+                $errorMessage = $errorText;
+            }
+        }
+
+        $statusCode = 500;
+
+        return \response([
+            'type' => 'error',
+            'text' => $errorMessage,
         ], $statusCode);
     }
 
