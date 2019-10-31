@@ -90,7 +90,7 @@ class UsuarioController extends Controller
             return MelResponse::success("Usuário alterado com sucesso!", $user);
         } catch (\Exception $e) {
             DB::rollBack();
-            return MelResponse::error("Erro ao editar as informações do usuário.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -123,7 +123,7 @@ class UsuarioController extends Controller
             return MelResponse::success("Telefone cadastrado com sucesso!", $user);
         } catch (\Exception $e) {
             DB::rollBack();
-            return MelResponse::error("Erro ao cadastrar telefone.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -155,7 +155,7 @@ class UsuarioController extends Controller
             $user = $user->load('telefones');
             return MelResponse::success("Telefone alterado com sucesso!", $user);
         } catch (\Exception $e) {
-            return MelResponse::error("Erro ao alter telefone.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -187,7 +187,7 @@ class UsuarioController extends Controller
             return MelResponse::success("Telefone excluído com sucesso!", $user);
         } catch (\Exception $e) {
             DB::rollBack();
-            return MelResponse::error("Erro ao excluir telefone.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -213,7 +213,7 @@ class UsuarioController extends Controller
             return MelResponse::success(null, $user);
 
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -231,7 +231,7 @@ class UsuarioController extends Controller
             return MelResponse::success(null, $user);
 
         } catch (\Exception $e) {
-            return MelResponse::error("Não foi possível retornar o usuário informado.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
