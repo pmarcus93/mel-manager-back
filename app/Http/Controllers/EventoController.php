@@ -94,8 +94,6 @@ class EventoController extends Controller
 
             DB::commit();
 
-            $evento = $evento->load('administrador');
-
             return MelResponse::success("Edição de evento cadastrada com sucesso!", $evento);
         } catch (Exception $e) {
             DB::rollBack();
@@ -113,6 +111,10 @@ class EventoController extends Controller
 
             if (!$edicao) {
                 throw new Exception("Nenhuma edição de evento com o id " . $edicao_id . " encontrado.");
+            }
+
+            if ($edicao->ativo === 0) {
+                throw new Exception("Evento informado foi removido do sistema.");
             }
 
             if (!$nome) {
@@ -137,6 +139,10 @@ class EventoController extends Controller
 
             if (!$edicao) {
                 throw new Exception("Nenhuma edição de evento com o id " . $edicao_id . " encontrado.");
+            }
+
+            if ($edicao->ativo === 0) {
+                throw new Exception("Evento informado foi removido do sistema.");
             }
 
             $edicao->ativo = 0;
