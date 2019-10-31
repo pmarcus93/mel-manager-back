@@ -37,7 +37,7 @@ class EmpresaController extends Controller
 
         } catch (Exception $e) {
             DB::rollBack();
-            return MelResponse::error("Erro ao cadastrar empresa.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -93,7 +93,7 @@ class EmpresaController extends Controller
 
         } catch (Exception $e) {
             DB::rollBack();
-            return MelResponse::error("Erro ao alter empresa.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -112,7 +112,7 @@ class EmpresaController extends Controller
             return MelResponse::success(null, $empresa);
 
         } catch (Exception $e) {
-            return MelResponse::error("Não foi possível retornar os dados da empresa.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -139,7 +139,7 @@ class EmpresaController extends Controller
             return MelResponse::success("Evento vinculado a empresa com sucesso!", $empresa);
 
         } catch (Exception $e) {
-            return MelResponse::error("Não foi possível vincular evento à empresa.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -166,7 +166,7 @@ class EmpresaController extends Controller
             return MelResponse::success("Evento desvinculado a empresa com sucesso!", $empresa);
 
         } catch (Exception $e) {
-            return MelResponse::error("Não foi possível desvincular evento à empresa.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
@@ -189,7 +189,7 @@ class EmpresaController extends Controller
             return MelResponse::success(null, $empresa);
 
         } catch (Exception $e) {
-            return MelResponse::error("Não foi possível retornar os eventos vinculados a empresa.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
