@@ -15,7 +15,6 @@ class UsuarioController extends Controller
     public function cadastrarUsuario(Request $request)
     {
         try {
-
             $attributes = $request->validate([
                 'name' => 'required',
                 'email' => 'required|email',
@@ -60,15 +59,17 @@ class UsuarioController extends Controller
         }
     }
 
-    public function editarUsuario()
+    public function editarUsuario(Request $request)
     {
         try {
-            $user_id = request('user_id');
-            $name = request('name');
-            $email = request('email');
+            $attributes = $request->validate([
+                'user_id' => 'required',
+                'name' => 'required',
+                'email' => 'required|email'
+            ]);
             $password = request('password');
 
-            $user = User::find($user_id);
+            $user = User::find($attributes['user_id']);
 
             if (!$user) {
                 throw new \Exception("Usuário não econtrado para edição!");
@@ -76,13 +77,8 @@ class UsuarioController extends Controller
 
             DB::beginTransaction();
 
-            if ($name) {
-                $user->name = $name;
-            }
-
-            if ($email) {
-                $user->email = $email;
-            }
+            $user->name = $attributes['name'];
+            $user->email = $attributes['email'];
 
             if ($password) {
                 $user->password = Hash::make($password);
@@ -92,6 +88,8 @@ class UsuarioController extends Controller
             // Aqui vem o código de edição de telefones que foi removido no branch do hotfix.
             DB::commit();
             return MelResponse::success("Usuário alterado com sucesso!", $user);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error($e->getMessage());
