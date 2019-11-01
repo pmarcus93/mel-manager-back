@@ -30,6 +30,10 @@ Route::prefix('empresa')->group(function () {
     Route::post('/desvincular-evento-empresa', 'EmpresaController@desvincularEventoEmpresa');
     Route::get('/retornar-empresa/{id}','EmpresaController@retornarEmpresa');
     Route::get('/retornar-eventos-empresa/{empresa_id}','EmpresaController@retornarEventosDeEmpresa');
+    Route::post('/cadastrar-telefone-empresa', 'EmpresaController@cadastrarTelefone');
+    Route::post('/editar-telefone-empresa', 'EmpresaController@editarTelefone');
+    Route::delete('/excluir-telefone-empresa', 'EmpresaController@removerTelefone');
+
 });
 
 Route::prefix('categoria')->group(function () {

@@ -54,7 +54,7 @@ class EmpresaController extends Controller
             $empresa = Empresa::find($empresa_id);
 
             if (!$empresa) {
-                throw new Exception("Empresa não econtrada para edição!");
+                throw new Exception("Empresa não encontrada para edição!");
             }
 
             $empresa->nome = $empresa_nome;
@@ -171,6 +171,131 @@ class EmpresaController extends Controller
             return MelResponse::success(null, $empresa);
 
         } catch (Exception $e) {
+            return MelResponse::error($e->getMessage());
+        }
+    }
+
+    public function cadastrarTelefone()
+    {
+        try {
+            $empresa_id = request('empresa_id');
+            $telefones = request('telefones');
+
+            $empresa = Empresa::find($empresa_id);
+
+            if (!$empresa) {
+                throw new Exception("Empresa não encontrada!");
+            }
+
+            if (!$telefones) {
+                throw new Exception("Você precisa informar o telefone!");
+            }
+
+            DB::beginTransaction();
+
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneAdd = new Telefone();
+                    $telefoneAdd->numero = $telefone;
+                    $telefoneAdd->save();
+                    $telefonesAdd[] = $telefoneAdd->id;
+                }
+                $empresa->telefones()->sync($telefonesAdd);
+            }
+
+            DB::commit();
+
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
+            return MelResponse::success(null, $empresa);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return MelResponse::error($e->getMessage());
+        }
+    }
+
+    public function editarTelefone()
+    {
+        try {
+            $empresa_id = request('empresa_id');
+            $telefones = request('telefones');
+
+            $empresa = Empresa::find($empresa_id);
+
+            if (!$empresa) {
+                throw new Exception("Empresa não encontrada!");
+            }
+
+            if (!$telefones) {
+                throw new Exception("Você precisa informar o telefone!");
+            }
+
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneEdit = Telefone::find($telefone['id']);
+                    if (!$telefoneEdit) {
+                        continue;
+                    }
+                    $telefoneEdit->numero = $telefone['numero'];
+                    $telefoneEdit->save();
+                }
+            }
+
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
+            return MelResponse::success(null, $empresa);
+        } catch (Exception $e) {
+            return MelResponse::error($e->getMessage());
+        }
+    }
+
+    public function removerTelefone()
+    {
+        try {
+            $empresa_id = request('empresa_id');
+            $telefones = request('telefones');
+
+            $empresa = Empresa::find($empresa_id);
+
+            if (!$empresa) {
+                throw new Exception("Empresa não encontrada!");
+            }
+
+            if (!$telefones) {
+                throw new Exception("Você precisa informar o telefone!");
+            }
+
+            DB::beginTransaction();
+
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+
+                    if (!$empresa->telefones()->find($telefone['id'])) {
+                        continue;
+                    }
+                    $empresa->telefones()->updateExistingPivot($telefone['id'], ['ativo' => 0]);
+                }
+            }
+
+            DB::commit();
+
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
+            return MelResponse::success(null, $empresa);
+        } catch (Exception $e) {
+            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
