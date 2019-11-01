@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Telefone;
 use App\User;
 use App\Response\MelResponse;
 use Illuminate\Http\Request;

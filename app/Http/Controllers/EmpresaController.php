@@ -6,9 +6,7 @@ use Exception;
 use App\Evento;
 use App\Response\MelResponse;
 use App\Empresa;
-use App\Telefone;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
 
 class EmpresaController extends Controller
 {
