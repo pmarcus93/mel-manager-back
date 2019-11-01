@@ -16,7 +16,7 @@ class Evento extends Model
         return $this->belongsToMany('App\Empresa','evento_empresa','evento_id','empresa_id');
     }
 
-    public function administrador()
+    public function administradores()
     {
         return $this->belongsToMany('App\User','evento_administrador','evento_id','user_id');
     }

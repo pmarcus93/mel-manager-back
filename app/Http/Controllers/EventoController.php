@@ -28,11 +28,11 @@ class EventoController extends Controller
             $evento->nome = $nome;
             $evento->save();
 
-            $evento->administrador()->attach($usuario->id);
+            $evento->administradores()->attach($usuario->id);
 
             DB::commit();
 
-            $evento = $evento->load('administrador');
+            $evento = $evento->load('administradores');
 
             return MelResponse::success("Evento cadastrado com sucesso!", $evento);
 
@@ -82,9 +82,9 @@ class EventoController extends Controller
                 throw new \Exception("Nenhum evento encontrado.");
             }
 
-            $evento->load('administrador');
+            $evento->load('administradores');
 
-            $users = $evento->administrador;
+            $users = $evento->administradores;
 
             return MelResponse::success(null, $users);
         } catch (\Exception $e) {
@@ -268,13 +268,13 @@ class EventoController extends Controller
                 throw new \Exception("Nenhum usuário encontrado com o id informado!");
             }
 
-            $usuarioExistente = $evento->administrador()->find($eventoAdministrador->id);
+            $usuarioExistente = $evento->administradores()->find($eventoAdministrador->id);
 
             if ($usuarioExistente) {
                 throw new \Exception("Administrador já vinculado ao evento!");
             }
 
-            $evento->administrador()->attach($eventoAdministrador->id);
+            $evento->administradores()->attach($eventoAdministrador->id);
 
             return MelResponse::success("Administrador vinculado com sucesso.", $eventoAdministrador);
         } catch (\Exception $e) {
@@ -300,13 +300,13 @@ class EventoController extends Controller
                 throw new \Exception("Nenhum usuário encontrado com o id informado!");
             }
 
-            $usuarioExistente = $evento->administrador()->find($eventoAdministrador->id);
+            $usuarioExistente = $evento->administradores()->find($eventoAdministrador->id);
 
             if (!$usuarioExistente) {
                 throw new \Exception("Administrador não vinculado ao evento!");
             }
 
-            $evento->administrador()->detach($eventoAdministrador->id);
+            $evento->administradores()->detach($eventoAdministrador->id);
 
             return MelResponse::success("Administrador desvinculado com sucesso.", $eventoAdministrador);
         } catch (\Exception $e) {
