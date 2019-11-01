@@ -233,21 +233,19 @@ class EventoController extends Controller
         try {
             $user_id = request('user_id');
 
-            $eventosUsuario = DB::table('evento_administrador')
-                ->join('users', 'evento_administrador.user_id', '=', 'users.id')
-                ->join('evento', 'evento_administrador.evento_id', '=', 'evento.id')
-                ->where('users.id', '=', $user_id)
-                ->select('users.id AS user_id', 'users.name', 'evento.id AS evento_id', 'evento.nome')
+            $evento = Evento::query()
+                ->join('evento_administrador', 'evento_id', 'evento.id')
+                ->where('evento_administrador.user_id', '=', $user_id)
+                ->select('evento.*')
                 ->get();
 
-            foreach ($eventosUsuario as &$evento) {
-                $eventoEdicoes = EventoEdicao::select('id AS edicao_id', 'nome')
-                    ->where('evento_id', $evento->evento_id)
-                    ->get();
-                $evento->edicoes = $eventoEdicoes;
-            }
+            $evento->load([
+                'edicoes' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
 
-            return MelResponse::success("", $eventosUsuario);
+            return MelResponse::success("", $evento);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
