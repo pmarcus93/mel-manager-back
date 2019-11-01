@@ -145,7 +145,7 @@ class EventoController extends Controller
 
             return MelResponse::success('Edição de evento alterado com sucesso.', $edicao);
         } catch (Exception $e) {
-            return MelResponse::error("Não foi possível editar os dados da edição do evento.", $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
