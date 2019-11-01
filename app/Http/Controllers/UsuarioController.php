@@ -176,27 +176,38 @@ class UsuarioController extends Controller
     {
         try {
             $user_id = request('user_id');
-            $telefone_id = request('telefone_id');
+            $telefones = request('telefones');
 
             $user = User::find($user_id);
-            $telefone = Telefone::find($telefone_id);
 
             if (!$user) {
                 throw new \Exception("Usuário não econtrado!");
             }
 
-            if (!$telefone) {
-                throw new \Exception("Telefone não encontrado!");
+            if (!$telefones) {
+                throw new \Exception("Você precisa informar o telefone!");
             }
 
             DB::beginTransaction();
 
-            $user->telefones()->detach($telefone_id);
-            $telefone->delete();
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+
+                    if (!$user->telefones()->find($telefone['id'])) {
+                        continue;
+                    }
+                    $user->telefones()->updateExistingPivot($telefone['id'], ['ativo' => 0]);
+                }
+            }
 
             DB::commit();
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success("Telefone excluído com sucesso!", $user);
         } catch (\Exception $e) {
             DB::rollBack();
