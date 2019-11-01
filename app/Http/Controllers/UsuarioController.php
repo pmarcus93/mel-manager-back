@@ -142,29 +142,31 @@ class UsuarioController extends Controller
     {
         try {
             $user_id = request('user_id');
-            $telefone_id = request('telefone_id');
-            $telefone_numero = request('telefone_numero');
+            $telefones = request('telefones');
 
             $user = User::find($user_id);
-            $telefone = Telefone::find($telefone_id);
 
             if (!$user) {
                 throw new \Exception("Usuário não econtrado!");
             }
 
-            if (!$telefone) {
-                throw new \Exception("Telefone não encontrado!");
+            if (!$telefones) {
+                throw new \Exception("Você precisa informar o telefone!");
             }
 
-            if (!$telefone_numero) {
-                throw new \Exception("Você deve informar o número do telefone!");
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneEdit = Telefone::find($telefone['id']);
+                    if (!$telefoneEdit) {
+                        continue;
+                    }
+                    $telefoneEdit->numero = $telefone['numero'];
+                    $telefoneEdit->save();
+                }
             }
-
-            $telefone->numero = $telefone_numero;
-            $telefone->save();
 
             $user = $user->load('telefones');
-            return MelResponse::success("Telefone alterado com sucesso!", $user);
+            return MelResponse::success(null, $user);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
