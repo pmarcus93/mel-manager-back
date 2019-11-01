@@ -20,4 +20,9 @@ class Evento extends Model
     {
         return $this->belongsToMany('App\User','evento_administrador','evento_id','user_id');
     }
+
+    public function edicoes()
+    {
+        return $this->hasMany('App\EventoEdicao','evento_id');
+    }
 }
