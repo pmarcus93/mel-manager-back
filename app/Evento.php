@@ -13,7 +13,7 @@ class Evento extends Model
 
     public function empresas()
     {
-        return $this->belongsToMany('App\Evento','evento_empresa','evento_id','empresa_id');
+        return $this->belongsToMany('App\Empresa','evento_empresa','evento_id','empresa_id');
     }
 
     public function administrador()
