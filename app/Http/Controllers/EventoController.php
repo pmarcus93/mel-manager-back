@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Evento;
-use App\EventoAdministrador;
 use App\EventoEdicao;
 use App\Response\MelResponse;
 use App\User;
@@ -63,8 +62,8 @@ class EventoController extends Controller
             $evento->save();
 
             return MelResponse::success('Evento alterado com sucesso.', $evento);
-        } catch (Exception $e) {
-            return MelResponse::error("Não foi possível editar os dados do evento.", $e->getMessage());
+        } catch (\Exception $e) {
+            return MelResponse::error( $e->getMessage());
         }
     }
 
@@ -133,18 +132,18 @@ class EventoController extends Controller
             $edicao = EventoEdicao::find($edicao_id);
 
             if (!$edicao) {
-                throw new Exception("Nenhuma edição de evento com o id " . $edicao_id . " encontrado.");
+                throw new \Exception("Nenhuma edição de evento com o id " . $edicao_id . " encontrado.");
             }
 
             if (!$nome) {
-                throw new Exception("A descrição da edição do evento deve ser informada.");
+                throw new \Exception("A descrição da edição do evento deve ser informada.");
             }
 
             $edicao->nome = $nome;
             $edicao->save();
 
             return MelResponse::success('Edição de evento alterado com sucesso.', $edicao);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
@@ -157,14 +156,14 @@ class EventoController extends Controller
             $edicao = EventoEdicao::find($edicao_id);
 
             if (!$edicao) {
-                throw new Exception("Nenhuma edição de evento com o id " . $edicao_id . " encontrado.");
+                throw new \Exception("Nenhuma edição de evento com o id " . $edicao_id . " encontrado.");
             }
 
             $edicao->ativo = 0;
             $edicao->save();
 
             return MelResponse::success(null, $edicao);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
@@ -213,17 +212,17 @@ class EventoController extends Controller
             $edicao_id = request("edicao_id");
 
             if (!$edicao_id) {
-                throw new Exception("É necessário informar o id da edição.");
+                throw new \Exception("É necessário informar o id da edição.");
             }
 
             $edicao = EventoEdicao::find($edicao_id);
 
             if ($edicao->ativo === 0) {
-                throw new Exception("Evento informado foi removido do sistema.");
+                throw new \Exception("Evento informado foi removido do sistema.");
             }
 
             return MelResponse::success(null, $edicao);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
@@ -304,7 +303,7 @@ class EventoController extends Controller
             $usuarioExistente = $evento->administrador()->find($eventoAdministrador->id);
 
             if (!$usuarioExistente) {
-                throw new Exception("Administrador não vinculado ao evento!");
+                throw new \Exception("Administrador não vinculado ao evento!");
             }
 
             $evento->administrador()->detach($eventoAdministrador->id);
@@ -327,8 +326,8 @@ class EventoController extends Controller
             $empresas = $evento->empresas;
 
             return MelResponse::success("", $empresas);
-        } catch (Exception $e) {
-            return MelResponse::error("Não foi possível retornar as empresas vinculadas ao evento.", $e->getMessage());
+        } catch (\Exception $e) {
+            return MelResponse::error( $e->getMessage());
         }
     }
 
