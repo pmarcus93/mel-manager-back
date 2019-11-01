@@ -220,4 +220,43 @@ class EmpresaController extends Controller
         }
     }
 
+    public function editarTelefone()
+    {
+        try {
+            $empresa_id = request('empresa_id');
+            $telefones = request('telefones');
+
+            $empresa = Empresa::find($empresa_id);
+
+            if (!$empresa) {
+                throw new Exception("Empresa não econtrada!");
+            }
+
+            if (!$telefones) {
+                throw new Exception("Você precisa informar o telefone!");
+            }
+
+            if ($telefones) {
+                foreach ($telefones as $telefone) {
+                    $telefoneEdit = Telefone::find($telefone['id']);
+                    if (!$telefoneEdit) {
+                        continue;
+                    }
+                    $telefoneEdit->numero = $telefone['numero'];
+                    $telefoneEdit->save();
+                }
+            }
+
+            $empresa = $empresa->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
+            return MelResponse::success(null, $empresa);
+        } catch (Exception $e) {
+            return MelResponse::error($e->getMessage());
+        }
+    }
+
 }
