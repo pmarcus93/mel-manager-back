@@ -51,7 +51,12 @@ class UsuarioController extends Controller
 
             DB::commit();
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success("Usuário cadastrado com sucesso!", $user);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
@@ -130,7 +135,12 @@ class UsuarioController extends Controller
 
             DB::commit();
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success("Telefone cadastrado com sucesso!", $user);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -165,7 +175,12 @@ class UsuarioController extends Controller
                 }
             }
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success(null, $user);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
@@ -233,7 +248,12 @@ class UsuarioController extends Controller
                 throw new \Exception("Nenhum registro encontrado para o valor informado!");
             }
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success(null, $user);
 
         } catch (\Exception $e) {
@@ -251,7 +271,12 @@ class UsuarioController extends Controller
                 throw new \Exception("Nenhum registro encontrado para o valor informado!");
             }
 
-            $user = $user->load('telefones');
+            $user = $user->load([
+                'telefones' => function ($query) {
+                    $query->where('ativo', 1);
+                }
+            ]);
+
             return MelResponse::success(null, $user);
 
         } catch (\Exception $e) {
