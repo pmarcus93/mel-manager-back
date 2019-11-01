@@ -32,7 +32,7 @@ Route::prefix('empresa')->group(function () {
     Route::get('/retornar-eventos-empresa/{empresa_id}','EmpresaController@retornarEventosDeEmpresa');
     Route::post('/cadastrar-telefone-empresa', 'EmpresaController@cadastrarTelefone');
     Route::post('/editar-telefone-empresa', 'EmpresaController@editarTelefone');
-    Route::delete('/excluir-telefone-empresa/{user_id}/{telefone_id}', 'EmpresaController@removerTelefone');
+    Route::delete('/excluir-telefone-empresa', 'EmpresaController@removerTelefone');
 
 });
 
