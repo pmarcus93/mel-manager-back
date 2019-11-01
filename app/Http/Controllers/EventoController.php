@@ -289,17 +289,26 @@ class EventoController extends Controller
             $user_id = request('user_id');
             $evento_id = request('evento_id');
 
-            /** @var EventoAdministrador $eventoAdministrador */
-            $eventoAdministrador = EventoAdministrador::where('evento_id', $evento_id)
-                ->where('user_id', $user_id)
-                ->first();
+            $evento = Evento::find($evento_id);
 
-            if (!$eventoAdministrador || $eventoAdministrador->ativo === 0) {
-                throw new \Exception("O usuário não está vinculado como administrador para o evento.");
-            };
+            if (!$evento) {
+                throw new \Exception("Nenhum evendo encontrado com o id informado!");
+            }
 
-            $eventoAdministrador->ativo = 0;
-            $eventoAdministrador->save();
+            $eventoAdministrador = User::find($user_id);
+
+            if (!$eventoAdministrador) {
+                throw new \Exception("Nenhum usuário encontrado com o id informado!");
+            }
+
+            $usuarioExistente = $evento->administrador()->find($eventoAdministrador->id);
+
+            if (!$usuarioExistente) {
+                throw new Exception("Administrador não vinculado ao evento!");
+            }
+
+            $evento->administrador()->detach($eventoAdministrador->id);
+
             return MelResponse::success("Administrador desvinculado com sucesso.", $eventoAdministrador);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
