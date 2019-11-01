@@ -43,6 +43,31 @@ class EventoController extends Controller
         }
     }
 
+    public function editarEvento()
+    {
+        try {
+            $evento_id = request('evento_id');
+            $nome = request('nome');
+
+            $evento = Evento::find($evento_id);
+
+            if (!$evento) {
+                throw new \Exception("Nenhum evento com o id " . $evento_id . " encontrado.");
+            }
+
+            if (!$nome) {
+                throw new \Exception("A descrição do evento deve ser informada.");
+            }
+
+            $evento->nome = $nome;
+            $evento->save();
+
+            return MelResponse::success('Evento alterado com sucesso.', $evento);
+        } catch (Exception $e) {
+            return MelResponse::error("Não foi possível editar os dados do evento.", $e->getMessage());
+        }
+    }
+
     public function retornarAdministradores()
     {
         try {
