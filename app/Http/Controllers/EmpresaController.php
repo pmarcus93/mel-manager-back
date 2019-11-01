@@ -200,9 +200,7 @@ class EmpresaController extends Controller
                     $telefoneAdd->save();
                     $telefonesAdd[] = $telefoneAdd->id;
                 }
-                if (!empty($telefonesAdd)) {
-                    $empresa->telefones()->sync($telefonesAdd);
-                }
+                $empresa->telefones()->sync($telefonesAdd);
             }
 
             DB::commit();
