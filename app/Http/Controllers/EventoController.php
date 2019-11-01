@@ -257,22 +257,26 @@ class EventoController extends Controller
             $evento_id = request('evento_id');
             $user_id = request('user_id');
 
-            $eventoAdministrador = EventoAdministrador::where('evento_id', $evento_id)
-                ->where('user_id', $user_id)
-                ->first();
+            $evento = Evento::find($evento_id);
 
-            if ($eventoAdministrador && $eventoAdministrador->ativo) {
-                throw new \Exception("Este usuário já é administrador deste evento!");
+            if (!$evento) {
+                throw new \Exception("Nenhum evendo encontrado com o id informado!");
             }
+
+            $eventoAdministrador = User::find($user_id);
 
             if (!$eventoAdministrador) {
-                $eventoAdministrador = new EventoAdministrador();
-                $eventoAdministrador->user_id = $user_id;
-                $eventoAdministrador->evento_id = $evento_id;
+                throw new \Exception("Nenhum usuário encontrado com o id informado!");
             }
 
-            $eventoAdministrador->ativo = 1;
-            $eventoAdministrador->save();
+            $usuarioExistente = $evento->administrador()->find($eventoAdministrador->id);
+
+            if ($usuarioExistente) {
+                throw new \Exception("Administrador já vinculado ao evento!");
+            }
+
+            $evento->administrador()->attach($eventoAdministrador->id);
+
             return MelResponse::success("Administrador vinculado com sucesso.", $eventoAdministrador);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
