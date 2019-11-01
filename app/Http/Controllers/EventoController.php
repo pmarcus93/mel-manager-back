@@ -29,9 +29,11 @@ class EventoController extends Controller
             $evento->nome = $nome;
             $evento->save();
 
-            $evento->attach($usuario->id);
+            $evento->administrador()->attach($usuario->id);
 
             DB::commit();
+
+            $evento = $evento->load('administrador');
 
             return MelResponse::success("Evento cadastrado com sucesso!", $evento);
 
