@@ -47,16 +47,21 @@ class EventoController extends Controller
     {
         try {
             $evento_id = \request('id');
-            $eventoAdministradores = EventoAdministrador::where([
-                ['evento_id', '=', $evento_id],
-                ['ativo', '=', 1]
-            ])->get();
-            $users = [];
 
-            foreach ($eventoAdministradores as $eventoAdministrador) {
-                $usuario = User::find($eventoAdministrador->user_id);
-                $users[] = ['id' => $usuario->id, 'name' => $usuario->name];
+            if (!$evento_id){
+                throw new \Exception("É necessário informar o id.");
             }
+
+            $evento = Evento::find($evento_id);
+
+            if (!$evento){
+                throw new \Exception("Nenhum evento encontrado.");
+            }
+
+            $evento->load('administrador');
+
+            $users = $evento->administrador;
+
             return MelResponse::success(null, $users);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
