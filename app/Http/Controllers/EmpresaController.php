@@ -54,7 +54,7 @@ class EmpresaController extends Controller
             $empresa = Empresa::find($empresa_id);
 
             if (!$empresa) {
-                throw new Exception("Empresa não econtrada para edição!");
+                throw new Exception("Empresa não encontrada para edição!");
             }
 
             $empresa->nome = $empresa_nome;
@@ -184,7 +184,7 @@ class EmpresaController extends Controller
             $empresa = Empresa::find($empresa_id);
 
             if (!$empresa) {
-                throw new Exception("Empresa não econtrada!");
+                throw new Exception("Empresa não encontrada!");
             }
 
             if (!$telefones) {
@@ -229,7 +229,7 @@ class EmpresaController extends Controller
             $empresa = Empresa::find($empresa_id);
 
             if (!$empresa) {
-                throw new Exception("Empresa não econtrada!");
+                throw new Exception("Empresa não encontrada!");
             }
 
             if (!$telefones) {
@@ -268,7 +268,7 @@ class EmpresaController extends Controller
             $empresa = Empresa::find($empresa_id);
 
             if (!$empresa) {
-                throw new Exception("Empresa não econtrada!");
+                throw new Exception("Empresa não encontrada!");
             }
 
             if (!$telefones) {
