@@ -73,13 +73,13 @@ class EventoController extends Controller
         try {
             $evento_id = \request('id');
 
-            if (!$evento_id){
+            if (!$evento_id) {
                 throw new \Exception("É necessário informar o id.");
             }
 
             $evento = Evento::find($evento_id);
 
-            if (!$evento){
+            if (!$evento) {
                 throw new \Exception("Nenhum evento encontrado.");
             }
 
@@ -197,7 +197,10 @@ class EventoController extends Controller
                 throw new \Exception("É necessário informar o id do evento.");
             }
 
-            $edicoes = EventoEdicao::where('evento_id', $evento_id)->get();
+            $edicoes = EventoEdicao::where('evento_id', $evento_id)
+                ->orwhere('ativo', 1)
+                ->get();
+
             return MelResponse::success("", $edicoes);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
