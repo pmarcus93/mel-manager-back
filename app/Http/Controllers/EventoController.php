@@ -197,7 +197,7 @@ class EventoController extends Controller
             }
 
             $edicoes = EventoEdicao::where('evento_id', $evento_id)
-                ->orwhere('ativo', 1)
+                ->where('ativo', 1)
                 ->get();
 
             return MelResponse::success("", $edicoes);
