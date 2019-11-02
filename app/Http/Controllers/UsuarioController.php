@@ -116,22 +116,16 @@ class UsuarioController extends Controller
         }
     }
 
-    public function retornarUsuario(Request $request)
+    public function retornarUsuario($user_id)
     {
         try {
-
-            $attributes = $request->validate([
-               'user_id' => 'required'
-            ]);
-
-            $user = User::find($attributes['user_id']);
+            $user = User::find($user_id);
 
             if (!$user) {
                 throw new \Exception("Não há usuário cadastrado no sistema com esse id.");
             }
 
             return MelResponse::success(null, $user);
-
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
