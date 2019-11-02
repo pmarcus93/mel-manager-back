@@ -58,7 +58,6 @@ class UsuarioController extends Controller
                 'email' => 'required|email'
             ]);
 
-            $password = request('password');
             $telefone = request('telefone');
 
             /** @var User $user */
@@ -68,21 +67,15 @@ class UsuarioController extends Controller
                 throw new \Exception("Usuário não econtrado para edição.");
             }
 
-            DB::beginTransaction();
-
             $user->name = $attributes['name'];
             $user->email = $attributes['email'];
-
-            if ($password) {
-                $user->password = Hash::make($password);
-            }
+            $user->password = $attributes['password'];
 
             if ($telefone) {
                 $user->telefone = $telefone;
             }
 
             $user->save();
-            DB::commit();
             return MelResponse::success("Usuário alterado com sucesso.", $user);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
@@ -95,6 +88,7 @@ class UsuarioController extends Controller
     public function retornarUsuarioPorNomeEmail()
     {
         try {
+
             $search = request('search');
             $limiteRetorno = request('qtd');
 
