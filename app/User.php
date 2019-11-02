@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -37,8 +36,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function telefones()
+    public function eventos()
     {
-        return $this->belongsToMany('App\Telefone','telefone_users','user_id','telefone_id');
+        return $this->belongsToMany('App\Evento','evento_administrador','user_id','evento_id');
     }
 }

@@ -16,9 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('usuario')->group(function () {
     Route::post('/cadastrar-usuario', 'UsuarioController@cadastrarUsuario');
     Route::post('/editar-usuario', 'UsuarioController@editarUsuario');
-    Route::post('/cadastrar-telefone-usuario', 'UsuarioController@cadastrarTelefone');
-    Route::post('/editar-telefone-usuario', 'UsuarioController@editarTelefone');
-    Route::delete('/excluir-telefone-usuario/{user_id}&{telefone_id}', 'UsuarioController@removerTelefone');
     Route::get('/retornar-usuario-nome-email/{search}&{qtd}', 'UsuarioController@retornarUsuarioPorNomeEmail');
     Route::get('/retornar-usuario-id/{id}', 'UsuarioController@retornarUsuarioPorID');
 });
@@ -45,9 +42,13 @@ Route::prefix('evento')->group(function () {
     Route::get('/retornar-edicoes-evento/{id}', 'EventoController@retornarEdicoesEvento');
     Route::get('/retornar-edicao-evento/{edicao_id}', 'EventoController@retornarEdicaoEvento');
     Route::post('/cadastrar-evento', 'EventoController@cadastrarEvento');
+    Route::post('/editar-evento', 'EventoController@editarEvento');
     Route::post('/cadastrar-edicao-evento', 'EventoController@cadastrarEdicaoEvento');
+    Route::post('/editar-edicao-evento', 'EventoController@editarEdicaoEvento');
+    Route::post('/remover-edicao-evento', 'EventoController@removerEdicaoEvento');
     Route::post('/vincular-administrador-evento/', 'EventoController@vincularAdministradorEvento');
     Route::post('/desvincular-administrador-evento/', 'EventoController@desvincularAdministradorEvento');
     Route::get('/retornar-edicoes-evento-usuario/{user_id}', 'EventoController@retornarEdicoesEventoUsuario');
+    Route::get('/retornar-empresas-evento/{evento_id}', 'EventoController@retornarEmpresaDeEvento');
     Route::get('/retornar-evento/{evento_id}', 'EventoController@retornarEvento');
 });
