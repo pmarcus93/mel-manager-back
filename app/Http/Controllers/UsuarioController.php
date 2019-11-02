@@ -69,7 +69,6 @@ class UsuarioController extends Controller
 
             $user->name = $attributes['name'];
             $user->email = $attributes['email'];
-            $user->password = $attributes['password'];
 
             if ($telefone) {
                 $user->telefone = $telefone;
