@@ -21,6 +21,8 @@ class UsuarioController extends Controller
                 'password' => 'required'
             ]);
 
+            $telefone = \request('telefone');
+
             $user = User::where('email', $attributes['email'])->first();
 
             if ($user) {
@@ -32,8 +34,8 @@ class UsuarioController extends Controller
             $user->email = $attributes['email'];
             $user->password = Hash::make($attributes['password']);
 
-            if ($attributes['telefone']) {
-                $user->telefone = $attributes['telefone'];
+            if ($telefone) {
+                $user->telefone = $telefone;
             }
 
             $user->save();
