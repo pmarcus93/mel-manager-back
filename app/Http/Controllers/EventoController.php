@@ -75,24 +75,17 @@ class EventoController extends Controller
         }
     }
 
-    public function retornarAdministradores(Request $request)
+    public function retornarAdministradores($evento_id)
     {
         try {
-
-            $attributes = $request->validate([
-                'evento_id' => 'required'
-            ]);
-
-            $evento = Evento::find($attributes['evento_id']);
+            $evento = Evento::find($evento_id);
 
             if (!$evento) {
                 throw new \Exception("Nenhum evento encontrado.");
             }
 
             $evento->load('administradores');
-
             $users = $evento->administradores;
-
             return MelResponse::success(null, $users);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
