@@ -38,8 +38,8 @@ Route::prefix('categoria')->group(function () {
 });
 
 Route::prefix('evento')->group(function () {
-    Route::get('/retornar-administradores/{id}', 'EventoController@retornarAdministradores');
-    Route::get('/retornar-edicoes-evento/{id}', 'EventoController@retornarEdicoesEvento');
+    Route::get('/retornar-administradores/{evento_id}', 'EventoController@retornarAdministradores');
+    Route::get('/retornar-edicoes-evento/{evento_id}', 'EventoController@retornarEdicoesEvento');
     Route::get('/retornar-edicao-evento/{edicao_id}', 'EventoController@retornarEdicaoEvento');
     Route::post('/cadastrar-evento', 'EventoController@cadastrarEvento');
     Route::post('/editar-evento', 'EventoController@editarEvento');

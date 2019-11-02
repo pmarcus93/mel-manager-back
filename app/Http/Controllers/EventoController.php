@@ -6,26 +6,31 @@ use App\Evento;
 use App\EventoEdicao;
 use App\Response\MelResponse;
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class EventoController extends Controller
 {
-    public function cadastrarEvento()
+    public function cadastrarEvento(Request $request)
     {
         try {
-            $user_id = \request('user_id');
-            $nome = \request('nome');
 
-            $usuario = User::find($user_id);
+            $attributes = $request->validate([
+                'user_id' => 'required',
+                'nome' => 'nome'
+            ]);
+
+            $usuario = User::find($attributes['user_id']);
 
             if (!$usuario) {
-                throw new \Exception("Não existe usuário no banco de dados com o id informado [" . $user_id . "].");
+                throw new \Exception("Não existe usuário no banco de dados com o id informado [" . $attributes['user_id'] . "].");
             }
 
             DB::beginTransaction();
 
             $evento = new Evento();
-            $evento->nome = $nome;
+            $evento->nome = $attributes['nome'];
             $evento->save();
 
             $evento->administradores()->attach($usuario->id);
@@ -36,47 +41,49 @@ class EventoController extends Controller
 
             return MelResponse::success("Evento cadastrado com sucesso!", $evento);
 
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function editarEvento()
+    public function editarEvento(Request $request)
     {
         try {
-            $evento_id = request('evento_id');
-            $nome = request('nome');
 
-            $evento = Evento::find($evento_id);
+            $attributes = $request->validate([
+                'user_id' => 'required',
+                'nome' => 'nome'
+            ]);
+
+            $evento = Evento::find($attributes['evento_id']);
 
             if (!$evento) {
-                throw new \Exception("Nenhum evento com o id " . $evento_id . " encontrado.");
+                throw new \Exception("Nenhum evento com o id " . $attributes['evento_id'] . " encontrado.");
             }
 
-            if (!$nome) {
-                throw new \Exception("A descrição do evento deve ser informada.");
-            }
-
-            $evento->nome = $nome;
+            $evento->nome = $attributes['nome'];
             $evento->save();
 
             return MelResponse::success('Evento alterado com sucesso.', $evento);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
-            return MelResponse::error( $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
-    public function retornarAdministradores()
+    public function retornarAdministradores(Request $request)
     {
         try {
-            $evento_id = \request('id');
 
-            if (!$evento_id) {
-                throw new \Exception("É necessário informar o id.");
-            }
+            $attributes = $request->validate([
+                'evento_id' => 'required'
+            ]);
 
-            $evento = Evento::find($evento_id);
+            $evento = Evento::find($attributes['evento_id']);
 
             if (!$evento) {
                 throw new \Exception("Nenhum evento encontrado.");
@@ -87,154 +94,174 @@ class EventoController extends Controller
             $users = $evento->administradores;
 
             return MelResponse::success(null, $users);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function cadastrarEdicaoEvento()
+    public function cadastrarEdicaoEvento(Request $request)
     {
         try {
-            $evento_id = request('evento_id');
-            $nome = request('nome');
 
-            if (!$evento_id || !$nome) {
-                throw new \Exception("É necessário informar o id do evento e o nome da edição!");
-            }
+            $attributes = $request->vaidate([
+                'evento_id' => 'required',
+                'nome' => 'required'
+            ]);
 
-            $eventoExistente = Evento::find($evento_id);
+            $eventoExistente = Evento::find($attributes['evento_id']);
 
             if (!$eventoExistente) {
-                throw new \Exception("Não existe evento cadastrado com o ID " . $evento_id . "!");
+                throw new \Exception("Não existe evento cadastrado com o ID " . $attributes['evento_id'] . "!");
             }
 
             DB::beginTransaction();
 
             $eventoEdicao = new EventoEdicao();
-            $eventoEdicao->nome = $nome;
+            $eventoEdicao->nome = $attributes['nome'];
             $eventoExistente->edicoes()->save($eventoEdicao);
 
             DB::commit();
 
             return MelResponse::success("Edição de evento cadastrada com sucesso!", $eventoEdicao);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function editarEdicaoEvento()
+    public function editarEdicaoEvento(Request $request)
     {
         try {
-            $edicao_id = request('edicao_id');
-            $nome = request('nome');
 
-            $edicao = EventoEdicao::find($edicao_id);
+            $attributes = $request->validate([
+                'edicao_id' => 'required',
+                'nome' => 'required',
+            ]);
+
+            $edicao = EventoEdicao::find($attributes['edicao_id']);
 
             if (!$edicao) {
-                throw new \Exception("Nenhuma edição de evento com o id " . $edicao_id . " encontrado.");
+                throw new \Exception("Nenhuma edição de evento com o id " . $attributes['edicao_id'] . " encontrado.");
             }
 
-            if (!$nome) {
-                throw new \Exception("A descrição da edição do evento deve ser informada.");
-            }
-
-            $edicao->nome = $nome;
+            $edicao->nome = $attributes['nome'];
             $edicao->save();
 
             return MelResponse::success('Edição de evento alterado com sucesso.', $edicao);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function removerEdicaoEvento()
+    public function removerEdicaoEvento(Request $request)
     {
         try {
-            $edicao_id = request('edicao_id');
 
-            $edicao = EventoEdicao::find($edicao_id);
+            $attributes = $request->validate([
+                'edicao_id' => 'required'
+            ]);
+
+
+            $edicao = EventoEdicao::find($attributes['edicao_id']);
 
             if (!$edicao) {
-                throw new \Exception("Nenhuma edição de evento com o id " . $edicao_id . " encontrado.");
+                throw new \Exception("Nenhuma edição de evento com o id " . $attributes['edicao_id'] . " encontrado.");
             }
 
             $edicao->ativo = 0;
             $edicao->save();
 
             return MelResponse::success(null, $edicao);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function retornarEvento()
+    public function retornarEvento(Request $request)
     {
         try {
+
+            $attributes = $request->validate([
+                'evento_id' => 'required'
+            ]);
+
             $msg = "Informações do evento obtidas com sucesso.";
-            $evento_id = request('evento_id');
 
             /** @var Evento $evento */
-            $evento = Evento::find($evento_id);
+            $evento = Evento::find($attributes['evento_id']);
 
             if (!$evento) {
-                $msg = "Nenhum evento com o id " . $evento_id . " encontrado.";
+                $msg = "Nenhum evento com o id " . $attributes['evento_id'] . " encontrado.";
             }
 
             return MelResponse::success($msg, $evento);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function retornarEdicoesEvento()
+    public function retornarEdicoesEvento(Request $request)
     {
         try {
-            $evento_id = request("id");
 
-            if (!$evento_id) {
-                throw new \Exception("É necessário informar o id do evento.");
-            }
+            $attributes = $request->required([
+                'evento_id' => 'required'
+            ]);
 
-            $edicoes = EventoEdicao::where('evento_id', $evento_id)
+            $edicoes = EventoEdicao::where('evento_id', $attributes['evento_id'])
                 ->where('ativo', 1)
                 ->get();
 
             return MelResponse::success("", $edicoes);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function retornarEdicaoEvento()
+    public function retornarEdicaoEvento(Request $request)
     {
         try {
-            $edicao_id = request("edicao_id");
+            $attributes = $request->required([
+                'edicao_id' => 'required'
+            ]);
 
-            if (!$edicao_id) {
-                throw new \Exception("É necessário informar o id da edição.");
-            }
-
-            $edicao = EventoEdicao::find($edicao_id);
+            $edicao = EventoEdicao::find($attributes['edicao_id']);
 
             if ($edicao->ativo === 0) {
                 throw new \Exception("Evento informado foi removido do sistema.");
             }
 
             return MelResponse::success(null, $edicao);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function retornarEdicoesEventoUsuario()
+    public function retornarEdicoesEventoUsuario(Request $request)
     {
         try {
-            $user_id = request('user_id');
+
+            $attributes = $request->required([
+                'user_id' => 'required'
+            ]);
 
             $evento = Evento::query()
                 ->join('evento_administrador', 'evento_id', 'evento.id')
-                ->where('evento_administrador.user_id', '=', $user_id)
+                ->where('evento_administrador.user_id', '=', $attributes['user_id'])
                 ->select('evento.*')
                 ->get();
 
@@ -245,24 +272,29 @@ class EventoController extends Controller
             ]);
 
             return MelResponse::success("", $evento);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function vincularAdministradorEvento()
+    public function vincularAdministradorEvento(Request $request)
     {
         try {
-            $evento_id = request('evento_id');
-            $user_id = request('user_id');
 
-            $evento = Evento::find($evento_id);
+            $attributes = $request->required([
+                'evento_id' => 'required',
+                'user_id' => 'required'
+            ]);
+
+            $evento = Evento::find($attributes['evento_id']);
 
             if (!$evento) {
                 throw new \Exception("Nenhum evendo encontrado com o id informado!");
             }
 
-            $eventoAdministrador = User::find($user_id);
+            $eventoAdministrador = User::find($attributes['user_id']);
 
             if (!$eventoAdministrador) {
                 throw new \Exception("Nenhum usuário encontrado com o id informado!");
@@ -277,24 +309,29 @@ class EventoController extends Controller
             $evento->administradores()->attach($eventoAdministrador->id);
 
             return MelResponse::success("Administrador vinculado com sucesso.", $eventoAdministrador);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function desvincularAdministradorEvento()
+    public function desvincularAdministradorEvento(Request $request)
     {
         try {
-            $user_id = request('user_id');
-            $evento_id = request('evento_id');
 
-            $evento = Evento::find($evento_id);
+            $attributes = $request->validate([
+                'user_id' => 'required',
+                'evento_id' => 'required',
+            ]);
+
+            $evento = Evento::find($attributes['evento_id']);
 
             if (!$evento) {
                 throw new \Exception("Nenhum evendo encontrado com o id informado!");
             }
 
-            $eventoAdministrador = User::find($user_id);
+            $eventoAdministrador = User::find($attributes['user_id']);
 
             if (!$eventoAdministrador) {
                 throw new \Exception("Nenhum usuário encontrado com o id informado!");
@@ -309,25 +346,29 @@ class EventoController extends Controller
             $evento->administradores()->detach($eventoAdministrador->id);
 
             return MelResponse::success("Administrador desvinculado com sucesso.", $eventoAdministrador);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function retornarEmpresaDeEvento()
+    public function retornarEmpresaDeEvento(Request $request)
     {
         try {
-            $evento_id = request('evento_id');
+            $attributes = $request->validate([
+                'evento_id' => 'required'
+            ]);
 
-            $evento = Evento::find($evento_id);
-
+            $evento = Evento::find($attributes['evento_id']);
             $evento->load('empresas');
-
             $empresas = $evento->empresas;
 
             return MelResponse::success("", $empresas);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
-            return MelResponse::error( $e->getMessage());
+            return MelResponse::error($e->getMessage());
         }
     }
 
