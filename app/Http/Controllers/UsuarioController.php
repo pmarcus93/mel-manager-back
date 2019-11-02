@@ -85,19 +85,22 @@ class UsuarioController extends Controller
         }
     }
 
-    public function retornarUsuarioPorNomeEmail()
+    public function retornarUsuarioPorNomeEmail(Request $request)
     {
         try {
 
-            $search = request('search');
+            $attributes = $request->validate([
+                'search' => 'required'
+            ]);
+
             $limiteRetorno = request('qtd');
 
             if ($limiteRetorno < 1) {
                 $limiteRetorno = 1;
             }
 
-            $user = User::where('name', 'like', $search . '%')
-                ->orWhere('email', 'like', '%' . $search . '%')
+            $user = User::where('name', 'like', $attributes['search'] . '%')
+                ->orWhere('email', 'like', '%' . $attributes['search'] . '%')
                 ->paginate($limiteRetorno);
 
             if (!$user) {
@@ -106,23 +109,31 @@ class UsuarioController extends Controller
 
             return MelResponse::success(null, $user);
 
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function retornarUsuarioPorID()
+    public function retornarUsuario(Request $request)
     {
         try {
-            $user_id = request('id');
-            $user = User::find($user_id);
+
+            $attributes = $request->validate([
+               'user_id' => 'required'
+            ]);
+
+            $user = User::find($attributes['user_id']);
 
             if (!$user) {
-                throw new \Exception("Nenhum registro encontrado para o valor informado!");
+                throw new \Exception("Não há usuário cadastrado no sistema com esse id.");
             }
 
             return MelResponse::success(null, $user);
 
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
