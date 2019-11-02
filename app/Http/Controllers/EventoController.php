@@ -218,14 +218,10 @@ class EventoController extends Controller
         }
     }
 
-    public function retornarEdicaoEvento(Request $request)
+    public function retornarEdicaoEvento($edicao_id)
     {
         try {
-            $attributes = $request->required([
-                'edicao_id' => 'required'
-            ]);
-
-            $edicao = EventoEdicao::find($attributes['edicao_id']);
+            $edicao = EventoEdicao::find($edicao_id);
 
             if ($edicao->ativo === 0) {
                 throw new \Exception("Evento informado foi removido do sistema.");
