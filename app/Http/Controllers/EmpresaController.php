@@ -13,31 +13,11 @@ class EmpresaController extends Controller
     public function cadastrarEmpresa()
     {
         try {
-            DB::beginTransaction();
             $empresa_nome = request('nome');
             $empresa = new Empresa();
             $empresa->nome = $empresa_nome;
             $empresa->save();
-            $telefones_numeros = request('telefones');
-
-            foreach ($telefones_numeros as $telefone_numero) {
-                $telefone = new Telefone();
-                $telefone->numero = $telefone_numero;
-                $telefone->save();
-                $telefonesAdd[] = $telefone->id;
-            }
-
-            $empresa->telefones()->sync($telefonesAdd);
-            DB::commit();
-
-            $empresa = $empresa->load([
-                'telefones' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
-
             return MelResponse::success("Empresa cadastrada com sucesso!", $empresa);
-
         } catch (Exception $e) {
             DB::rollBack();
             return MelResponse::error($e->getMessage());
@@ -49,6 +29,7 @@ class EmpresaController extends Controller
         try {
             $empresa_id = request('empresa_id');
             $empresa_nome = request('empresa_nome');
+
             $empresa = Empresa::find($empresa_id);
 
             if (!$empresa) {
@@ -58,15 +39,7 @@ class EmpresaController extends Controller
             $empresa->nome = $empresa_nome;
             $empresa->save();
 
-            $empresa = $empresa->load([
-                'telefones' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
-
-            $empresa = $empresa->load('eventos');
             return MelResponse::success("Empresa alterada com sucesso!", $empresa);
-
         } catch (Exception $e) {
             return MelResponse::error($e->getMessage());
         }
@@ -82,15 +55,8 @@ class EmpresaController extends Controller
                 throw new Exception("ID informado não econtrado!");
             }
 
-            $empresa = $empresa->load([
-                'telefones' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
-
             $empresa = $empresa->load('eventos');
             return MelResponse::success(null, $empresa);
-
         } catch (Exception $e) {
             return MelResponse::error($e->getMessage());
         }
