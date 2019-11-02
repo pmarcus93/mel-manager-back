@@ -178,21 +178,17 @@ class EventoController extends Controller
         }
     }
 
-    public function retornarEvento(Request $request)
+    public function retornarEvento($evento_id)
     {
         try {
-
-            $attributes = $request->validate([
-                'evento_id' => 'required'
-            ]);
 
             $msg = "Informações do evento obtidas com sucesso.";
 
             /** @var Evento $evento */
-            $evento = Evento::find($attributes['evento_id']);
+            $evento = Evento::find($evento_id);
 
             if (!$evento) {
-                $msg = "Nenhum evento com o id " . $attributes['evento_id'] . " encontrado.";
+                $msg = "Nenhum evento com o id " . $evento_id . " encontrado.";
             }
 
             return MelResponse::success($msg, $evento);
@@ -275,7 +271,7 @@ class EventoController extends Controller
             $evento = Evento::find($attributes['evento_id']);
 
             if (!$evento) {
-                throw new \Exception("Nenhum evendo encontrado com o id informado!");
+                throw new \Exception("Nenhum evento encontrado com o id informado!");
             }
 
             $eventoAdministrador = User::find($attributes['user_id']);
