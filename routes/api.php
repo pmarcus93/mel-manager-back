@@ -25,15 +25,7 @@ Route::prefix('empresa')->group(function () {
     Route::post('/editar-empresa', 'EmpresaController@editarEmpresa');
     Route::post('/vincular-evento-empresa', 'EmpresaController@vincularEventoEmpresa');
     Route::post('/desvincular-evento-empresa', 'EmpresaController@desvincularEventoEmpresa');
-    Route::get('/retornar-empresa/{id}','EmpresaController@retornarEmpresa');
-});
-
-Route::prefix('categoria')->group(function () {
-    Route::post('/cadastrar-categoria', 'CategoriaController@cadastrarCategoria');
-    Route::post('/editar-categoria', 'CategoriaController@editarCategoria');
-    Route::delete('/deletar-categoria/{id}','CategoriaController@desativarCategoria');
-    Route::get('/retornar-categoria/{id}','CategoriaController@retornarCategoriaPorID');
-    Route::get('/retornar-categorias','CategoriaController@retornarTodasCategorias');
+    Route::get('/retornar-empresa/{empresa_id}','EmpresaController@retornarEmpresa');
 });
 
 Route::prefix('evento')->group(function () {
