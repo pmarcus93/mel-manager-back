@@ -203,15 +203,10 @@ class EventoController extends Controller
         }
     }
 
-    public function retornarEdicoesEvento(Request $request)
+    public function retornarEdicoesEvento($evento_id)
     {
         try {
-
-            $attributes = $request->required([
-                'evento_id' => 'required'
-            ]);
-
-            $edicoes = EventoEdicao::where('evento_id', $attributes['evento_id'])
+            $edicoes = EventoEdicao::where('evento_id', $evento_id)
                 ->where('ativo', 1)
                 ->get();
 
