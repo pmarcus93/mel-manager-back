@@ -14,7 +14,7 @@ class UsuarioBusiness
     /**
      * Cadastra um usuário da tabela users.
      * @param Request $request
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return User
      * @throws \Exception
      */
     public function cadastrarUsuario(Request $request) {
@@ -43,7 +43,41 @@ class UsuarioBusiness
         }
 
         $user->save();
-        return MelResponse::success("Usuário cadastrado com sucesso!", $user);
+        return $user;
+    }
+
+    /**
+     * Edita as informações de usuário na tabela users.
+     * @param Request $request
+     * @return User
+     * @throws \Exception
+     */
+    public function editarUsuario(Request $request) {
+
+        $attributes = $request->validate([
+            'user_id' => 'required',
+            'name' => 'required',
+            'email' => 'required|email'
+        ]);
+
+        $telefone = request('telefone');
+
+        /** @var User $user */
+        $user = User::find($attributes['user_id']);
+
+        if (!$user) {
+            throw new \Exception("Usuário não econtrado para edição.");
+        }
+
+        $user->name = $attributes['name'];
+        $user->email = $attributes['email'];
+
+        if ($telefone) {
+            $user->telefone = $telefone;
+        }
+
+        $user->save();
+        return $user;
     }
 
 
