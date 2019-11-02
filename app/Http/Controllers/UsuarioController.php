@@ -85,23 +85,13 @@ class UsuarioController extends Controller
         }
     }
 
-    public function retornarUsuarioPorNomeEmail(Request $request)
+    public function retornarUsuarioPesquisa($pesquisa, $quantidade)
     {
         try {
 
-            $attributes = $request->validate([
-                'search' => 'required'
-            ]);
-
-            $limiteRetorno = request('qtd');
-
-            if ($limiteRetorno < 1) {
-                $limiteRetorno = 1;
-            }
-
-            $user = User::where('name', 'like', $attributes['search'] . '%')
-                ->orWhere('email', 'like', '%' . $attributes['search'] . '%')
-                ->paginate($limiteRetorno);
+            $user = User::where('name', 'like', $pesquisa . '%')
+                ->orWhere('email', 'like', '%' . $pesquisa . '%')
+                ->paginate($quantidade);
 
             if (!$user) {
                 throw new \Exception("Nenhum registro encontrado para o valor informado!");

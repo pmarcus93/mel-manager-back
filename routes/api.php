@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('usuario')->group(function () {
     Route::post('/cadastrar-usuario', 'UsuarioController@cadastrarUsuario');
     Route::post('/editar-usuario', 'UsuarioController@editarUsuario');
-    Route::get('/retornar-usuario-nome-email/{search}&{qtd}', 'UsuarioController@retornarUsuarioPorNomeEmail');
+    Route::get('/retornar-usuario-pesquisa/{search}/{qtd}', 'UsuarioController@retornarUsuarioPesquisa');
     Route::get('/retornar-usuario/{user_id}', 'UsuarioController@retornarUsuario');
 });
 
