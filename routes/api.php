@@ -16,9 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('usuario')->group(function () {
     Route::post('/cadastrar-usuario', 'UsuarioController@cadastrarUsuario');
     Route::post('/editar-usuario', 'UsuarioController@editarUsuario');
-    Route::post('/cadastrar-telefone-usuario', 'UsuarioController@cadastrarTelefone');
-    Route::post('/editar-telefone-usuario', 'UsuarioController@editarTelefone');
-    Route::delete('/excluir-telefone-usuario/{user_id}&{telefone_id}', 'UsuarioController@removerTelefone');
     Route::get('/retornar-usuario-nome-email/{search}&{qtd}', 'UsuarioController@retornarUsuarioPorNomeEmail');
     Route::get('/retornar-usuario-id/{id}', 'UsuarioController@retornarUsuarioPorID');
 });
@@ -30,10 +27,6 @@ Route::prefix('empresa')->group(function () {
     Route::post('/desvincular-evento-empresa', 'EmpresaController@desvincularEventoEmpresa');
     Route::get('/retornar-empresa/{id}','EmpresaController@retornarEmpresa');
     Route::get('/retornar-eventos-empresa/{empresa_id}','EmpresaController@retornarEventosDeEmpresa');
-    Route::post('/cadastrar-telefone-empresa', 'EmpresaController@cadastrarTelefone');
-    Route::post('/editar-telefone-empresa', 'EmpresaController@editarTelefone');
-    Route::delete('/excluir-telefone-empresa', 'EmpresaController@removerTelefone');
-
 });
 
 Route::prefix('categoria')->group(function () {
