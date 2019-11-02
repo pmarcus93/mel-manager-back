@@ -16,27 +16,32 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => "Lucas Junior Dias de Paula",
                 'email' => Str::random(10) . '@gmail.com',
-                'password' => bcrypt('password')
+                'password' => bcrypt('password'),
+                'telefone' => '123456789'
             ],
             [
                 'name' => "Marcus Pereira",
                 'email' => Str::random(10) . '@gmail.com',
-                'password' => bcrypt('password')
+                'password' => bcrypt('password'),
+                'telefone' => '123456789'
             ],
             [
                 'name' => "Eduardo César Silva Melo",
                 'email' => Str::random(10) . '@gmail.com',
-                'password' => bcrypt('password')
+                'password' => bcrypt('password'),
+                'telefone' => '123456789'
             ],
             [
                 'name' => "Daniel Capanema",
                 'email' => Str::random(10) . '@gmail.com',
-                'password' => bcrypt('password')
+                'password' => bcrypt('password'),
+                'telefone' => '123456789'
             ],
             [
                 'name' => "Luciana Mara Freitas",
                 'email' => Str::random(10) . '@gmail.com',
-                'password' => bcrypt('password')
+                'password' => bcrypt('password'),
+                'telefone' => '123456789'
             ]
         ];
 
