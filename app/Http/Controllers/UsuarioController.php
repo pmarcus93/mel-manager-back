@@ -22,35 +22,22 @@ class UsuarioController extends Controller
             ]);
 
             $user = User::where('email', $attributes['email'])->first();
-            $telefonesAdd = [];
 
             if ($user) {
                 throw new \Exception("E-mail já cadastrado.");
             }
 
-            DB::beginTransaction();
-
             $user = new User();
             $user->name = $attributes['name'];
             $user->email = $attributes['email'];
             $user->password = Hash::make($attributes['password']);
-            $user->save();
 
-            $telefones = \request('telefones');
-
-            if ($telefones) {
-                foreach ($telefones as $telefone) {
-                    $novoTelefone = new Telefone();
-                    $novoTelefone->numero = $telefone;
-                    $novoTelefone->save();
-                    $telefonesAdd[] = $novoTelefone->id;
-                }
-                $user->telefones()->sync($telefonesAdd);
+            if ($attributes['telefone']) {
+                $user->telefone = $attributes['telefone'];
             }
 
-            DB::commit();
+            $user->save();
 
-            $user = $user->load('telefones');
             return MelResponse::success("Usuário cadastrado com sucesso!", $user);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
@@ -62,10 +49,12 @@ class UsuarioController extends Controller
     public function editarUsuario()
     {
         try {
+
             $user_id = request('user_id');
             $name = request('name');
             $email = request('email');
             $password = request('password');
+            $telefone = request('telefone');
 
             $user = User::find($user_id);
 
@@ -87,8 +76,11 @@ class UsuarioController extends Controller
                 $user->password = Hash::make($password);
             }
 
+            if ($telefone) {
+                $user->telefone = $telefone;
+            }
+
             $user->save();
-            // Aqui vem o código de edição de telefones que foi removido no branch do hotfix.
             DB::commit();
             return MelResponse::success("Usuário alterado com sucesso!", $user);
         } catch (\Exception $e) {
@@ -115,7 +107,6 @@ class UsuarioController extends Controller
                 throw new \Exception("Nenhum registro encontrado para o valor informado!");
             }
 
-            $user = $user->load('telefones');
             return MelResponse::success(null, $user);
 
         } catch (\Exception $e) {
@@ -133,7 +124,6 @@ class UsuarioController extends Controller
                 throw new \Exception("Nenhum registro encontrado para o valor informado!");
             }
 
-            $user = $user->load('telefones');
             return MelResponse::success(null, $user);
 
         } catch (\Exception $e) {
