@@ -14,8 +14,12 @@ class EmpresaController extends Controller
     {
         try {
             $empresa_nome = request('nome');
+            $telefone = request('telefone');
+
             $empresa = new Empresa();
             $empresa->nome = $empresa_nome;
+            $empresa->telefone = $telefone;
+
             $empresa->save();
             return MelResponse::success("Empresa cadastrada com sucesso!", $empresa);
         } catch (Exception $e) {
@@ -29,6 +33,7 @@ class EmpresaController extends Controller
         try {
             $empresa_id = request('empresa_id');
             $empresa_nome = request('empresa_nome');
+            $telefone = request('telefone');
 
             $empresa = Empresa::find($empresa_id);
 
@@ -37,6 +42,7 @@ class EmpresaController extends Controller
             }
 
             $empresa->nome = $empresa_nome;
+            $empresa->telefone = $telefone;
             $empresa->save();
 
             return MelResponse::success("Empresa alterada com sucesso!", $empresa);
