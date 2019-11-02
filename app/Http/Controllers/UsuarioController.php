@@ -98,9 +98,6 @@ class UsuarioController extends Controller
             }
 
             return MelResponse::success(null, $user);
-
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
