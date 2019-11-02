@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Business\UsuarioBusiness;
 use App\User;
 use App\Response\MelResponse;
 use Illuminate\Http\Request;
@@ -11,36 +12,18 @@ use Illuminate\Validation\ValidationException;
 
 class UsuarioController extends Controller
 {
+
+    private $usuarioBusiness;
+
+    public function __construct()
+    {
+        $this->usuarioBusiness = new UsuarioBusiness();
+    }
+
     public function cadastrarUsuario(Request $request)
     {
         try {
-            $attributes = $request->validate([
-                'name' => 'required',
-                'email' => 'required|email',
-                'password' => 'required'
-            ]);
-
-            $telefone = \request('telefone');
-
-            /** @var User $user */
-            $user = User::where('email', $attributes['email'])->first();
-
-            if ($user) {
-                throw new \Exception("E-mail já cadastrado.");
-            }
-
-            $user = new User();
-            $user->name = $attributes['name'];
-            $user->email = $attributes['email'];
-            $user->password = Hash::make($attributes['password']);
-
-            if ($telefone) {
-                $user->telefone = $telefone;
-            }
-
-            $user->save();
-
-            return MelResponse::success("Usuário cadastrado com sucesso!", $user);
+            return $this->usuarioBusiness->cadastrarUsuario($request);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
