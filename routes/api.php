@@ -45,3 +45,9 @@ Route::prefix('evento-edicao/')->group(function (){
     Route::post('editar-evento-edicao', 'EventoEdicaoController@editarEventoEdicao');
     Route::post('remover-evento-edicao', 'EventoEdicaoController@removerEventoEdicao');
 });
+
+Route::prefix('usuarios-evento/')->group(function () {
+    Route::get('retornar-administradores-evento/{evento_id}', 'UsuariosEventoController@retornarAdministradoresEvento');
+    Route::post('vincular-administrador-evento', 'UsuariosEventoController@vincularAdministradorEvento');
+    Route::post('desvincular-administrador-evento', 'UsuariosEventoController@desvincularAdministradorEvento');
+});
