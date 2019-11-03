@@ -79,5 +79,35 @@ class UsuarioBusiness
         return $user;
     }
 
+    /**
+     * Retorna um usuário com base no user_id.
+     * @param int $user_id
+     * @return User
+     * @throws \Exception
+     */
+    public function retornarUsuario(int $user_id) {
+        /** @var User $user */
+        $user = User::find($user_id);
+        if (!$user) {
+            throw new \Exception("Não há usuário cadastrado no sistema com esse id.");
+        }
+        return $user;
+    }
+
+    /**
+     * Retorna um usuário com base no email informado.
+     * @param string $pesquisa
+     * @param int $quantidade
+     * @return User
+     * @throws \Exception
+     */
+    public function retornarUsuarioEmail($email) {
+        /** @var User $users */
+        $users = User::where('email', 'like', $email);
+        if (!$users) {
+            throw new \Exception("Nenhum usuário cadastrado com o email informado.");
+        }
+        return $users;
+    }
 
 }

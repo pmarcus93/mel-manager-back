@@ -45,19 +45,11 @@ class UsuarioController extends Controller
         }
     }
 
-    public function retornarUsuarioPesquisa($pesquisa, $quantidade)
+    public function retornarUsuarioEmail($email)
     {
         try {
-
-            $user = User::where('name', 'like', $pesquisa . '%')
-                ->orWhere('email', 'like', '%' . $pesquisa . '%')
-                ->paginate($quantidade);
-
-            if (!$user) {
-                throw new \Exception("Nenhum registro encontrado para o valor informado!");
-            }
-
-            return MelResponse::success(null, $user);
+            $usuario = $this->usuarioBusiness->retornarUsuarioEmail($email);
+            return MelResponse::success("Usuários encontrados.", $usuario);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
@@ -66,15 +58,8 @@ class UsuarioController extends Controller
     public function retornarUsuario($user_id)
     {
         try {
-            $user = User::find($user_id);
-
-            if (!$user) {
-                throw new \Exception("Não há usuário cadastrado no sistema com esse id.");
-            }
-
-            return MelResponse::success(null, $user);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
+            $user = $this->usuarioBusiness->retornarUsuario($user_id);
+            return MelResponse::success("Usuário encontrado.", $user);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
