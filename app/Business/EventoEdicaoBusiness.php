@@ -18,7 +18,7 @@ class EventoEdicaoBusiness
      * @return EventoEdicao
      * @throws \Exception
      */
-    public function retornarEdicaoEvento($eventoedicao_id)
+    public function retornarEventoEdicao($eventoedicao_id)
     {
         /** @var EventoEdicao $eventoedicao */
         $eventoedicao = EventoEdicao::find($eventoedicao_id);
@@ -91,7 +91,7 @@ class EventoEdicaoBusiness
      * @return EventoEdicao
      * @throws \Exception
      */
-    public function removerEdicaoEvento(Request $request)
+    public function removerEventoEdicao(Request $request)
     {
         $attributes = $request->validate([
             'edicao_id' => 'required'

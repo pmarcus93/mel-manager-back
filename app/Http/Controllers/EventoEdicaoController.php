@@ -21,14 +21,14 @@ class EventoEdicaoController extends Controller
     public function retornarEventoEdicao($eventoedicao_id)
     {
         try {
-            $eventoEdicao = $this->eventoEdicaoBusiness->retornarEdicaoEvento($eventoedicao_id);
+            $eventoEdicao = $this->eventoEdicaoBusiness->retornarEventoEdicao($eventoedicao_id);
             return MelResponse::success("Edição de evento encontrada.", $eventoEdicao);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function cadastrarEdicaoEvento(Request $request)
+    public function cadastrarEventoEdicao(Request $request)
     {
         try {
             $eventoEdicao = $this->eventoEdicaoBusiness->cadastrarEventoEdicao($request);
@@ -53,10 +53,10 @@ class EventoEdicaoController extends Controller
         }
     }
 
-    public function removerEdicaoEvento(Request $request)
+    public function removerEventoEdicao(Request $request)
     {
         try {
-            $edicaoRemovida = $this->eventoEdicaoBusiness->removerEdicaoEvento($request);
+            $edicaoRemovida = $this->eventoEdicaoBusiness->removerEventoEdicao($request);
             return MelResponse::success("Edição de evento removida com sucesso.", $edicaoRemovida);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
