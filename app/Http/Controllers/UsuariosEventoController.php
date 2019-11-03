@@ -2,26 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Business\UsuariosEventoBusiness;
 use App\Evento;
 use App\Response\MelResponse;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Validation\ValidationException;
 
 class UsuariosEventoController extends Controller
 {
+    /** @var UsuariosEventoBusiness */
+    private $usuariosEventoBusiness;
+
+    public function __construct()
+    {
+        $this->usuariosEventoBusiness = new UsuariosEventoBusiness();
+    }
+
     public function retornarAdministradoresEvento($evento_id)
     {
         try {
-            $evento = Evento::find($evento_id);
-
-            if (!$evento) {
-                throw new \Exception("Nenhum evento encontrado.");
-            }
-
-            $evento->load('administradores');
-            $users = $evento->administradores;
-            return MelResponse::success(null, $users);
+            $administradores = $this->usuariosEventoBusiness->retornarAdministradoresEvento($evento_id);
+            return MelResponse::success("Busca realizada com sucesso.", $administradores);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
@@ -32,33 +35,8 @@ class UsuariosEventoController extends Controller
     public function vincularAdministradorEvento(Request $request)
     {
         try {
-
-            $attributes = $request->required([
-                'evento_id' => 'required',
-                'user_id' => 'required'
-            ]);
-
-            $evento = Evento::find($attributes['evento_id']);
-
-            if (!$evento) {
-                throw new \Exception("Nenhum evento encontrado com o id informado!");
-            }
-
-            $eventoAdministrador = User::find($attributes['user_id']);
-
-            if (!$eventoAdministrador) {
-                throw new \Exception("Nenhum usuário encontrado com o id informado!");
-            }
-
-            $usuarioExistente = $evento->administradores()->find($eventoAdministrador->id);
-
-            if ($usuarioExistente) {
-                throw new \Exception("Administrador já vinculado ao evento!");
-            }
-
-            $evento->administradores()->attach($eventoAdministrador->id);
-
-            return MelResponse::success("Administrador vinculado com sucesso.", $eventoAdministrador);
+            $administradorVinculado = $this->usuariosEventoBusiness->vincularAdministradorEvento($request);
+            return MelResponse::success("Administrador vinculado com sucesso.", $administradorVinculado);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
@@ -69,33 +47,8 @@ class UsuariosEventoController extends Controller
     public function desvincularAdministradorEvento(Request $request)
     {
         try {
-
-            $attributes = $request->validate([
-                'user_id' => 'required',
-                'evento_id' => 'required',
-            ]);
-
-            $evento = Evento::find($attributes['evento_id']);
-
-            if (!$evento) {
-                throw new \Exception("Nenhum evendo encontrado com o id informado!");
-            }
-
-            $eventoAdministrador = User::find($attributes['user_id']);
-
-            if (!$eventoAdministrador) {
-                throw new \Exception("Nenhum usuário encontrado com o id informado!");
-            }
-
-            $usuarioExistente = $evento->administradores()->find($eventoAdministrador->id);
-
-            if (!$usuarioExistente) {
-                throw new \Exception("Administrador não vinculado ao evento!");
-            }
-
-            $evento->administradores()->detach($eventoAdministrador->id);
-
-            return MelResponse::success("Administrador desvinculado com sucesso.", $eventoAdministrador);
+            $administradoDesvinculado = $this->desvincularAdministradorEvento($request);
+            return MelResponse::success("Administrador desvinculado com sucesso.", $administradoDesvinculado);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
