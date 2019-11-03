@@ -79,5 +79,23 @@ class UsuarioBusiness
         return $user;
     }
 
+    /**
+     * @param string $pesquisa
+     * @param int $quantidade
+     * @return User
+     * @throws \Exception
+     */
+    public function retornarUsuarioPesquisa($pesquisa, $quantidade) {
+
+        /** @var User $users */
+        $users = User::where('name', 'like', $pesquisa . '%')
+            ->orWhere('email', 'like', '%' . $pesquisa . '%')
+            ->paginate($quantidade);
+
+        if (!$users) {
+            throw new \Exception("Nenhum registro encontrado para o valor informado!");
+        }
+        return $users;
+    }
 
 }

@@ -48,16 +48,8 @@ class UsuarioController extends Controller
     public function retornarUsuarioPesquisa($pesquisa, $quantidade)
     {
         try {
-
-            $user = User::where('name', 'like', $pesquisa . '%')
-                ->orWhere('email', 'like', '%' . $pesquisa . '%')
-                ->paginate($quantidade);
-
-            if (!$user) {
-                throw new \Exception("Nenhum registro encontrado para o valor informado!");
-            }
-
-            return MelResponse::success(null, $user);
+            $usuarios = $this->usuarioBusiness->retornarUsuarioPesquisa($pesquisa, $quantidade);
+            return MelResponse::success("Usuários encontrados.", $usuarios);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
