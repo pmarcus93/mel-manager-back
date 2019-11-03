@@ -94,90 +94,6 @@ class EventoController extends Controller
         }
     }
 
-    public function cadastrarEdicaoEvento(Request $request)
-    {
-        try {
-
-            $attributes = $request->vaidate([
-                'evento_id' => 'required',
-                'nome' => 'required'
-            ]);
-
-            $eventoExistente = Evento::find($attributes['evento_id']);
-
-            if (!$eventoExistente) {
-                throw new \Exception("Não existe evento cadastrado com o ID " . $attributes['evento_id'] . "!");
-            }
-
-            DB::beginTransaction();
-
-            $eventoEdicao = new EventoEdicao();
-            $eventoEdicao->nome = $attributes['nome'];
-            $eventoExistente->edicoes()->save($eventoEdicao);
-
-            DB::commit();
-
-            return MelResponse::success("Edição de evento cadastrada com sucesso!", $eventoEdicao);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return MelResponse::error($e->getMessage());
-        }
-    }
-
-    public function editarEdicaoEvento(Request $request)
-    {
-        try {
-
-            $attributes = $request->validate([
-                'edicao_id' => 'required',
-                'nome' => 'required',
-            ]);
-
-            $edicao = EventoEdicao::find($attributes['edicao_id']);
-
-            if (!$edicao) {
-                throw new \Exception("Nenhuma edição de evento com o id " . $attributes['edicao_id'] . " encontrado.");
-            }
-
-            $edicao->nome = $attributes['nome'];
-            $edicao->save();
-
-            return MelResponse::success('Edição de evento alterado com sucesso.', $edicao);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
-        } catch (\Exception $e) {
-            return MelResponse::error($e->getMessage());
-        }
-    }
-
-    public function removerEdicaoEvento(Request $request)
-    {
-        try {
-
-            $attributes = $request->validate([
-                'edicao_id' => 'required'
-            ]);
-
-
-            $edicao = EventoEdicao::find($attributes['edicao_id']);
-
-            if (!$edicao) {
-                throw new \Exception("Nenhuma edição de evento com o id " . $attributes['edicao_id'] . " encontrado.");
-            }
-
-            $edicao->ativo = 0;
-            $edicao->save();
-
-            return MelResponse::success(null, $edicao);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
-        } catch (\Exception $e) {
-            return MelResponse::error($e->getMessage());
-        }
-    }
-
     public function retornarEvento($evento_id)
     {
         try {
@@ -207,23 +123,6 @@ class EventoController extends Controller
                 ->get();
 
             return MelResponse::success("", $edicoes);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
-        } catch (\Exception $e) {
-            return MelResponse::error($e->getMessage());
-        }
-    }
-
-    public function retornarEdicaoEvento($edicao_id)
-    {
-        try {
-            $edicao = EventoEdicao::find($edicao_id);
-
-            if ($edicao->ativo === 0) {
-                throw new \Exception("Evento informado foi removido do sistema.");
-            }
-
-            return MelResponse::success(null, $edicao);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
