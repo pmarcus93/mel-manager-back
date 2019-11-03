@@ -45,11 +45,11 @@ class UsuarioController extends Controller
         }
     }
 
-    public function retornarUsuarioPesquisa($pesquisa, $quantidade)
+    public function retornarUsuarioEmail($email)
     {
         try {
-            $usuarios = $this->usuarioBusiness->retornarUsuarioPesquisa($pesquisa, $quantidade);
-            return MelResponse::success("Usuários encontrados.", $usuarios);
+            $usuario = $this->usuarioBusiness->retornarUsuarioEmail($email);
+            return MelResponse::success("Usuários encontrados.", $usuario);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }

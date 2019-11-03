@@ -95,22 +95,17 @@ class UsuarioBusiness
     }
 
     /**
-     * Retorna um ou mais usuários com base em seu nome ou email.
-     * TODO: Este método deverá retornar apenas 1 usuário com base apenas no seu email.
+     * Retorna um usuário com base no email informado.
      * @param string $pesquisa
      * @param int $quantidade
      * @return User
      * @throws \Exception
      */
-    public function retornarUsuarioPesquisa($pesquisa, $quantidade) {
-
+    public function retornarUsuarioEmail($email) {
         /** @var User $users */
-        $users = User::where('name', 'like', $pesquisa . '%')
-            ->orWhere('email', 'like', '%' . $pesquisa . '%')
-            ->paginate($quantidade);
-
+        $users = User::where('email', 'like', $email);
         if (!$users) {
-            throw new \Exception("Nenhum registro encontrado para o valor informado!");
+            throw new \Exception("Nenhum usuário cadastrado com o email informado.");
         }
         return $users;
     }
