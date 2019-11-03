@@ -58,15 +58,8 @@ class UsuarioController extends Controller
     public function retornarUsuario($user_id)
     {
         try {
-            $user = User::find($user_id);
-
-            if (!$user) {
-                throw new \Exception("Não há usuário cadastrado no sistema com esse id.");
-            }
-
-            return MelResponse::success(null, $user);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
+            $user = $this->usuarioBusiness->retornarUsuario($user_id);
+            return MelResponse::success("Usuário encontrado.", $user);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }

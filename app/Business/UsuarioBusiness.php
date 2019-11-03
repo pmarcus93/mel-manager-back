@@ -80,6 +80,23 @@ class UsuarioBusiness
     }
 
     /**
+     * Retorna um usuário com base no user_id.
+     * @param int $user_id
+     * @return User
+     * @throws \Exception
+     */
+    public function retornarUsuario(int $user_id) {
+        /** @var User $user */
+        $user = User::find($user_id);
+        if (!$user) {
+            throw new \Exception("Não há usuário cadastrado no sistema com esse id.");
+        }
+        return $user;
+    }
+
+    /**
+     * Retorna um ou mais usuários com base em seu nome ou email.
+     * TODO: Este método deverá retornar apenas 1 usuário com base apenas no seu email.
      * @param string $pesquisa
      * @param int $quantidade
      * @return User
