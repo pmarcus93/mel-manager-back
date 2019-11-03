@@ -37,7 +37,7 @@ class EventoEdicaoBusiness
     public function cadastrarEventoEdicao(Request $request)
     {
 
-        $attributes = $request->vaidate([
+        $attributes = $request->validate([
             'evento_id' => 'required',
             'nome' => 'required'
         ]);
