@@ -29,12 +29,9 @@ Route::prefix('empresa')->group(function () {
 });
 
 Route::prefix('evento')->group(function () {
-    Route::get('/retornar-administradores/{evento_id}', 'EventoController@retornarAdministradores');
     Route::get('/retornar-edicoes-evento/{evento_id}', 'EventoController@retornarEdicoesEvento');
     Route::post('/cadastrar-evento', 'EventoController@cadastrarEvento');
     Route::post('/editar-evento', 'EventoController@editarEvento');
-    Route::post('/vincular-administrador-evento/', 'EventoController@vincularAdministradorEvento');
-    Route::post('/desvincular-administrador-evento/', 'EventoController@desvincularAdministradorEvento');
     Route::get('/retornar-edicoes-evento-usuario/{user_id}', 'EventoController@retornarEdicoesEventoUsuario');
     Route::get('/retornar-evento/{evento_id}', 'EventoController@retornarEvento');
 });
