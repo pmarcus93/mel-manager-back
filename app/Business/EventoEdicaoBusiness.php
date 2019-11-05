@@ -104,8 +104,7 @@ class EventoEdicaoBusiness
             throw new \Exception("Nenhuma edição de evento com o id " . $attributes['edicao_id'] . " encontrado.");
         }
 
-        $edicao->ativo = 0;
-        $edicao->save();
+        $edicao->delete();
         return $edicao;
     }
 
