@@ -22,7 +22,7 @@ class EventoEdicaoBusiness
     {
         /** @var EventoEdicao $eventoedicao */
         $eventoedicao = EventoEdicao::find($eventoedicao_id);
-        if ($eventoedicao->ativo === 0) {
+        if (!$eventoedicao) {
             throw new \Exception("Evento informado foi removido do sistema.");
         }
         return $eventoedicao;
