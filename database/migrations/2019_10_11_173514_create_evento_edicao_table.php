@@ -16,9 +16,9 @@ class CreateEventoEdicaoTable extends Migration
         Schema::create('evento_edicao', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('evento_id');
-            $table->boolean('ativo')->default(1);
             $table->string('nome');
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('evento_id')->references('id')->on('evento');
         });
     }
