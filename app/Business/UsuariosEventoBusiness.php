@@ -40,7 +40,7 @@ class UsuariosEventoBusiness
      */
     public function vincularAdministradorEvento(Request $request)
     {
-        $attributes = $request->required([
+        $attributes = $request->validate([
             'evento_id' => 'required',
             'user_id' => 'required'
         ]);
