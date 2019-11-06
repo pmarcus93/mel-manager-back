@@ -47,7 +47,7 @@ class UsuariosEventoController extends Controller
     public function desvincularAdministradorEvento(Request $request)
     {
         try {
-            $administradoDesvinculado = $this->desvincularAdministradorEvento($request);
+            $administradoDesvinculado = $this->usuariosEventoBusiness->desvincularAdministradorEvento($request);
             return MelResponse::success("Administrador desvinculado com sucesso.", $administradoDesvinculado);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
