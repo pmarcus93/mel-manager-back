@@ -111,27 +111,17 @@ class EventoController extends Controller
         }
     }
 
-    public function retornarEdicoesEventoUsuario(Request $request)
+    public function retornarEventosUsuario($user_id)
     {
         try {
 
-            $attributes = $request->required([
-                'user_id' => 'required'
-            ]);
-
-            $evento = Evento::query()
+            $evento = DB::table('evento')
                 ->join('evento_administrador', 'evento_id', 'evento.id')
-                ->where('evento_administrador.user_id', '=', $attributes['user_id'])
+                ->where('evento_administrador.user_id', '=', $user_id)
                 ->select('evento.*')
                 ->get();
 
-            $evento->load([
-                'edicoes' => function ($query) {
-                    $query->where('ativo', 1);
-                }
-            ]);
-
-            return MelResponse::success("", $evento);
+            return MelResponse::success("Eventos encontrados para o usuário.", $evento);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {

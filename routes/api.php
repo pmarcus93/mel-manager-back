@@ -32,7 +32,7 @@ Route::prefix('evento')->group(function () {
     Route::get('/retornar-edicoes-evento/{evento_id}', 'EventoController@retornarEdicoesEvento');
     Route::post('/cadastrar-evento', 'EventoController@cadastrarEvento');
     Route::post('/editar-evento', 'EventoController@editarEvento');
-    Route::get('/retornar-edicoes-evento-usuario/{user_id}', 'EventoController@retornarEdicoesEventoUsuario');
+    Route::get('/retornar-eventos-usuario/{user_id}', 'EventoController@retornarEventosUsuario');
     Route::get('/retornar-evento/{evento_id}', 'EventoController@retornarEvento');
 });
 
