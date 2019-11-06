@@ -103,7 +103,7 @@ class UsuarioBusiness
      */
     public function retornarUsuarioEmail($email) {
         /** @var User $users */
-        $users = User::where('email', 'like', $email);
+        $users = User::where('email', '=', $email)->get();
         if (!$users) {
             throw new \Exception("Nenhum usuário cadastrado com o email informado.");
         }
