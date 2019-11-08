@@ -40,4 +40,23 @@ class EventoBusiness
         return $evento;
     }
 
+    public function editarEvento(Request $request)
+    {
+        $attributes = $request->validate([
+            'user_id' => 'required',
+            'nome' => 'nome'
+        ]);
+
+        $evento = Evento::find($attributes['evento_id']);
+
+        if (!$evento) {
+            throw new \Exception("Nenhum evento com o id " . $attributes['evento_id'] . " encontrado.");
+        }
+
+        $evento->nome = $attributes['nome'];
+        $evento->save();
+
+        return $evento;
+    }
+
 }

@@ -36,21 +36,7 @@ class EventoController extends Controller
     public function editarEvento(Request $request)
     {
         try {
-
-            $attributes = $request->validate([
-                'user_id' => 'required',
-                'nome' => 'nome'
-            ]);
-
-            $evento = Evento::find($attributes['evento_id']);
-
-            if (!$evento) {
-                throw new \Exception("Nenhum evento com o id " . $attributes['evento_id'] . " encontrado.");
-            }
-
-            $evento->nome = $attributes['nome'];
-            $evento->save();
-
+            $evento = $this->eventoBusiness->editarEvento($request);
             return MelResponse::success('Evento alterado com sucesso.', $evento);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
