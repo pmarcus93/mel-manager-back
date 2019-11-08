@@ -48,19 +48,8 @@ class EventoController extends Controller
     public function retornarEvento($evento_id)
     {
         try {
-
-            $msg = "Informações do evento obtidas com sucesso.";
-
-            /** @var Evento $evento */
-            $evento = Evento::find($evento_id);
-
-            if (!$evento) {
-                $msg = "Nenhum evento com o id " . $evento_id . " encontrado.";
-            }
-
-            return MelResponse::success($msg, $evento);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
+            $evento = $this->eventoBusiness->retornarEvento($evento_id);
+            return MelResponse::success("Evento encontrado.", $evento);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }

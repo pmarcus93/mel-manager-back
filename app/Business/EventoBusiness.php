@@ -59,4 +59,16 @@ class EventoBusiness
         return $evento;
     }
 
+    public function retornarEvento($evento_id)
+    {
+        /** @var Evento $evento */
+        $evento = Evento::find($evento_id);
+
+        if (!$evento) {
+            throw new \Exception( "Nenhum evento com o id " . $evento_id . " encontrado.");
+        }
+
+        return $evento;
+    }
+
 }
