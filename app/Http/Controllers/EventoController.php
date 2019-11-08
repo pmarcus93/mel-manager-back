@@ -6,7 +6,6 @@ use App\Business\EventoBusiness;
 use App\Evento;
 use App\EventoEdicao;
 use App\Response\MelResponse;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -24,32 +23,8 @@ class EventoController extends Controller
     public function cadastrarEvento(Request $request)
     {
         try {
-
-            $attributes = $request->validate([
-                'user_id' => 'required',
-                'nome' => 'nome'
-            ]);
-
-            $usuario = User::find($attributes['user_id']);
-
-            if (!$usuario) {
-                throw new \Exception("Não existe usuário no banco de dados com o id informado [" . $attributes['user_id'] . "].");
-            }
-
-            DB::beginTransaction();
-
-            $evento = new Evento();
-            $evento->nome = $attributes['nome'];
-            $evento->save();
-
-            $evento->administradores()->attach($usuario->id);
-
-            DB::commit();
-
-            $evento = $evento->load('administradores');
-
+            $evento = $this->eventoBusiness->cadastrarEvento($request);
             return MelResponse::success("Evento cadastrado com sucesso!", $evento);
-
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
