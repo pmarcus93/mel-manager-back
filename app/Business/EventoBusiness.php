@@ -71,4 +71,16 @@ class EventoBusiness
         return $evento;
     }
 
+    public function retornarEdicoesEvento($evento_id)
+    {
+        $edicoes = EventoEdicao::where('evento_id', $evento_id)
+            ->get();
+
+        if (!$edicoes) {
+            throw new \Exception( "Nenhuma edição de evento para o evento com com o id " . $evento_id . " encontrado.");
+        }
+
+        return $edicoes;
+    }
+
 }

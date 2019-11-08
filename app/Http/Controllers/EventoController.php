@@ -58,12 +58,8 @@ class EventoController extends Controller
     public function retornarEdicoesEvento($evento_id)
     {
         try {
-            $edicoes = EventoEdicao::where('evento_id', $evento_id)
-                ->get();
-
-            return MelResponse::success("", $edicoes);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
+            $edicoes = $this->eventoBusiness->retornarEdicoesEvento($evento_id);
+            return MelResponse::success("Edições de evento encontradas.", $edicoes);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
