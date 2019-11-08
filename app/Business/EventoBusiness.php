@@ -88,7 +88,7 @@ class EventoBusiness
         $evento = Evento::query()
             ->join('evento_administrador', 'evento_id', 'evento.id')
             ->where('evento_administrador.user_id', '=', $user_id)
-            ->select('evento.*');
+            ->select('evento.*')->get();
 
         if (!$evento) {
             throw new \Exception( "Nenhum evento encontrado para o usuário informado.");
