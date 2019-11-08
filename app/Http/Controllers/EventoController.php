@@ -68,16 +68,8 @@ class EventoController extends Controller
     public function retornarEventosUsuario($user_id)
     {
         try {
-
-            $evento = DB::table('evento')
-                ->join('evento_administrador', 'evento_id', 'evento.id')
-                ->where('evento_administrador.user_id', '=', $user_id)
-                ->select('evento.*')
-                ->get();
-
+            $evento = $this->eventoBusiness->retornarEventosUsuario($user_id);
             return MelResponse::success("Eventos encontrados para o usuário.", $evento);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }

@@ -83,4 +83,18 @@ class EventoBusiness
         return $edicoes;
     }
 
+    public function retornarEventosUsuario($user_id)
+    {
+        $evento = Evento::query()
+            ->join('evento_administrador', 'evento_id', 'evento.id')
+            ->where('evento_administrador.user_id', '=', $user_id)
+            ->select('evento.*');
+
+        if (!$evento) {
+            throw new \Exception( "Nenhum evento encontrado para o usuário informado.");
+        }
+
+        return $evento;
+    }
+
 }
