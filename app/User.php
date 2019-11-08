@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static find($user_id)
+ */
 class User extends Authenticatable
 {
     use Notifiable;
