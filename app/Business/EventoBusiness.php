@@ -97,4 +97,17 @@ class EventoBusiness
         return $evento;
     }
 
+    public function retornarEmpresaDeEvento(Request $request)
+    {
+        $attributes = $request->validate([
+            'evento_id' => 'required'
+        ]);
+
+        $evento = Evento::find($attributes['evento_id']);
+        $evento->load('empresas');
+        $empresas = $evento->empresas;
+
+        return $empresas;
+    }
+
 }
