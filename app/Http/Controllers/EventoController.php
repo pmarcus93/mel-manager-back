@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Business\EventoBusiness;
 use App\Evento;
 use App\EventoEdicao;
 use App\Response\MelResponse;
@@ -12,6 +13,14 @@ use Illuminate\Validation\ValidationException;
 
 class EventoController extends Controller
 {
+    /** @var EventoBusiness */
+    private $eventoBusiness;
+
+    public function __construct()
+    {
+        $this->eventoBusiness = new EventoBusiness();
+    }
+
     public function cadastrarEvento(Request $request)
     {
         try {
