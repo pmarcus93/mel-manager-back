@@ -22,12 +22,15 @@ class FluxoCaixaBusiness
             'tipo_operacao' => ['required', Rule::in(['DEBITO', 'CREDITO'])]
         ]);
 
+        /** @var EventoEdicao $edicaoEventoExistente */
         $edicaoEventoExistente = EventoEdicao::find($attributes['eventoedicao_id']);
 
         if (!$edicaoEventoExistente) {
             throw new \Exception("Não existe edição de evento cadastrado com o ID " . $attributes['eventoedicao_id'] . "!");
         }
 
+
+        /** @var Categoria $categoriaExistente */
         $categoriaExistente = Categoria::find($attributes['categoria_id']);
 
         if (!$categoriaExistente) {
@@ -56,6 +59,7 @@ class FluxoCaixaBusiness
             'tipo_operacao' => 'present'
         ]);
 
+        /** @var FluxoCaixa $fluxoCaixa */
         $fluxoCaixa = FluxoCaixa::find($attributes['fluxoCaixa_id']);
 
         if (!$fluxoCaixa) {
@@ -96,6 +100,7 @@ class FluxoCaixaBusiness
             'fluxoCaixa_id' => 'required'
         ]);
 
+        /** @var FluxoCaixa $fluxoCaixa */
         $fluxoCaixa = FluxoCaixa::find($attributes['fluxoCaixa_id']);
 
         if (!$fluxoCaixa) {
@@ -109,12 +114,26 @@ class FluxoCaixaBusiness
 
     public function retornarFluxoCaixa($fluxoCaixa_id)
     {
+        /** @var FluxoCaixa $fluxoCaixa */
         $fluxoCaixa = FluxoCaixa::find($fluxoCaixa_id);
 
         if (!$fluxoCaixa) {
             throw new \Exception("Não existe fluxo de caixa cadastrado com o ID " . $fluxoCaixa_id . "!");
         }
-
         return $fluxoCaixa;
+    }
+
+    public function retornarFluxosPorEdicaoEvento($edicaoEvento_id)
+    {
+        /** @var EventoEdicao $edicaoEvento */
+        $edicaoEvento = EventoEdicao::find($edicaoEvento_id);
+
+        if (!$edicaoEvento) {
+            throw new \Exception("Não existe edição de evento cadastrado com o ID " . $edicaoEvento_id . "!");
+        }
+
+        $edicaoEvento->load('fluxosCaixa');
+
+        return $edicaoEvento->fluxosCaixa;
     }
 }
