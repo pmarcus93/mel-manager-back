@@ -15,4 +15,9 @@ class EventoEdicao extends Model
     {
         return $this->belongsTo('App\Evento','evento_id');
     }
+
+    public function fluxosCaixa()
+    {
+        return $this->hasMany('App\FluxoCaixa','eventoedicao_id');
+    }
 }
