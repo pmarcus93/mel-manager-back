@@ -106,4 +106,15 @@ class FluxoCaixaBusiness
 
         return $fluxoCaixa;
     }
+
+    public function retornarFluxoCaixa($fluxoCaixa_id)
+    {
+        $fluxoCaixa = FluxoCaixa::find($fluxoCaixa_id);
+
+        if (!$fluxoCaixa) {
+            throw new \Exception("Não existe fluxo de caixa cadastrado com o ID " . $fluxoCaixa_id . "!");
+        }
+
+        return $fluxoCaixa;
+    }
 }
