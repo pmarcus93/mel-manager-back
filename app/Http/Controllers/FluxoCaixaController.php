@@ -43,4 +43,17 @@ class FluxoCaixaController extends Controller
             return MelResponse::error($e->getMessage());
         }
     }
+
+    public function removerFluxoCaixa(Request $request)
+    {
+        try {
+            $fluxoCaixa = $this->fluxoCaixaBusiness->removerFluxoCaixa($request);
+            return MelResponse::success("Fluxo de caixa removido com sucesso.", $fluxoCaixa);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return MelResponse::error($e->getMessage());
+        }
+    }
 }

@@ -89,4 +89,21 @@ class FluxoCaixaBusiness
 
         return $fluxoCaixa;
     }
+
+    public function removerFluxoCaixa(Request $request)
+    {
+        $attributes = $request->validate([
+            'fluxoCaixa_id' => 'required'
+        ]);
+
+        $fluxoCaixa = FluxoCaixa::find($attributes['fluxoCaixa_id']);
+
+        if (!$fluxoCaixa) {
+            throw new \Exception("Não existe fluxo de caixa cadastrado com o ID " . $attributes['fluxoCaixa_id'] . "!");
+        }
+
+        $fluxoCaixa->delete();
+
+        return $fluxoCaixa;
+    }
 }

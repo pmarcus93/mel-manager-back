@@ -46,6 +46,7 @@ Route::prefix('evento-edicao/')->group(function (){
 Route::prefix('fluxo-caixa/')->group(function (){
     Route::post('cadastrar-fluxo-caixa','FluxoCaixaController@cadastrarFluxoCaixa');
     Route::post('editar-fluxo-caixa','FluxoCaixaController@editarFluxoCaixa');
+    Route::post('remover-fluxo-caixa','FluxoCaixaController@removerFluxoCaixa');
 });
 
 Route::prefix('usuarios-evento/')->group(function () {
