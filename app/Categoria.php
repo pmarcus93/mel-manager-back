@@ -30,4 +30,9 @@ class Categoria extends Model
     protected $hidden = [
         'created_at','updated_at',
     ];
+
+    public function fluxosCaixa()
+    {
+        return $this->hasMany('App\FluxoCaixa','categoria_id');
+    }
 }

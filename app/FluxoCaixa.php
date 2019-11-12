@@ -15,4 +15,9 @@ class FluxoCaixa extends Model
     {
         return $this->belongsTo('App\EventoEdicao','eventoedicao_id');
     }
+
+    public function categoria()
+{
+    return $this->belongsTo('App\Categoria','categoria_id');
+}
 }
