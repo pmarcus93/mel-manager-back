@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static find($eventoedicao_id)
+ */
 class EventoEdicao extends Model
 {
     use SoftDeletes;
