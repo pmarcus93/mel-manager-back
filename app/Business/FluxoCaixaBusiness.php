@@ -41,7 +41,7 @@ class FluxoCaixaBusiness
         $fluxoCaixa = new FluxoCaixa();
         $fluxoCaixa->categoria_id = $attributes['categoria_id'];
         $fluxoCaixa->nome_operacao = $attributes['nome_operacao'];
-        $fluxoCaixa->valor = $attributes['valor'];
+        $fluxoCaixa->valor = Str::replaceFirst(',', '.', $attributes['valor']);
         $fluxoCaixa->tipo_operacao = $attributes['tipo_operacao'];
         $edicaoEventoExistente->fluxosCaixa()->save($fluxoCaixa);
         DB::commit();
