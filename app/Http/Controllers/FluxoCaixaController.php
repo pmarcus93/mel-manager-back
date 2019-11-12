@@ -21,7 +21,7 @@ class FluxoCaixaController extends Controller
     public function cadastrarFluxoCaixa(Request $request)
     {
         try {
-            $fluxoCaixa = $this->cadastrarFluxoCaixa($request);
+            $fluxoCaixa = $this->fluxoCaixaBusiness->cadastrarFluxoCaixa($request);
             return MelResponse::success("Fluxo de caixa cadastrado com sucesso.", $fluxoCaixa);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
