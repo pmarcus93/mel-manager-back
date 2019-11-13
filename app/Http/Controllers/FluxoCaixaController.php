@@ -39,7 +39,6 @@ class FluxoCaixaController extends Controller
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
@@ -52,7 +51,6 @@ class FluxoCaixaController extends Controller
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
@@ -62,10 +60,7 @@ class FluxoCaixaController extends Controller
         try {
             $fluxoCaixa = $this->fluxoCaixaBusiness->retornarFluxoCaixa($fluxocaixa_id);
             return MelResponse::success("Fluxo de caixa encontrado.", $fluxoCaixa);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
@@ -75,10 +70,7 @@ class FluxoCaixaController extends Controller
         try {
             $fluxosCaixa = $this->fluxoCaixaBusiness->retornarFluxosPorEdicaoEvento($edicaoEvento_id);
             return MelResponse::success("Fluxos de caixa encontrados.", $fluxosCaixa);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }

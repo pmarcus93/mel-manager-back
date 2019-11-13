@@ -132,14 +132,10 @@ class EventoBusiness
      * @return Empresa
      * @throws \Exception
      */
-    public function retornarEmpresasEvento(Request $request)
+    public function retornarEmpresasEvento($evento_id)
     {
-        $attributes = $request->validate([
-            'evento_id' => 'required'
-        ]);
-
         /** @var Evento $evento */
-        $evento = Evento::find($attributes['evento_id']);
+        $evento = Evento::find($evento_id);
 
         $evento->load('empresas');
         $empresas = $evento->empresas;

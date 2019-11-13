@@ -14,6 +14,7 @@ class FluxoCaixaBusiness
 {
 
     /**
+     * Cadastra um novo lancaçamento no fluxo de caixa
      * @param Request $request
      * @return FluxoCaixa
      * @throws \Exception
@@ -58,6 +59,7 @@ class FluxoCaixaBusiness
     }
 
     /**
+     * Editar um lançamento no fluxo de caixa
      * @param Request $request
      * @return FluxoCaixa
      * @throws \Exception
@@ -113,6 +115,7 @@ class FluxoCaixaBusiness
     }
 
     /**
+     * Remover um lançamento no fluxo de caixa
      * @param Request $request
      * @return FluxoCaixa
      * @throws \Exception
@@ -136,6 +139,7 @@ class FluxoCaixaBusiness
     }
 
     /**
+     * Retorna um lançamento no fluxo de caixa
      * @param $fluxocaixa_id
      * @return FluxoCaixa
      * @throws \Exception
@@ -151,7 +155,7 @@ class FluxoCaixaBusiness
         return $fluxoCaixa;
     }
 
-    /**
+    /**Retornar todos os lançamento do fluxo de caixa pela edição do evento
      * @param $edicaoEvento_id
      * @return mixed
      * @throws \Exception

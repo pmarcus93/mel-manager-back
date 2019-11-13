@@ -14,6 +14,7 @@ class UsuariosEventoBusiness
 {
 
     /**
+     * Retorna os administradores vinculados a um evento
      * @param $evento_id
      * @return Evento
      * @throws \Exception

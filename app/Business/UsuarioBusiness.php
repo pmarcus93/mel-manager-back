@@ -16,15 +16,16 @@ class UsuarioBusiness
      * @return User
      * @throws \Exception
      */
-    public function cadastrarUsuario(Request $request) {
+    public function cadastrarUsuario(Request $request)
+    {
 
         $attributes = $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
+            'telefone' => 'present'
         ]);
 
-        $telefone = $request->get('telefone');
         /** @var User $user */
         $user = User::where('email', $attributes['email'])->first();
 
@@ -37,8 +38,8 @@ class UsuarioBusiness
         $user->email = $attributes['email'];
         $user->password = Hash::make($attributes['password']);
 
-        if ($telefone) {
-            $user->telefone = $telefone;
+        if ($attributes['telefone']) {
+            $user->telefone = $attributes['telefone'];
         }
 
         $user->save();
@@ -51,15 +52,15 @@ class UsuarioBusiness
      * @return User
      * @throws \Exception
      */
-    public function editarUsuario(Request $request) {
+    public function editarUsuario(Request $request)
+    {
 
         $attributes = $request->validate([
             'user_id' => 'required',
             'name' => 'required',
-            'email' => 'required|email'
+            'email' => 'required|email',
+            'telefone' => 'present'
         ]);
-
-        $telefone = request('telefone');
 
         /** @var User $user */
         $user = User::find($attributes['user_id']);
@@ -71,8 +72,8 @@ class UsuarioBusiness
         $user->name = $attributes['name'];
         $user->email = $attributes['email'];
 
-        if ($telefone) {
-            $user->telefone = $telefone;
+        if ($attributes['telefone']) {
+            $user->telefone = $attributes['telefone'];
         }
 
         $user->save();
@@ -85,7 +86,8 @@ class UsuarioBusiness
      * @return User
      * @throws \Exception
      */
-    public function retornarUsuario(int $user_id) {
+    public function retornarUsuario(int $user_id)
+    {
         /** @var User $user */
         $user = User::find($user_id);
         if (!$user) {
@@ -101,7 +103,8 @@ class UsuarioBusiness
      * @return User
      * @throws \Exception
      */
-    public function retornarUsuarioEmail($email) {
+    public function retornarUsuarioEmail($email)
+    {
         /** @var User $users */
         $users = User::where('email', '=', $email)->get();
         if (!$users) {

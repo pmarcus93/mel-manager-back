@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 
 /**
  * @method static find($user_id)
+ * @method static where(string $string, $email)
  */
 class User extends Authenticatable
 {
