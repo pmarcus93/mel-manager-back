@@ -19,6 +19,7 @@ class CreateFluxocaixaTable extends Migration
             $table->unsignedBigInteger('categoria_id');
             $table->string('nome_operacao');
             $table->decimal('valor',8,2);
+            $table->date('data_movimento');
             $table->enum('tipo_operacao',['DEBITO','CREDITO']);
             $table->timestamps();
             $table->softDeletes();

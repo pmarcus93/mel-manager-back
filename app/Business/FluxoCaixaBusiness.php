@@ -19,6 +19,7 @@ class FluxoCaixaBusiness
             'categoria_id' => 'required',
             'nome_operacao' => 'required',
             'valor' => 'required',
+            'data_movimento' => 'required',
             'tipo_operacao' => ['required', Rule::in(['DEBITO', 'CREDITO'])]
         ]);
 
@@ -42,6 +43,7 @@ class FluxoCaixaBusiness
         $fluxoCaixa->categoria_id = $attributes['categoria_id'];
         $fluxoCaixa->nome_operacao = $attributes['nome_operacao'];
         $fluxoCaixa->valor = Str::replaceFirst(',', '.', $attributes['valor']);
+        $fluxoCaixa->data_movimento = \DateTime::createFromFormat('j-m-Y', $attributes['data_movimento']);
         $fluxoCaixa->tipo_operacao = $attributes['tipo_operacao'];
         $edicaoEventoExistente->fluxosCaixa()->save($fluxoCaixa);
         DB::commit();
@@ -56,6 +58,7 @@ class FluxoCaixaBusiness
             'fluxoCaixa_id' => 'required',
             'nome_operacao' => 'required',
             'valor' => ['required'],
+            'data_movimento' => 'present',
             'tipo_operacao' => 'present'
         ]);
 
@@ -83,6 +86,10 @@ class FluxoCaixaBusiness
                 throw new \Exception("Tipo de operação " . $attributes['tipo_operacao'] . " não é válida, use os tipos CREDITO OU DEBITO!");
             }
             $fluxoCaixa->tipo_operacao = $attributes['tipo_operacao'];
+        }
+
+        if (!empty($attributes['data_movimento'])) {
+            $fluxoCaixa->data_movimento = \DateTime::createFromFormat('j-m-Y', $attributes['data_movimento']);
         }
 
         if (!empty($attributes['categoria_id'])) {
