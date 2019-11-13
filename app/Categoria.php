@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 
 /**
@@ -11,6 +12,8 @@ use Illuminate\Http\Request;
  */
 class Categoria extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'categoria';
 
     /**

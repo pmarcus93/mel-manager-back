@@ -28,6 +28,10 @@ Route::prefix('empresa')->group(function () {
     Route::get('/retornar-empresa/{empresa_id}','EmpresaController@retornarEmpresa');
 });
 
+Route::prefix('categoria')->group(function (){
+    Route::post('/cadastrar-categoria', 'CategoriaController@cadastrarCategoria');
+});
+
 Route::prefix('evento')->group(function () {
     Route::post('/cadastrar-evento', 'EventoController@cadastrarEvento');
     Route::post('/editar-evento', 'EventoController@editarEvento');
