@@ -89,4 +89,16 @@ class CategoriaBusiness
         return $categoria;
     }
 
+    public function retornarCategorias()
+    {
+        /** @var Categoria $categorias */
+        $categorias = Categoria::all();
+
+        if(!$categorias){
+            throw new \Exception("Nenhuma categoria cadastrada.");
+        }
+
+        return $categorias;
+    }
+
 }

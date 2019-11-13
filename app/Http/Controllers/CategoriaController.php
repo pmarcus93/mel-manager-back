@@ -68,4 +68,14 @@ class CategoriaController extends Controller
             return MelResponse::error($e->getMessage());
         }
     }
+
+    public function retornarCategorias()
+    {
+        try {
+            $categorias = $this->categoriaBusiness->retornarCategorias();
+            return MelResponse::success("Categorias encontradas.", $categorias);
+        } catch (\Exception $e) {
+            return MelResponse::error($e->getMessage());
+        }
+    }
 }
