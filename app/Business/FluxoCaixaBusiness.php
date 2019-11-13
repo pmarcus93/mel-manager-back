@@ -12,6 +12,12 @@ use Illuminate\Validation\Rule;
 
 class FluxoCaixaBusiness
 {
+
+    /**
+     * @param Request $request
+     * @return FluxoCaixa
+     * @throws \Exception
+     */
     public function cadastrarFluxoCaixa(Request $request)
     {
         $attributes = $request->validate([
@@ -51,11 +57,16 @@ class FluxoCaixaBusiness
         return $fluxoCaixa;
     }
 
+    /**
+     * @param Request $request
+     * @return FluxoCaixa
+     * @throws \Exception
+     */
     public function editarFluxoCaixa(Request $request)
     {
         $attributes = $request->validate([
             'categoria_id' => 'present',
-            'fluxoCaixa_id' => 'required',
+            'fluxocaixa_id' => 'required',
             'nome_operacao' => 'required',
             'valor' => ['required'],
             'data_movimento' => 'present',
@@ -63,10 +74,10 @@ class FluxoCaixaBusiness
         ]);
 
         /** @var FluxoCaixa $fluxoCaixa */
-        $fluxoCaixa = FluxoCaixa::find($attributes['fluxoCaixa_id']);
+        $fluxoCaixa = FluxoCaixa::find($attributes['fluxocaixa_id']);
 
         if (!$fluxoCaixa) {
-            throw new \Exception("Não existe fluxo de caixa cadastrado com o ID " . $attributes['fluxoCaixa_id'] . "!");
+            throw new \Exception("Não existe fluxo de caixa cadastrado com o ID " . $attributes['fluxocaixa_id'] . "!");
         }
 
         if (!empty($attributes['categoria_id'])) {
@@ -83,7 +94,7 @@ class FluxoCaixaBusiness
         if (!empty($attributes['tipo_operacao'])) {
 
             if (!in_array($attributes['tipo_operacao'], ['DEBITO', 'CREDITO'])) {
-                throw new \Exception("Tipo de operação " . $attributes['tipo_operacao'] . " não é válida, use os tipos CREDITO OU DEBITO!");
+                throw new \Exception("Operação " . $attributes['tipo_operacao'] . " inválida. Utilize os tipos CREDITO ou DEBITO.");
             }
             $fluxoCaixa->tipo_operacao = $attributes['tipo_operacao'];
         }
@@ -101,6 +112,11 @@ class FluxoCaixaBusiness
         return $fluxoCaixa;
     }
 
+    /**
+     * @param Request $request
+     * @return FluxoCaixa
+     * @throws \Exception
+     */
     public function removerFluxoCaixa(Request $request)
     {
         $attributes = $request->validate([
@@ -119,17 +135,27 @@ class FluxoCaixaBusiness
         return $fluxoCaixa;
     }
 
-    public function retornarFluxoCaixa($fluxoCaixa_id)
+    /**
+     * @param $fluxocaixa_id
+     * @return FluxoCaixa
+     * @throws \Exception
+     */
+    public function retornarFluxoCaixa($fluxocaixa_id)
     {
         /** @var FluxoCaixa $fluxoCaixa */
-        $fluxoCaixa = FluxoCaixa::find($fluxoCaixa_id);
+        $fluxoCaixa = FluxoCaixa::find($fluxocaixa_id);
 
         if (!$fluxoCaixa) {
-            throw new \Exception("Não existe fluxo de caixa cadastrado com o ID " . $fluxoCaixa_id . "!");
+            throw new \Exception("Não existe fluxo de caixa cadastrado com o ID " . $fluxocaixa_id . "!");
         }
         return $fluxoCaixa;
     }
 
+    /**
+     * @param $edicaoEvento_id
+     * @return mixed
+     * @throws \Exception
+     */
     public function retornarFluxosPorEdicaoEvento($edicaoEvento_id)
     {
         /** @var EventoEdicao $edicaoEvento */
