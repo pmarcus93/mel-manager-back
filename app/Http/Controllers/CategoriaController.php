@@ -45,4 +45,17 @@ class CategoriaController extends Controller
             return MelResponse::error($e->getMessage());
         }
     }
+
+    public function removerCategoria(Request $request)
+    {
+        try {
+            $categoria = $this->categoriaBusiness->removerCategoria($request);
+            return MelResponse::success("Categoria removida com sucesso.", $categoria);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return MelResponse::error($e->getMessage());
+        }
+    }
 }
