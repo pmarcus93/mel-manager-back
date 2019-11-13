@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Categoria as CategoriaAlias;
 use App\Response\MelResponse;
 use Illuminate\Http\Request;
 use App\Business\CategoriaBusiness;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class CategoriaController extends Controller
@@ -28,7 +26,6 @@ class CategoriaController extends Controller
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
@@ -41,7 +38,6 @@ class CategoriaController extends Controller
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
@@ -54,7 +50,6 @@ class CategoriaController extends Controller
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
