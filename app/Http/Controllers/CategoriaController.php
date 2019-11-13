@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Categoria;
+use App\Categoria as CategoriaAlias;
 use App\Response\MelResponse;
 use Illuminate\Http\Request;
 use App\Business\CategoriaBusiness;
@@ -25,6 +25,19 @@ class CategoriaController extends Controller
         try {
             $categoria = $this->categoriaBusiness->cadastrarCategoria($request);
             return MelResponse::success("Categoria cadastrada com sucesso.", $categoria);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return MelResponse::error($e->getMessage());
+        }
+    }
+
+    public function editarCategoria(Request $request)
+    {
+        try {
+            $categoria = $this->categoriaBusiness->editarCategoria($request);
+            return MelResponse::success("Categoria atualizada com sucesso.", $categoria);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {

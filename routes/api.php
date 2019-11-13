@@ -30,6 +30,7 @@ Route::prefix('empresa')->group(function () {
 
 Route::prefix('categoria')->group(function (){
     Route::post('/cadastrar-categoria', 'CategoriaController@cadastrarCategoria');
+    Route::post('/editar-categoria', 'CategoriaController@editarCategoria');
 });
 
 Route::prefix('evento')->group(function () {
