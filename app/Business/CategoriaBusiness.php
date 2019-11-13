@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class CategoriaBusiness
 {
-    /**
+    /** Cadastra uma nova categoria
      * @param Request $request
      * @return Categoria
      */
@@ -24,7 +24,7 @@ class CategoriaBusiness
         return $categoria;
     }
 
-    /**
+    /** Edita uma categoria
      * @param Request $request
      * @return Categoria
      * @throws \Exception
@@ -49,7 +49,7 @@ class CategoriaBusiness
         return $categoria;
     }
 
-    /**
+    /** Remove uma categoria
      * @param Request $request
      * @return Categoria
      * @throws \Exception
@@ -72,7 +72,7 @@ class CategoriaBusiness
         return $categoria;
     }
 
-    /**
+    /**Retorna uma categoria
      * @param $categoria_id
      * @return Categoria
      * @throws \Exception
@@ -89,6 +89,10 @@ class CategoriaBusiness
         return $categoria;
     }
 
+    /**Retorna todas as categorias
+     * @return Categoria
+     * @throws \Exception
+     */
     public function retornarCategorias()
     {
         /** @var Categoria $categorias */
