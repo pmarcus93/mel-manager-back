@@ -28,6 +28,14 @@ Route::prefix('empresa')->group(function () {
     Route::get('/retornar-empresa/{empresa_id}','EmpresaController@retornarEmpresa');
 });
 
+Route::prefix('categoria')->group(function (){
+    Route::post('/cadastrar-categoria', 'CategoriaController@cadastrarCategoria');
+    Route::post('/editar-categoria', 'CategoriaController@editarCategoria');
+    Route::post('/remover-categoria', 'CategoriaController@removerCategoria');
+    Route::get('/retornar-categoria/{categoria_id}','CategoriaController@retornarCategoria');
+    Route::get('/retornar-categorias','CategoriaController@retornarCategorias');
+});
+
 Route::prefix('evento')->group(function () {
     Route::post('/cadastrar-evento', 'EventoController@cadastrarEvento');
     Route::post('/editar-evento', 'EventoController@editarEvento');
