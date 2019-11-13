@@ -75,10 +75,10 @@ class EventoController extends Controller
         }
     }
 
-    public function retornarEmpresaDeEvento(Request $request)
+    public function retornarEmpresasEvento (Request $request)
     {
         try {
-            $empresas = $this->eventoBusiness->retornarEmpresaDeEvento($request);
+            $empresas = $this->eventoBusiness->retornarEmpresasEvento ($request);
             return MelResponse::success("Empresas encontradas.", $empresas);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());

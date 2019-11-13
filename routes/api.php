@@ -29,11 +29,12 @@ Route::prefix('empresa')->group(function () {
 });
 
 Route::prefix('evento')->group(function () {
-    Route::get('/retornar-edicoes-evento/{evento_id}', 'EventoController@retornarEdicoesEvento');
     Route::post('/cadastrar-evento', 'EventoController@cadastrarEvento');
     Route::post('/editar-evento', 'EventoController@editarEvento');
+    Route::get('/retornar-edicoes-evento/{evento_id}', 'EventoController@retornarEdicoesEvento');
     Route::get('/retornar-eventos-usuario/{user_id}', 'EventoController@retornarEventosUsuario');
     Route::get('/retornar-evento/{evento_id}', 'EventoController@retornarEvento');
+    Route::get('/retornar-empresas-evento/{evento_id}', 'EventoController@retornarEmpresasEvento');
 });
 
 Route::prefix('evento-edicao/')->group(function (){
