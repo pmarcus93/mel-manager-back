@@ -44,6 +44,14 @@ Route::prefix('evento-edicao/')->group(function (){
     Route::post('remover-evento-edicao', 'EventoEdicaoController@removerEventoEdicao');
 });
 
+Route::prefix('fluxo-caixa/')->group(function (){
+    Route::post('cadastrar-fluxo-caixa','FluxoCaixaController@cadastrarFluxoCaixa');
+    Route::post('editar-fluxo-caixa','FluxoCaixaController@editarFluxoCaixa');
+    Route::post('remover-fluxo-caixa','FluxoCaixaController@removerFluxoCaixa');
+    Route::get('retornar-fluxo-caixa/{$fluxocaixa_id}', 'FluxoCaixaController@retornarFluxoCaixa');
+    Route::get('retornar-fluxos-caixa-por-edicao/{edicaoEvento_id}', 'FluxoCaixaController@retornarFluxosPorEdicaoEvento');
+});
+
 Route::prefix('usuarios-evento/')->group(function () {
     Route::get('retornar-administradores-evento/{evento_id}', 'UsuariosEventoController@retornarAdministradoresEvento');
     Route::post('vincular-administrador-evento', 'UsuariosEventoController@vincularAdministradorEvento');
