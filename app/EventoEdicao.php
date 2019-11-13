@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
+ * @method static where(string $string, $evento_id)
+ */
+/**
  * @method static find($eventoedicao_id)
  */
 class EventoEdicao extends Model

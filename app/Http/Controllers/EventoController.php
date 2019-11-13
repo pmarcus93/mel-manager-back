@@ -2,45 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Business\EventoBusiness;
 use App\Evento;
 use App\EventoEdicao;
 use App\Response\MelResponse;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class EventoController extends Controller
 {
+    /** @var EventoBusiness */
+    private $eventoBusiness;
+
+    public function __construct()
+    {
+        $this->eventoBusiness = new EventoBusiness();
+    }
+
     public function cadastrarEvento(Request $request)
     {
         try {
-
-            $attributes = $request->validate([
-                'user_id' => 'required',
-                'nome' => 'nome'
-            ]);
-
-            $usuario = User::find($attributes['user_id']);
-
-            if (!$usuario) {
-                throw new \Exception("Não existe usuário no banco de dados com o id informado [" . $attributes['user_id'] . "].");
-            }
-
-            DB::beginTransaction();
-
-            $evento = new Evento();
-            $evento->nome = $attributes['nome'];
-            $evento->save();
-
-            $evento->administradores()->attach($usuario->id);
-
-            DB::commit();
-
-            $evento = $evento->load('administradores');
-
+            $evento = $this->eventoBusiness->cadastrarEvento($request);
             return MelResponse::success("Evento cadastrado com sucesso!", $evento);
-
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
@@ -52,21 +36,7 @@ class EventoController extends Controller
     public function editarEvento(Request $request)
     {
         try {
-
-            $attributes = $request->validate([
-                'user_id' => 'required',
-                'nome' => 'nome'
-            ]);
-
-            $evento = Evento::find($attributes['evento_id']);
-
-            if (!$evento) {
-                throw new \Exception("Nenhum evento com o id " . $attributes['evento_id'] . " encontrado.");
-            }
-
-            $evento->nome = $attributes['nome'];
-            $evento->save();
-
+            $evento = $this->eventoBusiness->editarEvento($request);
             return MelResponse::success('Evento alterado com sucesso.', $evento);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
@@ -78,19 +48,8 @@ class EventoController extends Controller
     public function retornarEvento($evento_id)
     {
         try {
-
-            $msg = "Informações do evento obtidas com sucesso.";
-
-            /** @var Evento $evento */
-            $evento = Evento::find($evento_id);
-
-            if (!$evento) {
-                $msg = "Nenhum evento com o id " . $evento_id . " encontrado.";
-            }
-
-            return MelResponse::success($msg, $evento);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
+            $evento = $this->eventoBusiness->retornarEvento($evento_id);
+            return MelResponse::success("Evento encontrado.", $evento);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
@@ -99,12 +58,8 @@ class EventoController extends Controller
     public function retornarEdicoesEvento($evento_id)
     {
         try {
-            $edicoes = EventoEdicao::where('evento_id', $evento_id)
-                ->get();
-
-            return MelResponse::success("", $edicoes);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
+            $edicoes = $this->eventoBusiness->retornarEdicoesEvento($evento_id);
+            return MelResponse::success("Edições de evento encontradas.", $edicoes);
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
@@ -113,33 +68,18 @@ class EventoController extends Controller
     public function retornarEventosUsuario($user_id)
     {
         try {
-
-            $evento = DB::table('evento')
-                ->join('evento_administrador', 'evento_id', 'evento.id')
-                ->where('evento_administrador.user_id', '=', $user_id)
-                ->select('evento.*')
-                ->get();
-
+            $evento = $this->eventoBusiness->retornarEventosUsuario($user_id);
             return MelResponse::success("Eventos encontrados para o usuário.", $evento);
-        } catch (ValidationException $e) {
-            return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function retornarEmpresaDeEvento(Request $request)
+    public function retornarEmpresasEvento (Request $request)
     {
         try {
-            $attributes = $request->validate([
-                'evento_id' => 'required'
-            ]);
-
-            $evento = Evento::find($attributes['evento_id']);
-            $evento->load('empresas');
-            $empresas = $evento->empresas;
-
-            return MelResponse::success("", $empresas);
+            $empresas = $this->eventoBusiness->retornarEmpresasEvento ($request);
+            return MelResponse::success("Empresas encontradas.", $empresas);
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
