@@ -72,4 +72,21 @@ class CategoriaBusiness
         return $categoria;
     }
 
+    /**
+     * @param $categoria_id
+     * @return Categoria
+     * @throws \Exception
+     */
+    public function retornarCategoria($categoria_id)
+    {
+        /** @var Categoria $categoria */
+        $categoria = Categoria::find($categoria_id);
+
+        if(!$categoria){
+            throw new \Exception("Não existe categoria cadastrada com o ID " . $categoria_id . "!");
+        }
+
+        return $categoria;
+    }
+
 }

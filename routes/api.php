@@ -32,6 +32,7 @@ Route::prefix('categoria')->group(function (){
     Route::post('/cadastrar-categoria', 'CategoriaController@cadastrarCategoria');
     Route::post('/editar-categoria', 'CategoriaController@editarCategoria');
     Route::post('/remover-categoria', 'CategoriaController@removerCategoria');
+    Route::get('/retornar-categoria/{categoria_id}','CategoriaController@retornarCategoria');
 });
 
 Route::prefix('evento')->group(function () {
