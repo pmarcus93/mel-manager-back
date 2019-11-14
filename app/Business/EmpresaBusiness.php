@@ -129,7 +129,7 @@ class EmpresaBusiness
             throw new Exception("Não existe evento cadastrado com o ID " . $attributes['evento_id'] . "!");
         }
 
-        $empresa->eventos()->attach($attributes['evento_id']);
+        $empresa->eventos()->syncWithoutDetaching($attributes['evento_id']);
 
         /** @var Evento $eventos */
         $eventos = $empresa->load('eventos');
