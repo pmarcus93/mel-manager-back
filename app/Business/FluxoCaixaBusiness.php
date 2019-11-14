@@ -155,7 +155,7 @@ class FluxoCaixaBusiness
         return $fluxoCaixa;
     }
 
-    /**Retornar todos os lançamento do fluxo de caixa pela edição do evento
+    /**Retornar todos os lançamento do fluxo de caixa com base na edição do evento
      * @param $edicaoEvento_id
      * @return mixed
      * @throws \Exception
