@@ -6,6 +6,7 @@ use App\Empresa;
 use App\Evento;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class EmpresaBusiness
 {
@@ -129,7 +130,9 @@ class EmpresaBusiness
             throw new Exception("Não existe evento cadastrado com o ID " . $attributes['evento_id'] . "!");
         }
 
-        $empresa->eventos()->syncWithoutDetaching($attributes['evento_id']);
+        $empresa->eventos()->syncWithoutDetaching([
+            $attributes['evento_id'] => ['created_at' => Carbon::now()]
+        ]);
 
         /** @var Evento $eventos */
         $eventos = $empresa->load('eventos');
