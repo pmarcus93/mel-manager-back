@@ -18,6 +18,7 @@ class CreateEmpresaTable extends Migration
             $table->string('nome')->nullable('false');
             $table->string('telefone');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
