@@ -40,7 +40,6 @@ class UsuarioController extends Controller
         } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
-            DB::rollBack();
             return MelResponse::error($e->getMessage());
         }
     }
