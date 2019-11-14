@@ -6,47 +6,53 @@ use Exception;
 use App\Evento;
 use App\Response\MelResponse;
 use App\Empresa;
+use App\Business\EmpresaBusiness;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class EmpresaController extends Controller
 {
-    public function cadastrarEmpresa()
+    /**@var EmpresaBusiness */
+    private $empresaBusiness;
+
+    public function __construct()
+    {
+        $this->empresaBusiness = new EmpresaBusiness();
+    }
+
+    public function cadastrarEmpresa(Request $request)
     {
         try {
-            $empresa_nome = request('nome');
-            $telefone = request('telefone');
-
-            $empresa = new Empresa();
-            $empresa->nome = $empresa_nome;
-            $empresa->telefone = $telefone;
-
-            $empresa->save();
-            return MelResponse::success("Empresa cadastrada com sucesso!", $empresa);
-        } catch (Exception $e) {
-            DB::rollBack();
+            $empresa = $this->empresaBusiness->cadastrarEmpresa($request);
+            return MelResponse::success("Empresa cadastrada com sucesso.", $empresa);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
+        } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function editarEmpresa()
+    public function editarEmpresa(Request $request)
     {
         try {
-            $empresa_id = request('empresa_id');
-            $empresa_nome = request('empresa_nome');
-            $telefone = request('telefone');
+            $empresa = $this->empresaBusiness->editarEmpresa($request);
+            return MelResponse::success("Empresa atualizada.", $empresa);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
+        } catch (\Exception $e) {
+            return MelResponse::error($e->getMessage());
+        }
+    }
 
-            $empresa = Empresa::find($empresa_id);
-
-            if (!$empresa) {
-                throw new Exception("Empresa não encontrada para edição!");
-            }
-
-            $empresa->nome = $empresa_nome;
-            $empresa->telefone = $telefone;
-            $empresa->save();
-
-            return MelResponse::success("Empresa alterada com sucesso!", $empresa);
-        } catch (Exception $e) {
+    public function removerEmpresa(Request $request)
+    {
+        try {
+            $empresa = $this->empresaBusiness->removerEmpresa($request);
+            return MelResponse::success("Empresa removida com sucesso.", $empresa);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
+        } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
@@ -54,69 +60,33 @@ class EmpresaController extends Controller
     public function retornarEmpresa($empresa_id)
     {
         try {
-            $empresa = Empresa::find($empresa_id);
-
-            if (!$empresa) {
-                throw new Exception("ID informado não econtrado!");
-            }
-
-            $empresa = $empresa->load('eventos');
-            return MelResponse::success(null, $empresa);
-        } catch (Exception $e) {
+            $empresa = $this->empresaBusiness->retornarEmpresa($empresa_id);
+            return MelResponse::success("Empresa encontrada.", $empresa);
+        } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function vincularEventoEmpresa()
+    public function vincularEventoEmpresa(Request $request)
     {
         try {
-            $empresa_id = request('empresa_id');
-            $evento_id = request('evento_id');
-
-            $empresa = Empresa::find($empresa_id);
-            $evento = Evento::find($evento_id);
-
-            if (!$empresa) {
-                throw new Exception("ID da empresa informado não econtrado!");
-            }
-
-            if (!$evento) {
-                throw new Exception("ID do Evento informado não econtrado!");
-            }
-
-            $empresa->eventos()->attach($evento_id);
-            $empresa = $empresa->load('eventos');
-
-            return MelResponse::success("Evento vinculado a empresa com sucesso!", $empresa);
-
-        } catch (Exception $e) {
+            $empresa = $this->empresaBusiness->vincularEventoEmpresa($request);
+            return MelResponse::success("Evento vinculado a empresa.", $empresa);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
+        } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
 
-    public function desvincularEventoEmpresa()
+    public function desvincularEventoEmpresa(Request $request)
     {
         try {
-            $empresa_id = request('empresa_id');
-            $evento_id = request('evento_id');
-
-            $empresa = Empresa::find($empresa_id);
-            $evento = Evento::find($evento_id);
-
-            if (!$empresa) {
-                throw new Exception("ID da empresa informado não econtrado!");
-            }
-
-            if (!$evento) {
-                throw new Exception("ID do Evento informado não econtrado!");
-            }
-
-            $empresa->eventos()->detach($evento_id);
-            $empresa = $empresa->load('eventos');
-
-            return MelResponse::success("Evento desvinculado a empresa com sucesso!", $empresa);
-
-        } catch (Exception $e) {
+            $empresa = $this->empresaBusiness->desvincularEventoEmpresa($request);
+            return MelResponse::success("Evento desvinculado da empresa.", $empresa);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
+        } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
         }
     }
