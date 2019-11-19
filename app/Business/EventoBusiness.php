@@ -22,7 +22,7 @@ class EventoBusiness
     {
         $attributes = $request->validate([
             'user_id' => 'required',
-            'nome' => 'nome'
+            'nome' => 'required'
         ]);
 
         /** @var User $usuario */
