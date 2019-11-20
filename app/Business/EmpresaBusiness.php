@@ -20,13 +20,15 @@ class EmpresaBusiness
     {
         $attributes = $request->validate([
             'nome' => 'required',
-            'telefone' => 'required'
+            'telefone' => 'required',
+            'evento_id' => 'required'
         ]);
 
         /** @var Empresa $empresa */
         $empresa = new Empresa();
         $empresa->nome = $attributes['nome'];
         $empresa->telefone = $attributes['telefone'];
+        $empresa->evento_id = $attributes['evento_id'];
 
         $empresa->save();
         return $empresa;
@@ -42,19 +44,19 @@ class EmpresaBusiness
     public function editarEmpresa(Request $request)
     {
         $attributes = $request->validate([
-            'empresa_id' => 'required',
-            'empresa_nome' => 'required',
+            'id' => 'required',
+            'nome' => 'required',
             'telefone' => 'required'
         ]);
 
         /** @var Empresa $empresa */
-        $empresa = Empresa::find($attributes['empresa_id']);
+        $empresa = Empresa::find($attributes['id']);
 
         if (!$empresa) {
-            throw new Exception("Não existe empresa cadastrada com o ID " . $attributes['empresa_id'] . "!");
+            throw new Exception("Não existe empresa cadastrada com o ID " . $attributes['id'] . "!");
         }
 
-        $empresa->nome = $attributes['empresa_nome'];
+        $empresa->nome = $attributes['nome'];
         $empresa->telefone = $attributes['telefone'];
         $empresa->save();
 
