@@ -74,11 +74,11 @@ class DatabaseSeeder extends Seeder
         DB::table('evento')->insert($eventoData);
 
         $empresaData = [
-            ['nome' => 'Empresa Teste 01', 'telefone' => "'" . rand(10000000000, 99999999999) . "'", 'created_at' => Carbon::now()],
-            ['nome' => 'Empresa Teste 02', 'telefone' => "'" . rand(10000000000, 99999999999) . "'", 'created_at' => Carbon::now()],
-            ['nome' => 'Empresa Teste 03', 'telefone' => "'" . rand(10000000000, 99999999999) . "'", 'created_at' => Carbon::now()],
-            ['nome' => 'Empresa Teste 04', 'telefone' => "'" . rand(10000000000, 99999999999) . "'", 'created_at' => Carbon::now()],
-            ['nome' => 'Empresa Teste 05', 'telefone' => "'" . rand(10000000000, 99999999999) . "'", 'created_at' => Carbon::now()]
+            ['nome' => 'Empresa Teste 01', 'evento_id' =>  1, 'telefone' => rand(10000000000, 99999999999), 'created_at' => Carbon::now()],
+            ['nome' => 'Empresa Teste 02', 'evento_id' =>  1, 'telefone' => rand(10000000000, 99999999999), 'created_at' => Carbon::now()],
+            ['nome' => 'Empresa Teste 03', 'evento_id' =>  1, 'telefone' => rand(10000000000, 99999999999), 'created_at' => Carbon::now()],
+            ['nome' => 'Empresa Teste 04', 'evento_id' =>  1, 'telefone' => rand(10000000000, 99999999999), 'created_at' => Carbon::now()],
+            ['nome' => 'Empresa Teste 05', 'evento_id' =>  1, 'telefone' => rand(10000000000, 99999999999), 'created_at' => Carbon::now()]
         ];
 
         DB::table('empresa')->insert($empresaData);
@@ -111,16 +111,6 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('evento_administrador')->insert($eventoAdministradorData);
-
-        $eventoEmpresaData = [
-            ['evento_id' => 1, 'empresa_id' => 1, 'created_at' => Carbon::now()],
-            ['evento_id' => 2, 'empresa_id' => 2, 'created_at' => Carbon::now()],
-            ['evento_id' => 3, 'empresa_id' => 3, 'created_at' => Carbon::now()],
-            ['evento_id' => 3, 'empresa_id' => 4, 'created_at' => Carbon::now()],
-            ['evento_id' => 1, 'empresa_id' => 5, 'created_at' => Carbon::now()]
-        ];
-
-        DB::table('evento_empresa')->insert($eventoEmpresaData);
 
     }
 }

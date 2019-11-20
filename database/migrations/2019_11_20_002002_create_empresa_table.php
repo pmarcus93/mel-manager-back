@@ -15,10 +15,12 @@ class CreateEmpresaTable extends Migration
     {
         Schema::create('empresa', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('evento_id');
             $table->string('nome')->nullable('false');
             $table->string('telefone');
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('evento_id')->references('id')->on('evento');
         });
     }
 
