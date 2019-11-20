@@ -91,4 +91,14 @@ class EmpresaController extends Controller
         }
     }
 
+    public function retornarEmpresasEvento($evento_id)
+    {
+        try {
+            $empresas = $this->empresaBusiness->retornarEmpresasEvento($evento_id);
+            return MelResponse::success("Empresas encontradas.", $empresas);
+        } catch (\Exception $e) {
+            return MelResponse::error($e->getMessage());
+        }
+    }
+
 }
