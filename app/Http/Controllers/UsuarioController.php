@@ -64,4 +64,16 @@ class UsuarioController extends Controller
         }
     }
 
+    public function loginSistema(Request $request)
+    {
+        try {
+            $usuarioLogin = $this->usuarioBusiness->loginSistema($request);
+            return MelResponse::success("Login realizado com sucesso.", $usuarioLogin);
+        } catch (ValidationException $e) {
+            return MelResponse::validationError($e->errors());
+        } catch (\Exception $e) {
+            return MelResponse::error($e->getMessage());
+        }
+    }
+
 }

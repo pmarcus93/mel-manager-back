@@ -113,4 +113,31 @@ class UsuarioBusiness
         return $users;
     }
 
+    /**
+     * Realiza login no sistema
+     * @param Request $request
+     * @return User
+     * @throws \Exception
+     */
+    public function loginSistema(Request $request)
+    {
+        $attributes = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        /** @var User $user */
+        $user = User::where('email', '=', $attributes['email'])->first();
+
+        if (!$user) {
+            throw new \Exception("Usuário ou Senha inválidos.");
+        }
+
+        if (!(Hash::check($attributes['password'], $user->password))) {
+            throw new \Exception("Usuário ou Senha inválidos.");
+        }
+
+        return $user;
+    }
+
 }
