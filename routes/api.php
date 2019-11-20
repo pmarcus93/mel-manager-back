@@ -18,6 +18,7 @@ Route::prefix('usuario')->group(function () {
     Route::post('/editar-usuario', 'UsuarioController@editarUsuario');
     Route::get('/retornar-usuario-email/{email}', 'UsuarioController@retornarUsuarioEmail');
     Route::get('/retornar-usuario/{user_id}', 'UsuarioController@retornarUsuario');
+    Route::post('/login-sistema', 'UsuarioController@loginSistema');
 });
 
 Route::prefix('empresa')->group(function () {
