@@ -50,7 +50,7 @@ class FluxoCaixaBusiness
         $fluxoCaixa->categoria_id = $attributes['categoria_id'];
         $fluxoCaixa->nome_operacao = $attributes['nome_operacao'];
         $fluxoCaixa->valor = Str::replaceFirst(',', '.', $attributes['valor']);
-        $fluxoCaixa->data_movimento = \DateTime::createFromFormat('j-m-Y', $attributes['data_movimento']);
+        $fluxoCaixa->data_movimento = $attributes['data_movimento'];
         $fluxoCaixa->tipo_operacao = $attributes['tipo_operacao'];
         $edicaoEventoExistente->fluxosCaixa()->save($fluxoCaixa);
         DB::commit();
@@ -102,7 +102,7 @@ class FluxoCaixaBusiness
         }
 
         if (!empty($attributes['data_movimento'])) {
-            $fluxoCaixa->data_movimento = \DateTime::createFromFormat('j-m-Y', $attributes['data_movimento']);
+            $fluxoCaixa->data_movimento = $attributes['data_movimento'];
         }
 
         if (!empty($attributes['categoria_id'])) {
