@@ -74,11 +74,11 @@ class DatabaseSeeder extends Seeder
         DB::table('evento')->insert($eventoData);
 
         $empresaData = [
-            ['nome' => 'Empresa Teste 01', 'evento_id' =>  1, 'telefone' => "'" . rand(10000000000, 99999999999) . "'", 'created_at' => Carbon::now()],
-            ['nome' => 'Empresa Teste 02', 'evento_id' =>  1, 'telefone' => "'" . rand(10000000000, 99999999999) . "'", 'created_at' => Carbon::now()],
-            ['nome' => 'Empresa Teste 03', 'evento_id' =>  1, 'telefone' => "'" . rand(10000000000, 99999999999) . "'", 'created_at' => Carbon::now()],
-            ['nome' => 'Empresa Teste 04', 'evento_id' =>  1, 'telefone' => "'" . rand(10000000000, 99999999999) . "'", 'created_at' => Carbon::now()],
-            ['nome' => 'Empresa Teste 05', 'evento_id' =>  1, 'telefone' => "'" . rand(10000000000, 99999999999) . "'", 'created_at' => Carbon::now()]
+            ['nome' => 'Empresa Teste 01', 'evento_id' =>  1, 'telefone' => rand(10000000000, 99999999999), 'created_at' => Carbon::now()],
+            ['nome' => 'Empresa Teste 02', 'evento_id' =>  1, 'telefone' => rand(10000000000, 99999999999), 'created_at' => Carbon::now()],
+            ['nome' => 'Empresa Teste 03', 'evento_id' =>  1, 'telefone' => rand(10000000000, 99999999999), 'created_at' => Carbon::now()],
+            ['nome' => 'Empresa Teste 04', 'evento_id' =>  1, 'telefone' => rand(10000000000, 99999999999), 'created_at' => Carbon::now()],
+            ['nome' => 'Empresa Teste 05', 'evento_id' =>  1, 'telefone' => rand(10000000000, 99999999999), 'created_at' => Carbon::now()]
         ];
 
         DB::table('empresa')->insert($empresaData);
