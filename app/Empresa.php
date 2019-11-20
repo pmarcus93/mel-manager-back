@@ -15,15 +15,11 @@ class Empresa extends Model
     protected $table = 'empresa';
 
     protected $fillable = [
-       'nome','telefone',
+       'nome','telefone', 'evento_id'
     ];
 
     protected $hidden = [
         'created_at','updated_at','deleted_at',
     ];
 
-    public function eventos()
-    {
-        return $this->belongsToMany('App\Evento','evento_empresa','empresa_id','evento_id');
-    }
 }
