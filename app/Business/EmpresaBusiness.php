@@ -104,6 +104,20 @@ class EmpresaBusiness
     }
 
     /**
+     * Retorna empresas de um evento
+     * @param $evento_id
+     * @return Empresa
+     * @throws Exception
+     */
+    public function retornarEmpresasEvento($evento_id)
+    {
+        /** @var Empresa $empresa */
+        $empresa = Empresa::where('evento_id', $evento_id)->get();
+
+        return $empresa;
+    }
+
+    /**
      * Vincular um evento a uma empresa.
      * @param Request $request
      * @return Evento
