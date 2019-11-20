@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Response\MelResponse;
 use App\Business\EmpresaBusiness;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class EmpresaController extends Controller
 {
@@ -21,7 +22,7 @@ class EmpresaController extends Controller
         try {
             $empresa = $this->empresaBusiness->cadastrarEmpresa($request);
             return MelResponse::success("Empresa cadastrada com sucesso.", $empresa);
-        } catch (\ValidationException $e) {
+        } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
@@ -33,7 +34,7 @@ class EmpresaController extends Controller
         try {
             $empresa = $this->empresaBusiness->editarEmpresa($request);
             return MelResponse::success("Empresa atualizada.", $empresa);
-        } catch (\ValidationException $e) {
+        } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
@@ -45,7 +46,7 @@ class EmpresaController extends Controller
         try {
             $empresa = $this->empresaBusiness->removerEmpresa($request);
             return MelResponse::success("Empresa removida com sucesso.", $empresa);
-        } catch (\ValidationException $e) {
+        } catch (ValidationException $e) {
             return MelResponse::validationError($e->errors());
         } catch (\Exception $e) {
             return MelResponse::error($e->getMessage());
